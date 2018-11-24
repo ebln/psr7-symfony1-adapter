@@ -1,5 +1,5 @@
 {
-    "name": "brnc/simple-message-adaper",
+    "name": "brnc/psr7-symfony1-adapter",
     "description": "Partial PSR-7 Adapters for Symfony 1.5",
     "keywords": ["symfony1", "http-message", "http", "message", "psr-7"],
     "authors": [
