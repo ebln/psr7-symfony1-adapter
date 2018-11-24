@@ -143,7 +143,7 @@ class ServerRequestArgument
         // gather headers to fit structure of HeaderReader
         $headers = [];
         foreach ($pathInfoArray as $key => $value) {
-            if (substr($key, 0, 5) === 'HTTP_') {
+            if (strpos($key, 'HTTP_') === 0) {
                 $headerName = str_replace('_', '-', strtolower(substr($key, 5)));
 
                 $headers[strtolower($headerName)] = [
