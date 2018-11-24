@@ -6,6 +6,11 @@ use brnc\Symfony1\Message\Implementation\ReadCommonHead;
 use brnc\Symfony1\Message\Obligation\SfWebRequestSubsetInterface;
 use brnc\Symfony1\Message\Implementation\ReadMinimalRequestHead;
 
+/**
+ * Factory for implementations of PSR-7 subsets
+ *
+ * @see \brnc\Symfony1\Message\Obligation\SfWebRequestSubsetProxy may be used for valid arguments
+ */
 class RequestAdapter
 {
     /**
