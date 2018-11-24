@@ -5,7 +5,7 @@ namespace brnc\Tests\Symfony1\Message;
 use brnc\Symfony1\Message\ReadCommonHead;
 use PHPUnit\Framework\TestCase;
 
-class HeaderReaderTest extends TestCase
+class ReadCommonHeadTest extends TestCase
 {
     public function test__construct()
     {

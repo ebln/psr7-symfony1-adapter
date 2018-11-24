@@ -10,7 +10,7 @@ use Prophecy\Argument;
 use Prophecy\Doubler\DoubleInterface;
 use Prophecy\Prophecy\ObjectProphecy;
 
-class MinimalRequestReaderTest extends TestCase
+class ReadMinimalRequestHeadInterfaceAdapterTest extends TestCase
 {
     /**
      * @param array  $request
