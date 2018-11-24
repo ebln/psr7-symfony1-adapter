@@ -2,9 +2,9 @@
 
 namespace brnc\Symfony1\Message\Factory;
 
-use brnc\Symfony1\Message\ReadCommonHead;
+use brnc\Symfony1\Message\Implementation\ReadCommonHead;
 use brnc\Symfony1\Message\Obligation\sfWebRequestSubsetInterface;
-use brnc\Symfony1\Message\ReadMinimalRequestHead;
+use brnc\Symfony1\Message\Implementation\ReadMinimalRequestHead;
 
 class RequestAdapter
 {

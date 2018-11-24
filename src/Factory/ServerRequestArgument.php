@@ -2,7 +2,7 @@
 
 namespace brnc\Symfony1\Message\Factory;
 
-use brnc\Symfony1\Message\ReadCommonHead;
+use brnc\Symfony1\Message\Implementation\ReadCommonHead;
 use brnc\Symfony1\Message\Obligation\sfWebRequestSubsetInterface;
 
 /**

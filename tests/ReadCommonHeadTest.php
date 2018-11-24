@@ -2,7 +2,7 @@
 
 namespace brnc\Tests\Symfony1\Message;
 
-use brnc\Symfony1\Message\ReadCommonHead;
+use brnc\Symfony1\Message\Implementation\ReadCommonHead;
 use PHPUnit\Framework\TestCase;
 
 class ReadCommonHeadTest extends TestCase

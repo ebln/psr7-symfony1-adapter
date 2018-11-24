@@ -1,6 +1,6 @@
 <?php
 
-namespace brnc\Symfony1\Message;
+namespace brnc\Symfony1\Message\Implementation;
 
 use brnc\Contract\Http\Message\ReadMinimalRequestHeadInterface;
 
