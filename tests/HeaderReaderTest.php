@@ -2,14 +2,14 @@
 
 namespace brnc\Tests\Symfony1\Message;
 
-use brnc\Symfony1\Message\HeaderReader;
+use brnc\Symfony1\Message\ReadCommonHead;
 use PHPUnit\Framework\TestCase;
 
 class HeaderReaderTest extends TestCase
 {
     public function test__construct()
     {
-        $this->assertInstanceOf(HeaderReader::class, new HeaderReader('1.1', [
+        $this->assertInstanceOf(ReadCommonHead::class, new ReadCommonHead('1.1', [
             'x-test' => [
                 'X-Test' => [
                     'foo',
@@ -30,7 +30,7 @@ class HeaderReaderTest extends TestCase
      */
     public function testHasHeader(array $headers, $testHeaderName, $expectHas, $expectGetHeader, $expectGetHeaderLine)
     {
-        $headerReader = new HeaderReader('0.9', $headers);
+        $headerReader = new ReadCommonHead('0.9', $headers);
         $this->assertSame($expectHas, $headerReader->hasHeader($testHeaderName));
     }
 
@@ -45,7 +45,7 @@ class HeaderReaderTest extends TestCase
      */
     public function testGetHeader(array $headers, $testHeaderName, $expectHas, $expectGetHeader, $expectGetHeaderLine)
     {
-        $headerReader = new HeaderReader('1.0', $headers);
+        $headerReader = new ReadCommonHead('1.0', $headers);
         $this->assertSame($expectGetHeader, $headerReader->getHeader($testHeaderName));
     }
 
@@ -60,7 +60,7 @@ class HeaderReaderTest extends TestCase
      */
     public function testGetHeaderLine(array $headers, $testHeaderName, $expectHas, $expectGetHeader, $expectGetHeaderLine)
     {
-        $headerReader = new HeaderReader('1.1', $headers);
+        $headerReader = new ReadCommonHead('1.1', $headers);
         $this->assertSame($expectGetHeaderLine, $headerReader->getHeaderLine($testHeaderName));
     }
 
@@ -133,7 +133,7 @@ class HeaderReaderTest extends TestCase
 
     public function testGetProtocolVersion()
     {
-        $headerReader = new HeaderReader('any string will work - no validation', []);
+        $headerReader = new ReadCommonHead('any string will work - no validation', []);
         $this->assertSame('any string will work - no validation', $headerReader->getProtocolVersion());
     }
 
@@ -145,7 +145,7 @@ class HeaderReaderTest extends TestCase
      */
     public function testGetHeaders($constructorHeaders, $expectedHeaders)
     {
-        $headerReader = new HeaderReader('1.1', $constructorHeaders);
+        $headerReader = new ReadCommonHead('1.1', $constructorHeaders);
         $this->assertSame($expectedHeaders, $headerReader->getHeaders());
     }
 

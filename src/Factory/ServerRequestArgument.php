@@ -2,7 +2,7 @@
 
 namespace brnc\Symfony1\Message\Factory;
 
-use brnc\Symfony1\Message\HeaderReader;
+use brnc\Symfony1\Message\ReadCommonHead;
 use brnc\Symfony1\Message\Obligation\sfWebRequestSubsetInterface;
 
 /**
@@ -147,8 +147,8 @@ class ServerRequestArgument
                 $headerName = str_replace('_', '-', strtolower(substr($key, 5)));
 
                 $headers[strtolower($headerName)] = [
-                    HeaderReader::HEADER_NAME    => $headerName,
-                    HeaderReader::HEADER_CONTENT => array_map(function($v) {
+                    ReadCommonHead::HEADER_NAME    => $headerName,
+                    ReadCommonHead::HEADER_CONTENT => array_map(function($v) {
                         return trim($v, " \t");
                     }, explode(',', $value)),
                 ];

@@ -7,7 +7,7 @@ use brnc\Contract\Http\Message\MinimalRequestHeaderReadInterface;
 /**
  * subset of psr/http-message-implementation
  */
-class RequestHeaderReader extends HeaderReader implements MinimalRequestHeaderReadInterface
+class RequestHeaderReader extends ReadCommonHead implements MinimalRequestHeaderReadInterface
 {
     /** @var string */
     protected $method;

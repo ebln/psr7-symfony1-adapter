@@ -2,7 +2,7 @@
 
 namespace brnc\Symfony1\Message\Factory;
 
-use brnc\Symfony1\Message\HeaderReader;
+use brnc\Symfony1\Message\ReadCommonHead;
 use brnc\Symfony1\Message\Obligation\sfWebRequestSubsetInterface;
 use brnc\Symfony1\Message\RequestHeaderReader;
 
@@ -11,14 +11,14 @@ class RequestAdapter
     /**
      * @param sfWebRequestSubsetInterface $request
      *
-     * @return HeaderReader
+     * @return ReadCommonHead
      */
     public static function createHeaderReader(sfWebRequestSubsetInterface $request)
     {
         // call the proto-factory
         $arguments = ServerRequestArgument::createFromWebRequest($request);
 
-        return new HeaderReader($arguments->getProtocolVersion(), $arguments->getHeaders());
+        return new ReadCommonHead($arguments->getProtocolVersion(), $arguments->getHeaders());
     }
 
     /**

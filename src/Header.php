@@ -8,7 +8,7 @@ use brnc\Contract\Http\Message\HeaderInterface;
 /**
  * subset of psr/http-message-implementation
  */
-class Header extends HeaderReader implements HeaderInterface
+class Header extends ReadCommonHead implements HeaderInterface
 {
     /** @var string[] */
     protected $headersRemoved = [];
