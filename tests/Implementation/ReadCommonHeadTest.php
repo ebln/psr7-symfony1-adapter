@@ -1,6 +1,6 @@
 <?php
 
-namespace brnc\Tests\Symfony1\Message;
+namespace brnc\Tests\Symfony1\Message\Implementation;
 
 use brnc\Symfony1\Message\Implementation\ReadCommonHead;
 use PHPUnit\Framework\TestCase;
