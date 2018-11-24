@@ -15,7 +15,7 @@
     },
     "require": {
         "php": "^5.5 || ^7.0",
-        "brnc/http-message-subset": "^0.0.1"
+        "brnc/http-message-subset": "^0.0.2"
     },
     "archive": {
         "exclude": ["vendor/*", "tests/", ".*", "phpunit.xml.dist"]

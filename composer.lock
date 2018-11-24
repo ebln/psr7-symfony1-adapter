@@ -1,33 +1,27 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "52abf20ccecbe02c7f4715629994f7cd",
+    "content-hash": "c5f5bbf8211d4fc708a5161583f64804",
     "packages": [
         {
             "name": "brnc/http-message-subset",
-            "version": "0.0.1",
+            "version": "v0.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ebln/http-message-subset.git",
-                "reference": "1b1097326e416e17186e2e8e19b2775d557a69fc"
+                "reference": "914d76b1e1f1d4984bad88297fe3ec162499fee0"
             },
             "dist": {
-                "type": "path",
-                "url": "https://api.github.com/repos/ebln/http-message-subset/zipball/1b1097326e416e17186e2e8e19b2775d557a69fc",
-                "reference": "1b1097326e416e17186e2e8e19b2775d557a69fc",
-                "shasum": null
-            },
-            "archive": {
-                "exclude": [
-                    "vendor/*",
-                    ".*"
-                ]
+                "type": "zip",
+                "url": "https://api.github.com/repos/ebln/http-message-subset/zipball/914d76b1e1f1d4984bad88297fe3ec162499fee0",
+                "reference": "914d76b1e1f1d4984bad88297fe3ec162499fee0",
+                "shasum": ""
             },
             "require": {
-                "php": "^5.6 || ^7.0"
+                "php": "^5.5 || ^7.0"
             },
             "type": "library",
             "autoload": {
@@ -35,6 +29,7 @@
                     "brnc\\Contract\\Http\\Message\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -51,9 +46,7 @@
                 "message",
                 "psr-7"
             ],
-            "transport-options": {
-                "symlink": false
-            }
+            "time": "2018-11-24T14:13:38+00:00"
         }
     ],
     "packages-dev": [

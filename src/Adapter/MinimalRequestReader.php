@@ -2,7 +2,7 @@
 
 namespace brnc\Symfony1\Message\Adapter;
 
-use brnc\Contract\Http\Message\HeaderReadInterface;
+use brnc\Contract\Http\Message\MinimalRequestHeaderReadInterface;
 use brnc\Symfony1\Message\Factory\RequestAdapter;
 use brnc\Symfony1\Message\Obligation\sfWebRequestSubsetInterface;
 use brnc\Symfony1\Message\RequestHeaderReader;
@@ -10,7 +10,7 @@ use brnc\Symfony1\Message\RequestHeaderReader;
 /**
  * Limited subject read-only Adapter/Proxy for sfWebRequest objects
  */
-class MinimalRequestReader implements HeaderReadInterface
+class MinimalRequestReader implements MinimalRequestHeaderReadInterface
 {
     /** @var sfWebRequestSubsetInterface */
     protected $request;
