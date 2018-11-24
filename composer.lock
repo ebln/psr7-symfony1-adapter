@@ -4,14 +4,19 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "3b8b0e94f37623747e743f56226cc226",
+    "content-hash": "52abf20ccecbe02c7f4715629994f7cd",
     "packages": [
         {
             "name": "brnc/http-message-subset",
             "version": "0.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ebln/http-message-subset.git",
+                "reference": "1b1097326e416e17186e2e8e19b2775d557a69fc"
+            },
             "dist": {
                 "type": "path",
-                "url": "../http-message-subset",
+                "url": "https://api.github.com/repos/ebln/http-message-subset/zipball/1b1097326e416e17186e2e8e19b2775d557a69fc",
                 "reference": "1b1097326e416e17186e2e8e19b2775d557a69fc",
                 "shasum": null
             },
