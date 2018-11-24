@@ -7,12 +7,6 @@ use brnc\Symfony1\Message\Factory\RequestAdapter;
 use brnc\Symfony1\Message\Obligation\sfWebRequestSubsetInterface;
 use brnc\Symfony1\Message\RequestHeaderReader;
 
-/*
- * TODO
- *  remove typehinting for sfWebRequestSubsetInterface everywhere but tests
- *
- */
-
 /**
  * Limited subject read-only Adapter/Proxy for sfWebRequest objects
  */
