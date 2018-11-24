@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c5f5bbf8211d4fc708a5161583f64804",
+    "content-hash": "e1c62453f13babd971f3653602ee528b",
     "packages": [
         {
             "name": "brnc/http-message-subset",
-            "version": "v0.0.2",
+            "version": "v0.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ebln/http-message-subset.git",
-                "reference": "914d76b1e1f1d4984bad88297fe3ec162499fee0"
+                "reference": "230fd200fa2726fdadd61d10e96cda247fc10457"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ebln/http-message-subset/zipball/914d76b1e1f1d4984bad88297fe3ec162499fee0",
-                "reference": "914d76b1e1f1d4984bad88297fe3ec162499fee0",
+                "url": "https://api.github.com/repos/ebln/http-message-subset/zipball/230fd200fa2726fdadd61d10e96cda247fc10457",
+                "reference": "230fd200fa2726fdadd61d10e96cda247fc10457",
                 "shasum": ""
             },
             "require": {
@@ -46,7 +46,7 @@
                 "message",
                 "psr-7"
             ],
-            "time": "2018-11-24T14:13:38+00:00"
+            "time": "2018-11-24T16:09:56+00:00"
         }
     ],
     "packages-dev": [
