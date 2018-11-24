@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnusedParameterInspection */
 
 namespace brnc\Tests\Symfony1\Message\Implementation;
 
