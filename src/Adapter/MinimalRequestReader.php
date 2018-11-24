@@ -66,9 +66,6 @@ class MinimalRequestReader implements HeaderReadInterface
     public function getHeader($name)
     {
         if (null === $this->headerReader) {
-            // return array_map(function($v) {
-            //     return trim($v, " \t");
-            // }, explode(',', $this->getHeaderLine($name)));
             $this->loadMessageHeaderReader();
         }
 
