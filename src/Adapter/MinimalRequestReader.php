@@ -83,6 +83,18 @@ class MinimalRequestReader implements HeaderReadInterface
     }
 
     /**
+     * @return string
+     */
+    public function getMethod()
+    {
+        if (null === $this->headerReader) {
+            $this->loadMessageHeaderReader();
+        }
+
+        return $this->headerReader->getMethod();
+    }
+
+    /**
      * parses all necessary data from the Symfony request into HeaderReader and resets the initial request
      */
     protected function loadMessageHeaderReader()
