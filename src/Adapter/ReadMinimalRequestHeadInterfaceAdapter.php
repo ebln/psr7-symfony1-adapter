@@ -10,7 +10,7 @@ use brnc\Symfony1\Message\ReadMinimalRequestHead;
 /**
  * Limited subject read-only Adapter/Proxy for sfWebRequest objects
  */
-class MinimalRequestReader implements MinimalRequestHeaderReadInterface
+class ReadMinimalRequestHeadInterfaceAdapter implements MinimalRequestHeaderReadInterface
 {
     /** @var sfWebRequestSubsetInterface */
     protected $request;
