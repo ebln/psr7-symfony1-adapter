@@ -3,8 +3,8 @@
 namespace brnc\Tests\Symfony1\Message\Implementation;
 
 use brnc\Symfony1\Message\Obligation\NoSfWebRequestException;
-use brnc\Symfony1\Message\Obligation\sfWebRequestSubsetInterface;
-use brnc\Symfony1\Message\Obligation\sfWebRequestSubsetProxy;
+use brnc\Symfony1\Message\Obligation\SfWebRequestSubsetInterface;
+use brnc\Symfony1\Message\Obligation\SfWebRequestSubsetProxy;
 use brnc\Tests\Symfony1\Message\Obligation\MockSfWebRequestSubsetTrait;
 use PHPUnit\Framework\TestCase;
 
@@ -12,15 +12,15 @@ use PHPUnit\Framework\TestCase;
  * test if pure mock and the proxy-wrapped mock return the same expectations
  * only testing the basic methods for now
  */
-class sfWebRequestSubsetProxyTest extends TestCase
+class SfWebRequestSubsetProxyTest extends TestCase
 {
     use MockSfWebRequestSubsetTrait;
 
     public function test__construct()
     {
-        $possibleRequest = $this->prophesize(sfWebRequestSubsetInterface::class)->reveal();
+        $possibleRequest = $this->prophesize(SfWebRequestSubsetInterface::class)->reveal();
         /** @noinspection PhpParamsInspection */
-        $this->assertInstanceOf(sfWebRequestSubsetProxy::class, sfWebRequestSubsetProxy::create($possibleRequest));
+        $this->assertInstanceOf(SfWebRequestSubsetProxy::class, SfWebRequestSubsetProxy::create($possibleRequest));
     }
 
     /**
@@ -63,7 +63,7 @@ class sfWebRequestSubsetProxyTest extends TestCase
     public function testgetMethod(array $mockParameter, array $expectations)
     {
         $mockR = $this->createSfWebRequestSubsetMock(...$mockParameter);
-        $proxy = sfWebRequestSubsetProxy::create($mockR);
+        $proxy = SfWebRequestSubsetProxy::create($mockR);
         $this->assertSame($expectations['method'], $proxy->getMethod(), 'Proxy');
         $this->assertSame($expectations['method'], $mockR->getMethod(), 'Request');
     }
@@ -77,7 +77,7 @@ class sfWebRequestSubsetProxyTest extends TestCase
     public function testGetPathInfoArray(array $mockParameter, array $expectations)
     {
         $mockR = $this->createSfWebRequestSubsetMock(...$mockParameter);
-        $proxy = sfWebRequestSubsetProxy::create($mockR);
+        $proxy = SfWebRequestSubsetProxy::create($mockR);
         $this->assertSame($expectations['PathInfoArray'], $proxy->getPathInfoArray(), 'Proxy');
         $this->assertSame($expectations['PathInfoArray'], $mockR->getPathInfoArray(), 'Request');
     }
@@ -91,7 +91,7 @@ class sfWebRequestSubsetProxyTest extends TestCase
     public function testGetHttpHeader(array $mockParameter, array $expectations)
     {
         $mockR = $this->createSfWebRequestSubsetMock(...$mockParameter);
-        $proxy = sfWebRequestSubsetProxy::create($mockR);
+        $proxy = SfWebRequestSubsetProxy::create($mockR);
         $this->assertSame($expectations['header 1']['expect'], $proxy->getHttpHeader($expectations['header 1']['name']), 'Proxy');
         $this->assertSame($expectations['header 2']['expect'], $proxy->getHttpHeader($expectations['header 2']['name']), 'Proxy');
         $this->assertSame($expectations['header 1']['expect'], $mockR->getHttpHeader($expectations['header 1']['name']), 'Request');
@@ -108,7 +108,7 @@ class sfWebRequestSubsetProxyTest extends TestCase
     {
         $this->expectException(NoSfWebRequestException::class);
         $this->expectExceptionMessage($expectedMessage);
-        $this->assertInstanceOf(sfWebRequestSubsetProxy::class, sfWebRequestSubsetProxy::create($argument));
+        $this->assertInstanceOf(SfWebRequestSubsetProxy::class, SfWebRequestSubsetProxy::create($argument));
     }
 
     /**

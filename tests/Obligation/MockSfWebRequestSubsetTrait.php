@@ -2,8 +2,8 @@
 
 namespace brnc\Tests\Symfony1\Message\Obligation;
 
-use brnc\Symfony1\Message\Obligation\sfParameterHolderSubsetInterface;
-use brnc\Symfony1\Message\Obligation\sfWebRequestSubsetInterface;
+use brnc\Symfony1\Message\Obligation\SfParameterHolderSubsetInterface;
+use brnc\Symfony1\Message\Obligation\SfWebRequestSubsetInterface;
 use Prophecy;
 
 /**
@@ -16,11 +16,11 @@ trait MockSfWebRequestSubsetTrait
      * @param mixed $version
      * @param array $headers
      *
-     * @return sfWebRequestSubsetInterface|Prophecy\Doubler\DoubleInterface
+     * @return SfWebRequestSubsetInterface|Prophecy\Doubler\DoubleInterface
      */
     protected function createSfWebRequestSubsetMock($method, $version, array $headers)
     {
-        $requestProphecy = $this->prophesize(sfWebRequestSubsetInterface::class);
+        $requestProphecy = $this->prophesize(SfWebRequestSubsetInterface::class);
 
         // mock getHttpHeader
         $lowerCaseHeaders = array_combine(array_map('strtolower', array_keys($headers)), array_values($headers));
@@ -52,10 +52,10 @@ trait MockSfWebRequestSubsetTrait
         $requestProphecy->getGetParameters()->willReturn([]);
         $requestProphecy->getPostParameters()->willReturn([]);
         // mock now-unused other methods returning sfParameterHolder
-        $attributeHolderMock = $this->prophesize(sfParameterHolderSubsetInterface::class);
+        $attributeHolderMock = $this->prophesize(SfParameterHolderSubsetInterface::class);
         $attributeHolderMock->getAll()->willReturn([]);
         $requestProphecy->getAttributeHolder()->willReturn($attributeHolderMock->reveal());
-        $parameterHolderMock = $this->prophesize(sfParameterHolderSubsetInterface::class);
+        $parameterHolderMock = $this->prophesize(SfParameterHolderSubsetInterface::class);
         $parameterHolderMock->getAll()->willReturn([]);
         $requestProphecy->getParameterHolder()->willReturn($parameterHolderMock->reveal());
 

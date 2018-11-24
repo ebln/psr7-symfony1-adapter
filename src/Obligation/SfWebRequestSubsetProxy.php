@@ -6,21 +6,21 @@ namespace brnc\Symfony1\Message\Obligation;
  * Transparent proxy to wrap \sfWebRequest just once in order to
  * completely rely on the sfWebRequestSubsetInterface afterwards esp. by means of type hinting
  */
-class sfWebRequestSubsetProxy implements sfWebRequestSubsetInterface
+class SfWebRequestSubsetProxy implements SfWebRequestSubsetInterface
 {
-    /** @var sfWebRequestSubsetInterface|\sfWebRequest */
+    /** @var SfWebRequestSubsetInterface|\sfWebRequest */
     private $request;
 
     /**
-     * @param sfWebRequestSubsetInterface|\sfWebRequest $request
+     * @param SfWebRequestSubsetInterface|\sfWebRequest $request
      *
-     * @return sfWebRequestSubsetInterface
+     * @return SfWebRequestSubsetInterface
      * @throws NoSfWebRequestException
      */
     public static function create($request)
     {
         if ((class_exists('\sfWebRequest') && $request instanceof \sfWebRequest)
-            || ($request instanceof sfWebRequestSubsetInterface)) {
+            || ($request instanceof SfWebRequestSubsetInterface)) {
             return new static($request);
         }
 
@@ -31,7 +31,7 @@ class sfWebRequestSubsetProxy implements sfWebRequestSubsetInterface
     }
 
     /**
-     * @param sfWebRequestSubsetInterface|\sfWebRequest $request
+     * @param SfWebRequestSubsetInterface|\sfWebRequest $request
      */
     private function __construct($request)
     {

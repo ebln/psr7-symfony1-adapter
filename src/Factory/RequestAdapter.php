@@ -3,17 +3,17 @@
 namespace brnc\Symfony1\Message\Factory;
 
 use brnc\Symfony1\Message\Implementation\ReadCommonHead;
-use brnc\Symfony1\Message\Obligation\sfWebRequestSubsetInterface;
+use brnc\Symfony1\Message\Obligation\SfWebRequestSubsetInterface;
 use brnc\Symfony1\Message\Implementation\ReadMinimalRequestHead;
 
 class RequestAdapter
 {
     /**
-     * @param sfWebRequestSubsetInterface $request
+     * @param SfWebRequestSubsetInterface $request
      *
      * @return ReadCommonHead
      */
-    public static function createHeaderReader(sfWebRequestSubsetInterface $request)
+    public static function createHeaderReader(SfWebRequestSubsetInterface $request)
     {
         // call the proto-factory
         $arguments = ServerRequestArgument::createFromWebRequest($request);
@@ -22,11 +22,11 @@ class RequestAdapter
     }
 
     /**
-     * @param sfWebRequestSubsetInterface $request
+     * @param SfWebRequestSubsetInterface $request
      *
      * @return ReadMinimalRequestHead
      */
-    public static function createRequestHeaderReader(sfWebRequestSubsetInterface $request)
+    public static function createRequestHeaderReader(SfWebRequestSubsetInterface $request)
     {
         // call the proto-factory
         $arguments = ServerRequestArgument::createFromWebRequest($request);

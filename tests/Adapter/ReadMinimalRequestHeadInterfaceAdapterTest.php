@@ -3,7 +3,7 @@
 namespace brnc\Tests\Symfony1\Message\Adapter;
 
 use brnc\Symfony1\Message\Adapter\ReadMinimalRequestHeadAdapter;
-use brnc\Symfony1\Message\Obligation\sfWebRequestSubsetProxy;
+use brnc\Symfony1\Message\Obligation\SfWebRequestSubsetProxy;
 use brnc\Tests\Symfony1\Message\Obligation\MockSfWebRequestSubsetTrait;
 use PHPUnit\Framework\TestCase;
 
@@ -100,7 +100,7 @@ class ReadMinimalRequestHeadInterfaceAdapterTest extends TestCase
     public function testSfWebRequestSubsetProxyGetHeaders(array $request, $headerName, $hasHeader, $getHeader, $getHeaderLine, $expectedHeaders)
     {
         $sfWebRequest         = $this->createSfWebRequestSubsetMock($request['method'], $request['version'], $request['headers']);
-        $proxy                = sfWebRequestSubsetProxy::create($sfWebRequest);
+        $proxy                = SfWebRequestSubsetProxy::create($sfWebRequest);
         $minimalRequestReader = new ReadMinimalRequestHeadAdapter($proxy);
         $this->assertSame($expectedHeaders, $minimalRequestReader->getHeaders($headerName));
     }

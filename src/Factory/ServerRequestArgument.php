@@ -3,7 +3,7 @@
 namespace brnc\Symfony1\Message\Factory;
 
 use brnc\Symfony1\Message\Implementation\ReadCommonHead;
-use brnc\Symfony1\Message\Obligation\sfWebRequestSubsetInterface;
+use brnc\Symfony1\Message\Obligation\SfWebRequestSubsetInterface;
 
 /**
  * common DTO for constructing different ServerRequest subset implementation
@@ -132,12 +132,12 @@ class ServerRequestArgument
     }
 
     /**
-     * @param sfWebRequestSubsetInterface $sfWebRequest
+     * @param SfWebRequestSubsetInterface $sfWebRequest
      * @param bool[]                      $options map of ATTRIBUTE_* and POPULATE_* constants to true or false
      *
      * @return ServerRequestArgument
      */
-    public static function createFromWebRequest(sfWebRequestSubsetInterface $sfWebRequest, array $options = [])
+    public static function createFromWebRequest(SfWebRequestSubsetInterface $sfWebRequest, array $options = [])
     {
         $pathInfoArray = $sfWebRequest->getPathInfoArray();
         // gather headers to fit structure of HeaderReader

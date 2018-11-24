@@ -5,7 +5,7 @@ namespace brnc\Symfony1\Message\Obligation;
 /**
  * subset of sfWebRequest
  */
-interface sfWebRequestSubsetInterface
+interface SfWebRequestSubsetInterface
 {
     /**  @return  string */
     public function getMethod();
@@ -28,10 +28,10 @@ interface sfWebRequestSubsetInterface
     /**  @return  array */
     public function getRequestParameters();
 
-    /**  @return  sfParameterHolderSubsetInterface */
+    /**  @return  SfParameterHolderSubsetInterface */
     public function getAttributeHolder();
 
-    /**  @return  sfParameterHolderSubsetInterface */
+    /**  @return  SfParameterHolderSubsetInterface */
     public function getParameterHolder();
 
     /**  @return  array */

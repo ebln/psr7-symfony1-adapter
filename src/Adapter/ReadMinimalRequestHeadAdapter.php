@@ -4,7 +4,7 @@ namespace brnc\Symfony1\Message\Adapter;
 
 use brnc\Contract\Http\Message\ReadMinimalRequestHeadInterface;
 use brnc\Symfony1\Message\Factory\RequestAdapter;
-use brnc\Symfony1\Message\Obligation\sfWebRequestSubsetInterface;
+use brnc\Symfony1\Message\Obligation\SfWebRequestSubsetInterface;
 use brnc\Symfony1\Message\Implementation\ReadMinimalRequestHead;
 
 /**
@@ -12,16 +12,16 @@ use brnc\Symfony1\Message\Implementation\ReadMinimalRequestHead;
  */
 class ReadMinimalRequestHeadAdapter implements ReadMinimalRequestHeadInterface
 {
-    /** @var sfWebRequestSubsetInterface */
+    /** @var SfWebRequestSubsetInterface */
     protected $request;
 
     /** @var ReadMinimalRequestHead */
     protected $headerReader;
 
     /**
-     * @param sfWebRequestSubsetInterface $request
+     * @param SfWebRequestSubsetInterface $request
      */
-    public function __construct(sfWebRequestSubsetInterface $request)
+    public function __construct(SfWebRequestSubsetInterface $request)
     {
         $this->request = $request;
     }
