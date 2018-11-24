@@ -20,7 +20,7 @@ class ReadMinimalRequestHeadInterfaceAdapterTest extends TestCase
      * @param string $getHeaderLine
      * @param array  $expectedHeaders
      *
-     * @dataProvider provideMinimalRequestReaderData
+     * @dataProvider provideHeaderTestData
      */
     public function testHasHeader(array $request, $headerName, $hasHeader, $getHeader, $getHeaderLine, $expectedHeaders)
     {
@@ -39,7 +39,7 @@ class ReadMinimalRequestHeadInterfaceAdapterTest extends TestCase
      * @param string $getHeaderLine
      * @param array  $expectedHeaders
      *
-     * @dataProvider provideMinimalRequestReaderData
+     * @dataProvider provideHeaderTestData
      */
     public function testGetHeader(array $request, $headerName, $hasHeader, $getHeader, $getHeaderLine, $expectedHeaders)
     {
@@ -58,7 +58,7 @@ class ReadMinimalRequestHeadInterfaceAdapterTest extends TestCase
      * @param string $getHeaderLine
      * @param array  $expectedHeaders
      *
-     * @dataProvider provideMinimalRequestReaderData
+     * @dataProvider provideHeaderTestData
      */
     public function testGetHeaderLine(array $request, $headerName, $hasHeader, $getHeader, $getHeaderLine, $expectedHeaders)
     {
@@ -77,7 +77,7 @@ class ReadMinimalRequestHeadInterfaceAdapterTest extends TestCase
      * @param string $getHeaderLine
      * @param array  $expectedHeaders
      *
-     * @dataProvider provideMinimalRequestReaderData
+     * @dataProvider provideHeaderTestData
      */
     public function testGetHeaders(array $request, $headerName, $hasHeader, $getHeader, $getHeaderLine, $expectedHeaders)
     {
@@ -89,12 +89,12 @@ class ReadMinimalRequestHeadInterfaceAdapterTest extends TestCase
     /**
      * @return array
      */
-    public function provideMinimalRequestReaderData()
+    public function provideHeaderTestData()
     {
         return [
             'happy case' => [
                 'request'              => [
-                    'method'  => 'gEt',
+                    'method'  => '',
                     'version' => '1.0',
                     'headers' => [
                         'X-Test' => 'foo, bar',
@@ -107,6 +107,68 @@ class ReadMinimalRequestHeadInterfaceAdapterTest extends TestCase
                 'expect headers'       => [
                     'x-test' => ['foo', 'bar'],
                 ],
+            ],
+        ];
+    }
+
+    /**
+     * @param array $request
+     * @param mixed $expectedVersion
+     *
+     * @dataProvider provideProtocolVersionData
+     */
+    public function testGetProtocolVersion(array $request, $expectedVersion)
+    {
+        $sfWebRequest         = $this->createSfWebRequestReadOnlyMock($request['method'], $request['version'], $request['headers']);
+        $minimalRequestReader = new ReadMinimalRequestHeadAdapter($sfWebRequest);
+        $this->assertSame($expectedVersion, $minimalRequestReader->getProtocolVersion());
+    }
+
+    /**
+     * @return array
+     */
+    public function provideProtocolVersionData()
+    {
+        return [
+            'happy case' => [
+                'request'          => [
+                    'version' => '1.0',
+                    'method'  => '',
+                    'headers' => [],
+                ],
+                'expected version' => '1.0',
+            ],
+            'empty string → due to symfony\'s own fallback to \'\'' => [
+                'request'          => [
+                    'version' => '',
+                    'method'  => '',
+                    'headers' => [],
+                ],
+                'expected version' => '',
+            ],
+            'null → due to symfony\'s own fallback to \'\'' => [
+                'request'          => [
+                    'version' => null,
+                    'method'  => '',
+                    'headers' => [],
+                ],
+                'expected version' => '',
+            ],
+            'Not number dot number I → empty string: due to symfony\'s own check to \d\.\d' => [
+                'request'          => [
+                    'version' => 'foo bar baz',
+                    'method'  => 'x.9',
+                    'headers' => [],
+                ],
+                'expected version' => '',
+            ],
+            'Not number dot number II → empty string: due to symfony\'s own check to \d\.\d' => [
+                'request'          => [
+                    'version' => 'foo bar baz',
+                    'method'  => '5.y',
+                    'headers' => [],
+                ],
+                'expected version' => '',
             ],
         ];
     }

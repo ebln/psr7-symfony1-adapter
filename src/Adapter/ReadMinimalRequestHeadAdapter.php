@@ -2,7 +2,7 @@
 
 namespace brnc\Symfony1\Message\Adapter;
 
-use brnc\Contract\Http\Message\MinimalRequestHeaderReadInterface;
+use brnc\Contract\Http\Message\ReadMinimalRequestHeadInterface;
 use brnc\Symfony1\Message\Factory\RequestAdapter;
 use brnc\Symfony1\Message\Obligation\sfWebRequestSubsetInterface;
 use brnc\Symfony1\Message\Implementation\ReadMinimalRequestHead;
@@ -10,7 +10,7 @@ use brnc\Symfony1\Message\Implementation\ReadMinimalRequestHead;
 /**
  * Limited subject read-only Adapter/Proxy for sfWebRequest objects
  */
-class ReadMinimalRequestHeadAdapter implements MinimalRequestHeaderReadInterface
+class ReadMinimalRequestHeadAdapter implements ReadMinimalRequestHeadInterface
 {
     /** @var sfWebRequestSubsetInterface */
     protected $request;
@@ -24,6 +24,16 @@ class ReadMinimalRequestHeadAdapter implements MinimalRequestHeaderReadInterface
     public function __construct(sfWebRequestSubsetInterface $request)
     {
         $this->request = $request;
+    }
+
+    /** @return string */
+    public function getProtocolVersion()
+    {
+        if (null === $this->headerReader) {
+            $this->loadMessageHeaderReader();
+        }
+
+        return $this->headerReader->getProtocolVersion();
     }
 
     /**
