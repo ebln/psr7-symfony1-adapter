@@ -3,16 +3,14 @@
 namespace brnc\Tests\Symfony1\Message\Adapter;
 
 use brnc\Symfony1\Message\Adapter\ReadMinimalRequestHeadAdapter;
-use brnc\Symfony1\Message\Obligation\sfParameterHolderSubsetInterface;
-use brnc\Symfony1\Message\Obligation\sfWebRequestSubsetInterface;
 use brnc\Symfony1\Message\Obligation\sfWebRequestSubsetProxy;
+use brnc\Tests\Symfony1\Message\Obligation\MockSfWebRequestSubsetTrait;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Prophecy\Doubler\DoubleInterface;
-use Prophecy\Prophecy\ObjectProphecy;
 
 class ReadMinimalRequestHeadInterfaceAdapterTest extends TestCase
 {
+    use MockSfWebRequestSubsetTrait;
+
     /**
      * @param array  $request
      * @param string $headerName
@@ -192,56 +190,5 @@ class ReadMinimalRequestHeadInterfaceAdapterTest extends TestCase
                 'expected version' => '',
             ],
         ];
-    }
-
-    /**
-     * @param       $method
-     * @param       $version
-     * @param array $headers
-     *
-     * @return sfWebRequestSubsetInterface|DoubleInterface
-     */
-    protected function createSfWebRequestSubsetMock($method, $version, array $headers)
-    {
-        /** @var sfWebRequestSubsetInterface|ObjectProphecy $request */
-        $request = $this->prophesize(sfWebRequestSubsetInterface::class);
-
-        // mock getHttpHeader
-        $lowerCaseHeaders = array_combine(array_map('strtolower', array_keys($headers)), array_values($headers));
-        $request->getHttpHeader(Argument::any())->willReturn(null);
-        $request->getHttpHeader(Argument::type('string'))->will(function($args) use ($lowerCaseHeaders) {
-            $normalizedName = strtolower($args[0]);
-            /** @var string[] $headers */
-            if (isset($lowerCaseHeaders[$normalizedName])) {
-                return $lowerCaseHeaders[$normalizedName];
-            }
-
-            return null;
-        });
-
-        // mock getPathInfoArray() and opaque version
-        $httpHeaders                    = array_combine(array_map(function($v) {
-            return 'HTTP_' . str_replace('-', '_', strtoupper($v));
-        }, array_keys($headers)), array_values($headers));
-        $httpHeaders['SERVER_PROTOCOL'] = 'HTTP/' . $version;
-        $request->getPathInfoArray()->willReturn($httpHeaders);
-
-        // mock method()
-        $request->getMethod()->willReturn($method);
-
-        // mock now-unused other methods returning arrays
-        $request->getOptions()->willReturn([]);
-        $request->getRequestParameters()->willReturn([]);
-        $request->getGetParameters()->willReturn([]);
-        $request->getPostParameters()->willReturn([]);
-        // mock now-unused other methods returning sfParameterHolder
-        $attributeHolderMock = $this->prophesize(sfParameterHolderSubsetInterface::class);
-        $attributeHolderMock->getAll()->willReturn([]);
-        $request->getAttributeHolder()->willReturn($attributeHolderMock->reveal());
-        $parameterHolderMock = $this->prophesize(sfParameterHolderSubsetInterface::class);
-        $parameterHolderMock->getAll()->willReturn([]);
-        $request->getParameterHolder()->willReturn($parameterHolderMock->reveal());
-
-        return $request->reveal();
     }
 }
