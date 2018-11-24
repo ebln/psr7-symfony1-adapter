@@ -15,7 +15,7 @@ class sfWebRequestSubsetProxy implements sfWebRequestSubsetInterface
      * @param sfWebRequestSubsetInterface|\sfWebRequest $request
      *
      * @return sfWebRequestSubsetInterface
-     * @throws \InvalidArgumentException
+     * @throws NoSfWebRequestException
      */
     public static function create($request)
     {
@@ -24,8 +24,10 @@ class sfWebRequestSubsetProxy implements sfWebRequestSubsetInterface
             return new static($request);
         }
 
-        // TODO Error class!
-        throw new \InvalidArgumentException('Expected Symfony 1 sfWebRequest class!');
+        $errorMessage = NoSfWebRequestException::DEFAULT_MSG . ' '
+                        . (is_object($request)? get_class($request) : gettype($request)) . ' provided.';
+
+        throw new NoSfWebRequestException($errorMessage);
     }
 
     /**
