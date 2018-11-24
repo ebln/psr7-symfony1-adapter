@@ -1,0 +1,41 @@
+{
+    "name": "brnc/simple-message-adaper",
+    "version": "0.0.1",
+    "description": "TODO",
+    "keywords": ["symfony1", "http-message", "http", "message", "psr-7"],
+    "authors": [
+        {
+            "name": "ebln",
+            "email": "34722048+ebln@users.noreply.github.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "brnc\\Symfony1\\Message\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^5.5 || ^7.0",
+        "brnc/http-message-subset": "*"
+    },
+"archive": {
+        "exclude": ["vendor/*", ".*"]
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../http-message-subset",
+            "options": {
+                "symlink": false
+            }
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^5.7"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "brnc\\Tests\\Symfony1\\Message\\": "tests/"
+        }
+    }
+}
