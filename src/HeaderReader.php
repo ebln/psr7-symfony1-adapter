@@ -6,6 +6,8 @@ namespace brnc\Symfony1\Message;
 use brnc\Contract\Http\Message\HeaderReadInterface;
 
 /**
+ * TODO getProtocolVersion is not covered by any interface!
+ *
  * subset of psr/http-message-implementation
  */
 class HeaderReader implements HeaderReadInterface
