@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e1c62453f13babd971f3653602ee528b",
+    "content-hash": "aec40d65d3b87203306ab6bcb124e88e",
     "packages": [
         {
             "name": "brnc/http-message-subset",
@@ -1444,7 +1444,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^5.5 || ^7.0"
+        "php": "^5.6 || ^7.0"
     },
     "platform-dev": []
 }
