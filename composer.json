@@ -1,7 +1,8 @@
 {
-    "name": "brnc/simple-message-adaper",
+    "name": "brnc/psr7-symfony1-adapter",
     "description": "Partial PSR-7 Adapters for Symfony 1.5",
     "keywords": ["symfony1", "http-message", "http", "message", "psr-7"],
+    "license": "MIT",
     "authors": [
         {
             "name": "ebln",
@@ -14,8 +15,8 @@
         }
     },
     "require": {
-        "php": "^5.5 || ^7.0",
-        "brnc/http-message-subset": "^0.0.1"
+        "php": "^5.6 || ^7.0",
+        "brnc/http-message-subset": "^0.0.4"
     },
     "archive": {
         "exclude": ["vendor/*", "tests/", ".*", "phpunit.xml.dist"]

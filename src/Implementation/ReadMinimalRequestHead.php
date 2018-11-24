@@ -1,13 +1,13 @@
 <?php
 
-namespace brnc\Symfony1\Message;
+namespace brnc\Symfony1\Message\Implementation;
 
-use brnc\Contract\Http\Message\MethodReadInterface;
+use brnc\Contract\Http\Message\ReadMinimalRequestHeadInterface;
 
 /**
  * subset of psr/http-message-implementation
  */
-class RequestHeaderReader extends HeaderReader implements MethodReadInterface
+class ReadMinimalRequestHead extends ReadCommonHead implements ReadMinimalRequestHeadInterface
 {
     /** @var string */
     protected $method;

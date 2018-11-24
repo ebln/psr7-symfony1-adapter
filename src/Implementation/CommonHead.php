@@ -1,14 +1,14 @@
 <?php
 
-namespace brnc\Symfony1\Message;
+namespace brnc\Symfony1\Message\Implementation;
 
 
-use brnc\Contract\Http\Message\HeaderInterface;
+use brnc\Contract\Http\Message\CommonHeadInterface;
 
 /**
  * subset of psr/http-message-implementation
  */
-class Header extends HeaderReader implements HeaderInterface
+class CommonHead extends ReadCommonHead implements CommonHeadInterface
 {
     /** @var string[] */
     protected $headersRemoved = [];
@@ -19,7 +19,7 @@ class Header extends HeaderReader implements HeaderInterface
     /**
      * @param string $version
      *
-     * @return Header
+     * @return CommonHead
      */
     public function withProtocolVersion($version)
     {
@@ -33,7 +33,7 @@ class Header extends HeaderReader implements HeaderInterface
      * @param string          $name
      * @param string|string[] $value
      *
-     * @return Header
+     * @return CommonHead
      */
     public function withHeader($name, $value)
     {
@@ -54,7 +54,7 @@ class Header extends HeaderReader implements HeaderInterface
      * @param string          $name
      * @param string|string[] $value
      *
-     * @return Header
+     * @return CommonHead
      */
     public function withAddedHeader($name, $value)
     {
@@ -80,7 +80,7 @@ class Header extends HeaderReader implements HeaderInterface
     /**
      * @param string $name
      *
-     * @return Header
+     * @return CommonHead
      */
     public function withoutHeader($name)
     {

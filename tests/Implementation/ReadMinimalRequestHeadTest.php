@@ -1,15 +1,15 @@
-<?php
+<?php /** @noinspection PhpUnusedParameterInspection */
 
-namespace brnc\Tests\Symfony1\Message;
+namespace brnc\Tests\Symfony1\Message\Implementation;
 
-use brnc\Symfony1\Message\HeaderReader;
+use brnc\Symfony1\Message\Implementation\ReadMinimalRequestHead;
 use PHPUnit\Framework\TestCase;
 
-class HeaderReaderTest extends TestCase
+class ReadMinimalRequestHeadTest extends TestCase
 {
     public function test__construct()
     {
-        $this->assertInstanceOf(HeaderReader::class, new HeaderReader('1.1', [
+        $this->assertInstanceOf(ReadMinimalRequestHead::class, new ReadMinimalRequestHead('GET', '1.1', [
             'x-test' => [
                 'X-Test' => [
                     'foo',
@@ -30,7 +30,7 @@ class HeaderReaderTest extends TestCase
      */
     public function testHasHeader(array $headers, $testHeaderName, $expectHas, $expectGetHeader, $expectGetHeaderLine)
     {
-        $headerReader = new HeaderReader('0.9', $headers);
+        $headerReader = new ReadMinimalRequestHead('POST', '0.9', $headers);
         $this->assertSame($expectHas, $headerReader->hasHeader($testHeaderName));
     }
 
@@ -45,7 +45,7 @@ class HeaderReaderTest extends TestCase
      */
     public function testGetHeader(array $headers, $testHeaderName, $expectHas, $expectGetHeader, $expectGetHeaderLine)
     {
-        $headerReader = new HeaderReader('1.0', $headers);
+        $headerReader = new ReadMinimalRequestHead('PATCH', '1.0', $headers);
         $this->assertSame($expectGetHeader, $headerReader->getHeader($testHeaderName));
     }
 
@@ -60,10 +60,13 @@ class HeaderReaderTest extends TestCase
      */
     public function testGetHeaderLine(array $headers, $testHeaderName, $expectHas, $expectGetHeader, $expectGetHeaderLine)
     {
-        $headerReader = new HeaderReader('1.1', $headers);
+        $headerReader = new ReadMinimalRequestHead('HEAD', '1.1', $headers);
         $this->assertSame($expectGetHeaderLine, $headerReader->getHeaderLine($testHeaderName));
     }
 
+    /**
+     * @return array
+     */
     public function providedHeaderReaderData()
     {
         return [
@@ -133,8 +136,14 @@ class HeaderReaderTest extends TestCase
 
     public function testGetProtocolVersion()
     {
-        $headerReader = new HeaderReader('any string will work - no validation', []);
+        $headerReader = new ReadMinimalRequestHead('OPTIONS', 'any string will work - no validation', []);
         $this->assertSame('any string will work - no validation', $headerReader->getProtocolVersion());
+    }
+
+    public function testGetMethod()
+    {
+        $headerReader = new ReadMinimalRequestHead('any string will work - no validation', '0.9',[]);
+        $this->assertSame('any string will work - no validation', $headerReader->getMethod());
     }
 
     /**
@@ -145,10 +154,13 @@ class HeaderReaderTest extends TestCase
      */
     public function testGetHeaders($constructorHeaders, $expectedHeaders)
     {
-        $headerReader = new HeaderReader('1.1', $constructorHeaders);
+        $headerReader = new ReadMinimalRequestHead('DELETE', '1.1', $constructorHeaders);
         $this->assertSame($expectedHeaders, $headerReader->getHeaders());
     }
 
+    /**
+     * @return array
+     */
     public function provideGetHeaderData()
     {
         return [

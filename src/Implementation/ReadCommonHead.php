@@ -1,14 +1,16 @@
 <?php
 
-namespace brnc\Symfony1\Message;
+namespace brnc\Symfony1\Message\Implementation;
 
 
-use brnc\Contract\Http\Message\HeaderReadInterface;
+use brnc\Contract\Http\Message\ReadCommonHeadInterface;
 
 /**
  * subset of psr/http-message-implementation
+ *
+ * this is the least general class for the moment, as there is now separate implementation for ReadHeadersInterface
  */
-class HeaderReader implements HeaderReadInterface
+class ReadCommonHead implements ReadCommonHeadInterface
 {
     CONST HEADER_NAME    = 'name';
     CONST HEADER_CONTENT = 'values';
