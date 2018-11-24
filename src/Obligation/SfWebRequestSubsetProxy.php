@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUndefinedClassInspection */
 
 namespace brnc\Symfony1\Message\Obligation;
 
@@ -95,6 +95,6 @@ class SfWebRequestSubsetProxy implements SfWebRequestSubsetInterface
     /** @inheritdoc */
     public function getCookie($name, $defaultValue = null)
     {
-        return $this->request->getCookie($name, $defaultValue = null);
+        return $this->request->getCookie($name, $defaultValue);
     }
 }
