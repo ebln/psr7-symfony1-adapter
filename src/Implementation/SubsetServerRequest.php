@@ -3,6 +3,7 @@
 
 namespace brnc\Symfony1\Message\Implementation;
 
+use brnc\Symfony1\Message\Implementation\Hidden\Constant;
 
 class SubsetServerRequest extends SubsetRequest
 {
@@ -23,13 +24,13 @@ class SubsetServerRequest extends SubsetRequest
 
     /**
      * @param string $method
-     * @param string $version
-     * @param array  $headers
      * @param array  $serverParams
+     * @param array  $headers
+     * @param string $version
      */
-    public function __construct($method, $version, array $headers, array $serverParams)
+    public function __construct($method, array $serverParams, array $headers, $version = Constant::DEFAULT_HTTP_VERSION)
     {
-        parent::__construct($method, $version, $headers);
+        parent::__construct($method, $headers, $version);
         $this->serverParams = $serverParams;
     }
 

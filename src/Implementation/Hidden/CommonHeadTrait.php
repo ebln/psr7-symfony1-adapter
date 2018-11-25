@@ -17,10 +17,10 @@ trait CommonHeadTrait
     protected $headersReplaced = [];
 
     /**
-     * @param string       $version
      * @param string[][]|string[][][] $headers
+     * @param string                  $version
      */
-    public function __construct($version, array $headers)
+    public function __construct(array $headers, $version = Constant::DEFAULT_HTTP_VERSION)
     {
         $this->protocolVersion = $version;
         $this->headers         = $headers;
