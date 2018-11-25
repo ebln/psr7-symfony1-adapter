@@ -23,11 +23,18 @@
         "exclude": ["vendor/*", "tests/", ".*", "phpunit.xml.dist"]
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.7"
+        "phpunit/phpunit": "^5.7",
+        "roave/security-advisories": "dev-master"
     },
     "autoload-dev": {
         "psr-4": {
             "brnc\\Tests\\Symfony1\\Message\\": "tests/"
         }
+    },
+    "scripts": {
+        "phpunit": "phpunit --coverage-text",
+        "test": [
+            "@phpunit"
+        ]
     }
 }
