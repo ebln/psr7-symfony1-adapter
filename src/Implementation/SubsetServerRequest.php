@@ -3,10 +3,14 @@
 
 namespace brnc\Symfony1\Message\Implementation;
 
+use brnc\Contract\Http\Message\ReadMinimalRequestHeadInterface;
 use brnc\Symfony1\Message\Implementation\Hidden\Constant;
 
-class SubsetServerRequest extends SubsetRequest
+class SubsetServerRequest extends CommonHead implements ReadMinimalRequestHeadInterface
 {
+    /** @var string */
+    protected $method;
+
     /** @var array */
     protected $serverParams;
 
@@ -30,8 +34,28 @@ class SubsetServerRequest extends SubsetRequest
      */
     public function __construct($method, array $serverParams, array $headers, $version = Constant::DEFAULT_HTTP_VERSION)
     {
-        parent::__construct($method, $headers, $version);
+        parent::__construct($headers, $version);
+        $this->method       = $method;
         $this->serverParams = $serverParams;
+    }
+
+    /** @return string */
+    public function getMethod()
+    {
+        return $this->method;
+    }
+
+    /**
+     * @param $method
+     *
+     * @return static
+     */
+    public function withMethod($method)
+    {
+        $clone         = clone $this;
+        $clone->method = $method;
+
+        return $clone;
     }
 
     /**
