@@ -8,7 +8,7 @@ use brnc\Symfony1\Message\Implementation\Hidden\Constant;
 class SubsetServerRequest extends SubsetRequest
 {
     /** @var array */
-    protected $serverParams = [];
+    protected $serverParams;
 
     /** @var array */
     protected $cookieParams = [];
