@@ -18,7 +18,7 @@ trait CommonHeadTrait
 
     /**
      * @param string       $version
-     * @param string[][][] $headers
+     * @param string[][]|string[][][] $headers
      */
     public function __construct($version, array $headers)
     {
