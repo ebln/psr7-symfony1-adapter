@@ -6,6 +6,8 @@ use brnc\Contract\Http\Message\ReadMinimalRequestHeadInterface;
 
 /**
  * subset of psr/http-message-implementation
+ *
+ * @deprecated use SubsetRequest or SubsetServerRequest instead
  */
 class ReadMinimalRequestHead extends ReadCommonHead implements ReadMinimalRequestHeadInterface
 {

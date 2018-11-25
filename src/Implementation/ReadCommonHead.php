@@ -9,6 +9,8 @@ use brnc\Contract\Http\Message\ReadCommonHeadInterface;
  * subset of psr/http-message-implementation
  *
  * this is the least general class for the moment, as there is now separate implementation for ReadHeadersInterface
+ *
+ * @deprecated use CommonHead, SubsetRequest or SubsetServerRequest instead
  */
 class ReadCommonHead implements ReadCommonHeadInterface
 {
