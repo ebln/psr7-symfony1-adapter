@@ -28,5 +28,11 @@
         "psr-4": {
             "brnc\\Tests\\Symfony1\\Message\\": "tests/"
         }
+    },
+    "scripts": {
+        "phpunit": "phpunit --coverage-text",
+        "test": [
+            "@phpunit"
+        ]
     }
 }
