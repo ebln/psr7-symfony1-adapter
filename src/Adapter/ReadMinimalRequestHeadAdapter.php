@@ -109,7 +109,7 @@ class ReadMinimalRequestHeadAdapter implements ReadMinimalRequestHeadInterface
      */
     protected function loadMessageHeaderReader()
     {
-        $this->headerReader = RequestAdapter::createRequestHeaderReader($this->request);
+        $this->headerReader = RequestAdapter::createReadMinimalRequestHead($this->request);
         unset($this->request);
     }
 }
