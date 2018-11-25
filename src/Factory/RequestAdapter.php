@@ -18,7 +18,7 @@ class RequestAdapter
      *
      * @return ReadCommonHead
      */
-    public static function createHeaderReader(SfWebRequestSubsetInterface $request)
+    public static function createReadCommonHead(SfWebRequestSubsetInterface $request)
     {
         // call the proto-factory
         $arguments = ServerRequestArgument::createFromWebRequest($request);
@@ -31,7 +31,7 @@ class RequestAdapter
      *
      * @return ReadMinimalRequestHead
      */
-    public static function createRequestHeaderReader(SfWebRequestSubsetInterface $request)
+    public static function createReadMinimalRequestHead(SfWebRequestSubsetInterface $request)
     {
         // call the proto-factory
         $arguments = ServerRequestArgument::createFromWebRequest($request);
