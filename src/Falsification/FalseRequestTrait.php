@@ -30,17 +30,6 @@ trait FalseRequestTrait
     /**
      * @deprecated Never implemented!
      * @throws Psr7SubsetException
-     *
-     * @param string $method
-     */
-    public function withMethod($method)
-    {
-        throw new Psr7SubsetException();
-    }
-
-    /**
-     * @deprecated Never implemented!
-     * @throws Psr7SubsetException
      */
     public function getUri()
     {

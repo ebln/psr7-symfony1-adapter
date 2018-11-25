@@ -14,7 +14,19 @@ class FalseReadMinimalRequestHeadAdapter extends ReadMinimalRequestHeadAdapter i
     use Falsification\FalseRequestTrait;
     use Falsification\FalseCommonHeadTrait;
     use Falsification\FalseServerRequestParsedBody;
+    use Falsification\FalseServerRequestUploadTrait;
     use Falsification\FalseServerRequestAttributeTrait;
     use Falsification\FalseServerRequestReadParametersTrait;
-    use Falsification\FalseServerRequestUploadAndModifyParametersTrait;
+    use Falsification\FalseServerRequestModifyParametersTrait;
+
+    /**
+     * @deprecated Never implemented!
+     * @throws Falsification\Psr7SubsetException
+     *
+     * @param string $method
+     */
+    public function withMethod($method)
+    {
+        throw new Falsification\Psr7SubsetException();
+    }
 }

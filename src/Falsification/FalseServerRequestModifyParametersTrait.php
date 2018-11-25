@@ -10,7 +10,7 @@ namespace brnc\Symfony1\Message\Falsification;
  *  vs. PSR7/ServerRequest
  *  then only taking modification and body methods, but getParsedBody()
  */
-trait FalseServerRequestUploadAndModifyParametersTrait
+trait FalseServerRequestModifyParametersTrait
 {
     /**
      * @deprecated Never implemented!
@@ -30,26 +30,6 @@ trait FalseServerRequestUploadAndModifyParametersTrait
      * @param array $query
      */
     public function withQueryParams(array $query)
-    {
-        throw new Psr7SubsetException();
-    }
-
-    /**
-     * @deprecated Never implemented!
-     * @throws Psr7SubsetException
-     */
-    public function getUploadedFiles()
-    {
-        throw new Psr7SubsetException();
-    }
-
-    /**
-     * @deprecated Never implemented!
-     * @throws Psr7SubsetException
-     *
-     * @param array $uploadedFiles
-     */
-    public function withUploadedFiles(array $uploadedFiles)
     {
         throw new Psr7SubsetException();
     }
