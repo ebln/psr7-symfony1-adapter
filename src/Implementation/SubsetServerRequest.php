@@ -22,6 +22,18 @@ class SubsetServerRequest extends SubsetRequest
     protected $attributes = [];
 
     /**
+     * @param string $method
+     * @param string $version
+     * @param array  $headers
+     * @param array  $serverParams
+     */
+    public function __construct($method, $version, array $headers, array $serverParams)
+    {
+        parent::__construct($method, $version, $headers);
+        $this->serverParams = $serverParams;
+    }
+
+    /**
      * @inheritdoc
      */
     public function getServerParams()
