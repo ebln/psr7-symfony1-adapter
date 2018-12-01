@@ -43,10 +43,6 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
         // inititialise path array
         $sfWebRequest->getPathInfoArray();
 
-        $reflexiveWebRequest                  = new \ReflectionObject($this->sfWebRequest);
-        $this->reflexivePropertyPathInfoArray = $reflexiveWebRequest->getProperty('pathInfoArray');
-        $this->reflexivePropertyPathInfoArray->setAccessible(true);
-
         if ($populateAttributes) {
             $attributes[self::ATTRIBUTE_SF_WEB_REQUEST] = $sfWebRequest;
         }
@@ -271,6 +267,12 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
      */
     protected function setPathInfoArray(array $pathInfo)
     {
+        if (null === $this->reflexivePropertyPathInfoArray) {
+            $reflexiveWebRequest                  = new \ReflectionObject($this->sfWebRequest);
+            $this->reflexivePropertyPathInfoArray = $reflexiveWebRequest->getProperty('pathInfoArray');
+            $this->reflexivePropertyPathInfoArray->setAccessible(true);
+        }
+
         $this->reflexivePropertyPathInfoArray->setValue($this->sfWebRequest, $pathInfo);
     }
 
