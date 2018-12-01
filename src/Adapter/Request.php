@@ -2,13 +2,14 @@
 
 namespace brnc\Symfony1\Message\Adapter;
 
+use brnc\Contract\Http\Message\CommonHeadInterface;
 use brnc\Symfony1\Message\Obligation\SfWebRequestSubsetInterface;
 use Psr\Http\Message\UriInterface;
 
 /**
  * TODO
  */
-class Request // TODO implements ServerRequestInterface
+class Request implements CommonHeadInterface // TODO implements ServerRequestInterface
 {
     /** @var bool[] */
     protected static $contentHeaders = ['CONTENT_LENGTH' => true, 'CONTENT_MD5' => true, 'CONTENT_TYPE' => true];
