@@ -2,12 +2,12 @@
 
 namespace brnc\Tests\Symfony1\Message\Adapter;
 
-use brnc\Symfony1\Message\Adapter\ReadMinimalRequestHeadAdapter;
+use brnc\Symfony1\Message\Adapter\Request;
 use brnc\Symfony1\Message\Obligation\SfWebRequestSubsetProxy;
 use brnc\Tests\Symfony1\Message\Obligation\MockSfWebRequestSubsetTrait;
 use PHPUnit\Framework\TestCase;
 
-class ReadMinimalRequestHeadInterfaceAdapterTest extends TestCase
+class RequestAdapterReadingTest extends TestCase
 {
     use MockSfWebRequestSubsetTrait;
 
@@ -23,11 +23,12 @@ class ReadMinimalRequestHeadInterfaceAdapterTest extends TestCase
      */
     public function testHasHeader(array $request, $headerName, $hasHeader, $getHeader, $getHeaderLine, $expectedHeaders)
     {
-        $sfWebRequest         = $this->createSfWebRequestSubsetMock($request['method'], $request['version'], $request['headers']);
-        $minimalRequestReader = new ReadMinimalRequestHeadAdapter($sfWebRequest);
-        $this->assertSame($hasHeader, $minimalRequestReader->hasHeader($headerName), 'before calling getHeaders()');
-        $minimalRequestReader->getHeaders();
-        $this->assertSame($hasHeader, $minimalRequestReader->hasHeader($headerName), 'after calling getHeaders()');
+        $sfWebRequest       =
+            $this->createSfWebRequestSubsetMock($request['method'], $request['version'], $request['headers']);
+        $readingRequestMock = new Request($sfWebRequest);
+        $this->assertSame($hasHeader, $readingRequestMock->hasHeader($headerName), 'before calling getHeaders()');
+        $readingRequestMock->getHeaders();
+        $this->assertSame($hasHeader, $readingRequestMock->hasHeader($headerName), 'after calling getHeaders()');
     }
 
     /**
@@ -42,11 +43,12 @@ class ReadMinimalRequestHeadInterfaceAdapterTest extends TestCase
      */
     public function testGetHeader(array $request, $headerName, $hasHeader, $getHeader, $getHeaderLine, $expectedHeaders)
     {
-        $sfWebRequest         = $this->createSfWebRequestSubsetMock($request['method'], $request['version'], $request['headers']);
-        $minimalRequestReader = new ReadMinimalRequestHeadAdapter($sfWebRequest);
-        $this->assertSame($getHeader, $minimalRequestReader->getHeader($headerName), 'before calling getHeaders()');
-        $minimalRequestReader->getHeaders();
-        $this->assertSame($getHeader, $minimalRequestReader->getHeader($headerName), 'after calling getHeaders()');
+        $sfWebRequest       =
+            $this->createSfWebRequestSubsetMock($request['method'], $request['version'], $request['headers']);
+        $readingRequestMock = new Request($sfWebRequest);
+        $this->assertSame($getHeader, $readingRequestMock->getHeader($headerName), 'before calling getHeaders()');
+        $readingRequestMock->getHeaders();
+        $this->assertSame($getHeader, $readingRequestMock->getHeader($headerName), 'after calling getHeaders()');
     }
 
     /**
@@ -59,13 +61,17 @@ class ReadMinimalRequestHeadInterfaceAdapterTest extends TestCase
      *
      * @dataProvider provideHeaderTestData
      */
-    public function testGetHeaderLine(array $request, $headerName, $hasHeader, $getHeader, $getHeaderLine, $expectedHeaders)
-    {
-        $sfWebRequest         = $this->createSfWebRequestSubsetMock($request['method'], $request['version'], $request['headers']);
-        $minimalRequestReader = new ReadMinimalRequestHeadAdapter($sfWebRequest);
-        $this->assertSame($getHeaderLine, $minimalRequestReader->getHeaderLine($headerName), 'before calling getHeaders()');
-        $minimalRequestReader->getHeaders();
-        $this->assertSame($getHeaderLine, $minimalRequestReader->getHeaderLine($headerName), 'after calling getHeaders()');
+    public function testGetHeaderLine(array $request, $headerName, $hasHeader, $getHeader, $getHeaderLine,
+                                      $expectedHeaders
+    ) {
+        $sfWebRequest       =
+            $this->createSfWebRequestSubsetMock($request['method'], $request['version'], $request['headers']);
+        $readingRequestMock = new Request($sfWebRequest);
+        $this->assertSame($getHeaderLine, $readingRequestMock->getHeaderLine($headerName),
+                          'before calling getHeaders()');
+        $readingRequestMock->getHeaders();
+        $this->assertSame($getHeaderLine, $readingRequestMock->getHeaderLine($headerName),
+                          'after calling getHeaders()');
     }
 
     /**
@@ -78,11 +84,12 @@ class ReadMinimalRequestHeadInterfaceAdapterTest extends TestCase
      *
      * @dataProvider provideHeaderTestData
      */
-    public function testGetHeaders(array $request, $headerName, $hasHeader, $getHeader, $getHeaderLine, $expectedHeaders)
-    {
-        $sfWebRequest         = $this->createSfWebRequestSubsetMock($request['method'], $request['version'], $request['headers']);
-        $minimalRequestReader = new ReadMinimalRequestHeadAdapter($sfWebRequest);
-        $this->assertSame($expectedHeaders, $minimalRequestReader->getHeaders($headerName));
+    public function testGetHeaders(array $request, $headerName, $hasHeader, $getHeader, $getHeaderLine, $expectedHeaders
+    ) {
+        $sfWebRequest       =
+            $this->createSfWebRequestSubsetMock($request['method'], $request['version'], $request['headers']);
+        $readingRequestMock = new Request($sfWebRequest);
+        $this->assertSame($expectedHeaders, $readingRequestMock->getHeaders($headerName));
     }
 
     /**
@@ -97,12 +104,14 @@ class ReadMinimalRequestHeadInterfaceAdapterTest extends TestCase
      *
      * @dataProvider provideHeaderTestData
      */
-    public function testSfWebRequestSubsetProxyGetHeaders(array $request, $headerName, $hasHeader, $getHeader, $getHeaderLine, $expectedHeaders)
-    {
-        $sfWebRequest         = $this->createSfWebRequestSubsetMock($request['method'], $request['version'], $request['headers']);
-        $proxy                = SfWebRequestSubsetProxy::create($sfWebRequest);
-        $minimalRequestReader = new ReadMinimalRequestHeadAdapter($proxy);
-        $this->assertSame($expectedHeaders, $minimalRequestReader->getHeaders($headerName));
+    public function testSfWebRequestSubsetProxyGetHeaders(array $request, $headerName, $hasHeader, $getHeader,
+                                                          $getHeaderLine, $expectedHeaders
+    ) {
+        $sfWebRequest       =
+            $this->createSfWebRequestSubsetMock($request['method'], $request['version'], $request['headers']);
+        $proxy              = SfWebRequestSubsetProxy::create($sfWebRequest);
+        $readingRequestMock = new Request($proxy);
+        $this->assertSame($expectedHeaders, $readingRequestMock->getHeaders($headerName));
     }
 
     /**
@@ -138,9 +147,10 @@ class ReadMinimalRequestHeadInterfaceAdapterTest extends TestCase
      */
     public function testGetProtocolVersion(array $request, $expectedVersion)
     {
-        $sfWebRequest         = $this->createSfWebRequestSubsetMock($request['method'], $request['version'], $request['headers']);
-        $minimalRequestReader = new ReadMinimalRequestHeadAdapter($sfWebRequest);
-        $this->assertSame($expectedVersion, $minimalRequestReader->getProtocolVersion());
+        $sfWebRequest       =
+            $this->createSfWebRequestSubsetMock($request['method'], $request['version'], $request['headers']);
+        $readingRequestMock = new Request($sfWebRequest);
+        $this->assertSame($expectedVersion, $readingRequestMock->getProtocolVersion());
     }
 
     /**
