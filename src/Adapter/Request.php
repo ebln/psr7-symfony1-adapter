@@ -49,14 +49,6 @@ class Request // TODO implements ServerRequestInterface
     }
 
     /**
-     * @param array $pathInfo
-     */
-    protected function setPathInfoArray(array $pathInfo)
-    {
-        $this->reflexivePropertyPathInfoArray->setValue($this->sfWebRequest, $pathInfo);
-    }
-
-    /**
      * @return string
      */
     public function getProtocolVersion()
@@ -81,6 +73,14 @@ class Request // TODO implements ServerRequestInterface
         $this->setPathInfoArray($pathInfoArray);
 
         return $this;
+    }
+
+    /**
+     * @param array $pathInfo
+     */
+    protected function setPathInfoArray(array $pathInfo)
+    {
+        $this->reflexivePropertyPathInfoArray->setValue($this->sfWebRequest, $pathInfo);
     }
 
     /**
@@ -137,28 +137,6 @@ class Request // TODO implements ServerRequestInterface
     /**
      * @param string $name
      *
-     * @return bool
-     */
-    public function hasHeader($name)
-    {
-        return null !== $this->sfWebRequest->getHttpHeader($name);
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return string[]
-     */
-    public function getHeader($name)
-    {
-        $value = $this->sfWebRequest->getHttpHeader($name);
-
-        return $value === null? [] : $this->explodeHeaderLine($value);
-    }
-
-    /**
-     * @param string $name
-     *
      * @return string
      */
     public function getHeaderLine($name)
@@ -166,49 +144,6 @@ class Request // TODO implements ServerRequestInterface
         $value = $this->sfWebRequest->getHttpHeader($name);
 
         return $value === null? '' : $value;
-    }
-
-    /**
-     * @param string          $name
-     * @param string|string[] $value
-     */
-    protected function setHeader($name, $value)
-    {
-        $keyName = $this->getPathInfoKey($name);
-
-        $pathInfoArray           = $this->sfWebRequest->getPathInfoArray();
-        $pathInfoArray[$keyName] = is_array($value)? implode(',', $value) : $value;
-        $this->setPathInfoArray($pathInfoArray);
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return string
-     */
-    protected function getPathInfoKey($name)
-    {
-        $keyName = strtoupper(str_replace('-', '_', $name));
-        if (!isset(self::$contentHeaders[$name])) {
-            $keyName = 'HTTP_' . $name;
-        }
-
-        return $keyName;
-    }
-
-    /**
-     * @param string          $name
-     * @param string|string[] $value
-     *
-     * @return static
-     */
-    public function withHeader($name, $value)
-    {
-        $this->headerNames[$this->normalizeHeaderName($name)] = $name;
-
-        $this->setHeader($name, $value);
-
-        return $this;
     }
 
     /**
@@ -235,6 +170,75 @@ class Request // TODO implements ServerRequestInterface
         $this->setHeader($name, $headers);
 
         return $this;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasHeader($name)
+    {
+        return null !== $this->sfWebRequest->getHttpHeader($name);
+    }
+
+    /**
+     * @param string          $name
+     * @param string|string[] $value
+     *
+     * @return static
+     */
+    public function withHeader($name, $value)
+    {
+        $this->headerNames[$this->normalizeHeaderName($name)] = $name;
+
+        $this->setHeader($name, $value);
+
+        return $this;
+    }
+
+    /**
+     * injects a header into symfony's pathInfoArray via setPathInfoArray()'s reflection
+     *
+     * @param string          $name
+     * @param string|string[] $value
+     */
+    protected function setHeader($name, $value)
+    {
+        $keyName = $this->getPathInfoKey($name);
+
+        $pathInfoArray           = $this->sfWebRequest->getPathInfoArray();
+        $pathInfoArray[$keyName] = is_array($value)? implode(',', $value) : $value;
+        $this->setPathInfoArray($pathInfoArray);
+    }
+
+    /**
+     * get the array key resp. to pathInfoArray from the header field name
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    protected function getPathInfoKey($name)
+    {
+        $keyName = strtoupper(str_replace('-', '_', $name));
+        if (!isset(self::$contentHeaders[$name])) {
+            $keyName = 'HTTP_' . $name;
+        }
+
+        return $keyName;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return string[]
+     */
+    public function getHeader($name)
+    {
+        $value = $this->sfWebRequest->getHttpHeader($name);
+
+        return $value === null? [] : $this->explodeHeaderLine($value);
     }
 
     /**
@@ -268,9 +272,7 @@ class Request // TODO implements ServerRequestInterface
     }
 
     /**
-     * Retrieves the HTTP method of the request.
-     *
-     * @return string Returns the request method.
+     * @return string
      */
     public function getMethod()
     {
@@ -312,7 +314,7 @@ class Request // TODO implements ServerRequestInterface
     }
 
     /**
-     * wrapper for
+     * wrapper for symfony's getPathInfoArray()
      *
      * @return array symfony's getPathInfoArray()
      */
