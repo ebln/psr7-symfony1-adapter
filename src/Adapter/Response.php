@@ -184,7 +184,7 @@ class Response implements CommonHeadInterface// TODO implements ResponseInterfac
     {
         $symfonyKey           = $this->normalizeSymfonyHeaderName($name);
         $headers              = $this->sfWebResponse->getHttpHeaders();
-        $headers[$symfonyKey] = is_array($value)? implode(',', $value) : $value; // TODO implodeHeaders
+        $headers[$symfonyKey] = $this->implodeHeaders($value);
         $this->setHeaders($headers);
     }
 

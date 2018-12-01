@@ -235,7 +235,7 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
     {
         $keyName                 = $this->getPathInfoKey($name);
         $pathInfoArray           = $this->sfWebRequest->getPathInfoArray();
-        $pathInfoArray[$keyName] = is_array($value)? implode(',', $value) : $value; // TODO implodeHeaders
+        $pathInfoArray[$keyName] = $this->implodeHeaders($value);
         $this->setPathInfoArray($pathInfoArray);
     }
 
