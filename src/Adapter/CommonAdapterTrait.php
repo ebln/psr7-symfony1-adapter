@@ -4,9 +4,9 @@
 namespace brnc\Symfony1\Message\Adapter;
 
 /**
- * @method hasHeader()
- * @method getHeader()
- * @method setHeader()
+ * @method bool     hasHeader(string $name)
+ * @method string[] getHeader(string $name)
+ * @method void     setHeader(string $name, string|string[] $value)
  */
 trait CommonAdapterTrait
 {
@@ -90,8 +90,6 @@ trait CommonAdapterTrait
     }
 
     /**
-     * TODO:
-     *
      * @param string|string[] $value
      *
      * @return string
