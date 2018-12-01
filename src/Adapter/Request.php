@@ -21,13 +21,6 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
     /** @var \ReflectionProperty */
     protected $reflexivePropertyPathInfoArray;
 
-    // /**
-    //  * @var string[]
-    //  *
-    //  * shadow to honour: »[…]preserve the exact case in which headers were originally specified.«
-    //  */
-    // protected $headerNames = [];
-
     /**
      * @var string
      *
@@ -119,33 +112,6 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
         return $value === null? '' : $value;
     }
 
-    // /**
-    //  * @param string          $name
-    //  * @param string|string[] $value
-    //  *
-    //  * @return $this In conflict with PSR-7's immutability paradigm, this method return not a clone but the very same
-    //  *               instance due to the nature of the underlying adapted symfony object
-    //  */
-    // public function withAddedHeader($name, $value)
-    // {
-    //     if (!$this->hasHeader($name)) {
-    //         // to preserve the original header name
-    //         return $this->withHeader($name, $value);
-    //     }
-    //
-    //     $headers = $this->getHeader($name);
-    //     if (is_array($value)) {
-    //         $headers = array_merge($headers, $value);
-    //     }
-    //     else {
-    //         $headers[] = $headers;
-    //     }
-    //
-    //     $this->setHeader($name, $headers);
-    //
-    //     return $this;
-    // }
-
     /**
      * @param string $name
      *
@@ -155,21 +121,6 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
     {
         return null !== $this->sfWebRequest->getHttpHeader($name);
     }
-
-    // /**
-    //  * @param string          $name
-    //  * @param string|string[] $value
-    //  *
-    //  * @return $this In conflict with PSR-7's immutability paradigm, this method return not a clone but the very same
-    //  *               instance due to the nature of the underlying adapted symfony object
-    //  */
-    // public function withHeader($name, $value)
-    // {
-    //     $this->headerNames[$this->normalizeHeaderName($name)] = $name;
-    //     $this->setHeader($name, $value);
-    //
-    //     return $this;
-    // }
 
     /**
      * @param string $name
@@ -273,34 +224,6 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
     {
         $this->reflexivePropertyPathInfoArray->setValue($this->sfWebRequest, $pathInfo);
     }
-
-    // /**
-    //  * @param string $name
-    //  *
-    //  * @return string
-    //  */
-    // protected function normalizeHeaderName($name)
-    // {
-    //     return str_replace('_', '-', strtolower($name));
-    // }
-
-    // /**
-    //  * Explodes a HTTP header's value to address PSR-7 arrayfied sub-value approach
-    //  *
-    //  * N.b. duplication of …
-    //  *
-    //  * @see Response::explodeHeaderLine()
-    //  *
-    //  * @param string $line
-    //  *
-    //  * @return string[]
-    //  */
-    // protected function explodeHeaderLine($line)
-    // {
-    //     return array_map(function($v) {
-    //         return trim($v, " \t"); // https://tools.ietf.org/html/rfc7230#section-3.2.4
-    //     }, explode(',', $line));
-    // }
 
     /**
      * injects a header into symfony's pathInfoArray via setPathInfoArray()'s reflection
