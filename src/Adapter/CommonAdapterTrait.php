@@ -3,11 +3,6 @@
 
 namespace brnc\Symfony1\Message\Adapter;
 
-/**
- * @method bool     hasHeader(string $name)
- * @method string[] getHeader(string $name)
- * @method void     setHeader(string $name, string|string[] $value)
- */
 trait CommonAdapterTrait
 {
     /**
