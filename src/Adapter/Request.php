@@ -77,16 +77,6 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
     }
 
     /**
-     * sets symfony request's pathInfoArray property using reflection
-     *
-     * @param array $pathInfo
-     */
-    protected function setPathInfoArray(array $pathInfo)
-    {
-        $this->reflexivePropertyPathInfoArray->setValue($this->sfWebRequest, $pathInfo);
-    }
-
-    /**
      * @return string[][]
      */
     public function getHeaders()
@@ -113,34 +103,6 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
         }
 
         return $headers;
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return string
-     */
-    protected function normalizeHeaderName($name)
-    {
-        return str_replace('_', '-', strtolower($name));
-    }
-
-    /**
-     * Explodes a HTTP header's value to address PSR-7 arrayfied sub-value approach
-     *
-     * N.b. duplication of …
-     *
-     * @see Response::explodeHeaderLine()
-     *
-     * @param string $line
-     *
-     * @return string[]
-     */
-    protected function explodeHeaderLine($line)
-    {
-        return array_map(function($v) {
-            return trim($v, " \t"); // https://tools.ietf.org/html/rfc7230#section-3.2.4
-        }, explode(',', $line));
     }
 
     /**
@@ -206,38 +168,6 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
         $this->setHeader($name, $value);
 
         return $this;
-    }
-
-    /**
-     * injects a header into symfony's pathInfoArray via setPathInfoArray()'s reflection
-     *
-     * @param string          $name
-     * @param string|string[] $value
-     */
-    protected function setHeader($name, $value)
-    {
-        $keyName = $this->getPathInfoKey($name);
-
-        $pathInfoArray           = $this->sfWebRequest->getPathInfoArray();
-        $pathInfoArray[$keyName] = is_array($value)? implode(',', $value) : $value;
-        $this->setPathInfoArray($pathInfoArray);
-    }
-
-    /**
-     * get the array key resp. to pathInfoArray from the header field name
-     *
-     * @param string $name
-     *
-     * @return string
-     */
-    protected function getPathInfoKey($name)
-    {
-        $keyName = strtoupper(str_replace('-', '_', $name));
-        if (!isset(self::$contentHeaders[$name])) {
-            $keyName = 'HTTP_' . $name;
-        }
-
-        return $keyName;
     }
 
     /**
@@ -331,5 +261,75 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
     public function getParsedBody()
     {
         return $this->sfWebRequest->getPostParameters();
+    }
+
+    /**
+     * sets symfony request's pathInfoArray property using reflection
+     *
+     * @param array $pathInfo
+     */
+    protected function setPathInfoArray(array $pathInfo)
+    {
+        $this->reflexivePropertyPathInfoArray->setValue($this->sfWebRequest, $pathInfo);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
+    protected function normalizeHeaderName($name)
+    {
+        return str_replace('_', '-', strtolower($name));
+    }
+
+    /**
+     * Explodes a HTTP header's value to address PSR-7 arrayfied sub-value approach
+     *
+     * N.b. duplication of …
+     *
+     * @see Response::explodeHeaderLine()
+     *
+     * @param string $line
+     *
+     * @return string[]
+     */
+    protected function explodeHeaderLine($line)
+    {
+        return array_map(function($v) {
+            return trim($v, " \t"); // https://tools.ietf.org/html/rfc7230#section-3.2.4
+        }, explode(',', $line));
+    }
+
+    /**
+     * injects a header into symfony's pathInfoArray via setPathInfoArray()'s reflection
+     *
+     * @param string          $name
+     * @param string|string[] $value
+     */
+    protected function setHeader($name, $value)
+    {
+        $keyName = $this->getPathInfoKey($name);
+
+        $pathInfoArray           = $this->sfWebRequest->getPathInfoArray();
+        $pathInfoArray[$keyName] = is_array($value)? implode(',', $value) : $value;
+        $this->setPathInfoArray($pathInfoArray);
+    }
+
+    /**
+     * get the array key resp. to pathInfoArray from the header field name
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    protected function getPathInfoKey($name)
+    {
+        $keyName = strtoupper(str_replace('-', '_', $name));
+        if (!isset(self::$contentHeaders[$name])) {
+            $keyName = 'HTTP_' . $name;
+        }
+
+        return $keyName;
     }
 }

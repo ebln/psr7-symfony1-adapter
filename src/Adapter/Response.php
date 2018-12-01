@@ -73,16 +73,6 @@ class Response implements CommonHeadInterface// TODO implements ResponseInterfac
     }
 
     /**
-     * sets symfony response's options property using reflection
-     *
-     * @param array $options
-     */
-    protected function setOptions(array $options)
-    {
-        $this->reflexivePropertyOptions->setValue($this->sfWebResponse, $options);
-    }
-
-    /**
      * @return string[][]
      */
     public function getHeaders()
@@ -102,24 +92,6 @@ class Response implements CommonHeadInterface// TODO implements ResponseInterfac
         }
 
         return $shadowedHeaders;
-    }
-
-    /**
-     * Explodes a HTTP header's value to address PSR-7 arrayfied sub-value approach
-     *
-     * N.b. duplication of …
-     *
-     * @see Request::explodeHeaderLine()
-     *
-     * @param string $line
-     *
-     * @return string[]
-     */
-    protected function explodeHeaderLine($line)
-    {
-        return array_map(function($v) {
-            return trim($v, " \t"); // https://tools.ietf.org/html/rfc7230#section-3.2.4
-        }, explode(',', $line));
     }
 
     /**
@@ -190,51 +162,6 @@ class Response implements CommonHeadInterface// TODO implements ResponseInterfac
     /**
      * @param string $name
      *
-     * @return string
-     */
-    protected function normalizeHeaderName($name)
-    {
-        // let's test.. if [] → '' works…
-        return str_replace(['_', ' '], '-', strtolower($name));
-    }
-
-    /**
-     * @param string          $name
-     * @param string|string[] $value
-     */
-    protected function setHeader($name, $value)
-    {
-        $symfonyKey           = $this->normalizeSymfonyHeaderName($name);
-        $headers              = $this->sfWebResponse->getHttpHeaders();
-        $headers[$symfonyKey] = is_array($value)? implode(',', $value) : $value;
-        $this->setHeaders($headers); // raw access
-    }
-
-    /**
-     * get the symfony's header name used by sfWebResponse's headers property
-     *
-     * @param string $name
-     *
-     * @return string
-     */
-    protected function normalizeSymfonyHeaderName($name)
-    {
-        return strtr(ucwords(strtr(strtolower($name), ['_' => ' ', '-' => ' '])), [' ' => '-']);
-    }
-
-    /**
-     * sets symfony response's headers property using reflection
-     *
-     * @param string[] $headers
-     */
-    protected function setHeaders(array $headers)
-    {
-        $this->reflexivePropertyHeaders->setValue($this->sfWebResponse, $headers);
-    }
-
-    /**
-     * @param string $name
-     *
      * @return string[]
      */
     public function getHeader($name)
@@ -282,6 +209,87 @@ class Response implements CommonHeadInterface// TODO implements ResponseInterfac
     }
 
     /**
+     * @return string
+     */
+    public function getReasonPhrase()
+    {
+        return $this->sfWebResponse->getStatusText();
+    }
+
+    /**
+     * sets symfony response's options property using reflection
+     *
+     * @param array $options
+     */
+    protected function setOptions(array $options)
+    {
+        $this->reflexivePropertyOptions->setValue($this->sfWebResponse, $options);
+    }
+
+    /**
+     * Explodes a HTTP header's value to address PSR-7 arrayfied sub-value approach
+     *
+     * N.b. duplication of …
+     *
+     * @see Request::explodeHeaderLine()
+     *
+     * @param string $line
+     *
+     * @return string[]
+     */
+    protected function explodeHeaderLine($line)
+    {
+        return array_map(function($v) {
+            return trim($v, " \t"); // https://tools.ietf.org/html/rfc7230#section-3.2.4
+        }, explode(',', $line));
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
+    protected function normalizeHeaderName($name)
+    {
+        // let's test.. if [] → '' works…
+        return str_replace(['_', ' '], '-', strtolower($name));
+    }
+
+    /**
+     * @param string          $name
+     * @param string|string[] $value
+     */
+    protected function setHeader($name, $value)
+    {
+        $symfonyKey           = $this->normalizeSymfonyHeaderName($name);
+        $headers              = $this->sfWebResponse->getHttpHeaders();
+        $headers[$symfonyKey] = is_array($value)? implode(',', $value) : $value;
+        $this->setHeaders($headers); // raw access
+    }
+
+    /**
+     * get the symfony's header name used by sfWebResponse's headers property
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    protected function normalizeSymfonyHeaderName($name)
+    {
+        return strtr(ucwords(strtr(strtolower($name), ['_' => ' ', '-' => ' '])), [' ' => '-']);
+    }
+
+    /**
+     * sets symfony response's headers property using reflection
+     *
+     * @param string[] $headers
+     */
+    protected function setHeaders(array $headers)
+    {
+        $this->reflexivePropertyHeaders->setValue($this->sfWebResponse, $headers);
+    }
+
+    /**
      * @param int    $code
      * @param string $reasonPhrase
      *
@@ -300,13 +308,5 @@ class Response implements CommonHeadInterface// TODO implements ResponseInterfac
         }
 
         return $defaultedReasonPhrase;
-    }
-
-    /**
-     * @return string
-     */
-    public function getReasonPhrase()
-    {
-        return $this->sfWebResponse->getStatusText();
     }
 }
