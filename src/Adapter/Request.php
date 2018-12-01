@@ -2,16 +2,15 @@
 
 namespace brnc\Symfony1\Message\Adapter;
 
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamInterface;
+use brnc\Symfony1\Message\Obligation\SfWebRequestSubsetInterface;
 use Psr\Http\Message\UriInterface;
 
-class Request implements ServerRequestInterface
+class Request // TODO implements ServerRequestInterface
 {
     /** @var bool[] */
     protected static $contentHeaders = ['CONTENT_LENGTH' => true, 'CONTENT_MD5' => true, 'CONTENT_TYPE' => true];
 
-    /** @var \sfWebRequest */
+    /** @var \sfWebRequest|SfWebRequestSubsetInterface */
     protected $sfWebRequest;
 
     /** @var \ReflectionProperty */
@@ -33,9 +32,9 @@ class Request implements ServerRequestInterface
     protected $method;
 
     /**
-     * @param \sfWebRequest $sfWebRequest
+     * @param SfWebRequestSubsetInterface $sfWebRequest
      */
-    public function __construct(\sfWebRequest $sfWebRequest)
+    public function __construct(SfWebRequestSubsetInterface $sfWebRequest)
     {
         $this->sfWebRequest = $sfWebRequest;
         // init path array
@@ -251,14 +250,6 @@ class Request implements ServerRequestInterface
         return $this;
     }
 
-    public function getBody()
-    {
-    }
-
-    public function withBody(StreamInterface $body)
-    {
-    }
-
     public function getRequestTarget()
     {
     }
@@ -340,42 +331,6 @@ class Request implements ServerRequestInterface
     }
 
     public function withQueryParams(array $query)
-    {
-    }
-
-    public function getUploadedFiles()
-    {
-    }
-
-    public function withUploadedFiles(array $uploadedFiles)
-    {
-    }
-
-    /**
-     * @return array
-     */
-    public function getParsedBody()
-    {
-        return $this->sfWebRequest->getPostParameters();
-    }
-
-    public function withParsedBody($data)
-    {
-    }
-
-    public function getAttributes()
-    {
-    }
-
-    public function getAttribute($name, $default = null)
-    {
-    }
-
-    public function withAttribute($name, $value)
-    {
-    }
-
-    public function withoutAttribute($name)
     {
     }
 }
