@@ -262,13 +262,13 @@ class Request // TODO implements ServerRequestInterface
     }
 
     /**
-     *
+     * TODO
      */
     public function getRequestTarget()
     {
     }
 
-    /**
+    /** TODO or maybe not
      * @param $requestTarget
      */
     public function withRequestTarget($requestTarget)
@@ -310,7 +310,7 @@ class Request // TODO implements ServerRequestInterface
     {
     }
 
-    /**
+    /** TODO or maybe not
      * @param UriInterface $uri
      * @param bool         $preserveHost
      */
@@ -338,7 +338,7 @@ class Request // TODO implements ServerRequestInterface
         return $_COOKIE; // as getCookie() is nothing but a lookup
     }
 
-    /**
+    /** TODO or maybe not
      * @param array $cookies
      */
     public function withCookieParams(array $cookies)
@@ -353,10 +353,18 @@ class Request // TODO implements ServerRequestInterface
         return $this->sfWebRequest->getGetParameters();
     }
 
-    /**
+    /** TODO or maybe not
      * @param array $query
      */
     public function withQueryParams(array $query)
     {
+    }
+
+    /**
+     * @return array
+     */
+    public function getParsedBody()
+    {
+        return $this->sfWebRequest->getPostParameters();
     }
 }
