@@ -4,10 +4,13 @@
 namespace brnc\Symfony1\Message\Implementation;
 
 use brnc\Contract\Http\Message\ReadMinimalRequestHeadInterface;
+use brnc\Symfony1\Message\Implementation\Hidden\CommonHeadTrait;
 use brnc\Symfony1\Message\Implementation\Hidden\Constant;
 
-class SubsetServerRequest extends CommonHead implements ReadMinimalRequestHeadInterface
+class SubsetServerRequest implements ReadMinimalRequestHeadInterface
 {
+    use CommonHeadTrait;
+
     /** @var string */
     protected $method;
 
@@ -34,9 +37,10 @@ class SubsetServerRequest extends CommonHead implements ReadMinimalRequestHeadIn
      */
     public function __construct($method, array $serverParams, array $headers, $version = Constant::DEFAULT_HTTP_VERSION)
     {
-        parent::__construct($headers, $version);
-        $this->method       = $method;
-        $this->serverParams = $serverParams;
+        $this->protocolVersion = $version;
+        $this->headers         = $headers;
+        $this->method          = $method;
+        $this->serverParams    = $serverParams;
     }
 
     /** @return string */
