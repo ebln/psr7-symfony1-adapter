@@ -81,12 +81,9 @@ class Response implements ResponseInterface
     public function getProtocolVersion()
     {
         $options         = $this->sfWebResponse->getOptions();
-        $protocolVersion = (
-            isset($options['http_protocol'])
-            && preg_match('/^HTTP\/(\d\.\d)$/si', $options['http_protocol'], $versionMatch)
-        )
-            ? $versionMatch[1]
-            : '';
+        $protocolVersion = (isset($options['http_protocol'])
+                            && preg_match('/^HTTP\/(\d\.\d)$/si', $options['http_protocol'],
+                                          $versionMatch))? $versionMatch[1] : '';
 
         return $protocolVersion;
     }
@@ -116,7 +113,8 @@ class Response implements ResponseInterface
             $tryKey = strtolower($key);
             if (isset($this->headerNames[$tryKey])) {
                 $headerName = $this->headerNames[$tryKey];
-            } else {
+            }
+            else {
                 $headerName = $key;
             }
 
@@ -133,12 +131,9 @@ class Response implements ResponseInterface
      */
     private function explodeHeaderLine($line)
     {
-        return array_map(
-            function ($v) {
-                return trim($v, " \t");
-            },
-            explode(',', $line)
-        );
+        return array_map(function($v) {
+            return trim($v, " \t");
+        }, explode(',', $line));
     }
 
     /**
@@ -160,7 +155,7 @@ class Response implements ResponseInterface
     {
         $value = $this->sfWebResponse->getHttpHeader($name, null);
 
-        return $value === null ? [] : $this->explodeHeaderLine($value);
+        return $value === null? [] : $this->explodeHeaderLine($value);
     }
 
     /**
@@ -197,7 +192,7 @@ class Response implements ResponseInterface
     {
         $symfonyKey           = $this->normalizeSymfonyHeaderName($name);
         $headers              = $this->getSymfonyHeaders();
-        $headers[$symfonyKey] = is_array($value) ? implode(',', $value) : $value;
+        $headers[$symfonyKey] = is_array($value)? implode(',', $value) : $value;
         $this->setHeaders($headers); // raw access
     }
 
@@ -238,7 +233,8 @@ class Response implements ResponseInterface
         $headers = $this->getHeader($name);
         if (is_array($value)) {
             $headers = array_merge($headers, $value);
-        } else {
+        }
+        else {
             $headers[] = $headers;
         }
 
@@ -258,22 +254,6 @@ class Response implements ResponseInterface
         $this->sfWebResponse->setHttpHeader($name, null, true);
 
         return $this;
-    }
-
-    /**
-     * @throws \BadMethodCallException
-     */
-    public function getBody()
-    {
-        throw new \BadMethodCallException();
-    }
-
-    /**
-     * @throws \BadMethodCallException
-     */
-    public function withBody(StreamInterface $body)
-    {
-        throw new \BadMethodCallException();
     }
 
     /**
