@@ -11,6 +11,7 @@ use brnc\Symfony1\Message\Obligation\SfWebRequestSubsetInterface;
 class Request implements CommonHeadInterface // TODO implements ServerRequestInterface
 {
     use CommonAdapterTrait;
+    CONST ATTRIBUTE_SF_WEB_REQUEST = 'sfWebRequest';
 
     /** @var bool[] */
     protected static $contentHeaders = ['CONTENT_LENGTH' => true, 'CONTENT_MD5' => true, 'CONTENT_TYPE' => true];
@@ -22,7 +23,7 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
     protected $reflexivePropertyPathInfoArray;
 
     /** @var mixed[] */
-    protected $attributes;
+    protected $attributes = [];
 
     /**
      * @var string
@@ -34,8 +35,9 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
 
     /**
      * @param SfWebRequestSubsetInterface $sfWebRequest
+     * @param bool                        $populateAttributes
      */
-    public function __construct(SfWebRequestSubsetInterface $sfWebRequest)
+    public function __construct(SfWebRequestSubsetInterface $sfWebRequest, $populateAttributes = false)
     {
         $this->sfWebRequest = $sfWebRequest;
         // inititialise path array
@@ -44,6 +46,10 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
         $reflexiveWebRequest                  = new \ReflectionObject($this->sfWebRequest);
         $this->reflexivePropertyPathInfoArray = $reflexiveWebRequest->getProperty('pathInfoArray');
         $this->reflexivePropertyPathInfoArray->setAccessible(true);
+
+        if ($populateAttributes) {
+            $attributes[self::ATTRIBUTE_SF_WEB_REQUEST] = $sfWebRequest;
+        }
     }
 
     /**
