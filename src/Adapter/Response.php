@@ -30,13 +30,6 @@ class Response implements CommonHeadInterface// TODO implements ResponseInterfac
     public function __construct(SfWebResponseSubsetInterface $sfWebResponse)
     {
         $this->sfWebResponse = $sfWebResponse;
-
-        $reflexiveWebResponse           = new \ReflectionObject($this->sfWebResponse);
-        $this->reflexivePropertyOptions = $reflexiveWebResponse->getProperty('options');
-        $this->reflexivePropertyOptions->setAccessible(true);
-
-        $this->reflexivePropertyHeaders = $reflexiveWebResponse->getProperty('headers');
-        $this->reflexivePropertyHeaders->setAccessible(true);
     }
 
     /**
@@ -168,6 +161,12 @@ class Response implements CommonHeadInterface// TODO implements ResponseInterfac
      */
     protected function setOptions(array $options)
     {
+        if (null === $this->reflexivePropertyOptions) {
+            $reflexiveWebResponse           = new \ReflectionObject($this->sfWebResponse);
+            $this->reflexivePropertyOptions = $reflexiveWebResponse->getProperty('options');
+            $this->reflexivePropertyOptions->setAccessible(true);
+        }
+
         $this->reflexivePropertyOptions->setValue($this->sfWebResponse, $options);
     }
 
@@ -202,6 +201,11 @@ class Response implements CommonHeadInterface// TODO implements ResponseInterfac
      */
     protected function setHeaders(array $headers)
     {
+        if (null === $this->reflexivePropertyHeaders) {
+            $reflexiveWebResponse           = new \ReflectionObject($this->sfWebResponse);
+            $this->reflexivePropertyHeaders = $reflexiveWebResponse->getProperty('headers');
+            $this->reflexivePropertyHeaders->setAccessible(true);
+        }
         $this->reflexivePropertyHeaders->setValue($this->sfWebResponse, $headers);
     }
 
