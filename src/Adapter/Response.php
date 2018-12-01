@@ -3,6 +3,8 @@
 // TODO – common return $this including warning; access raw-request, access, cookies?
 namespace brnc\Symfony1\Message\Adapter;
 
+use brnc\Symfony1\Message\Obligation\SfWebResponseSubsetInterface;
+
 class Response // TODO implements ResponseInterface
 {
     /**
@@ -12,7 +14,7 @@ class Response // TODO implements ResponseInterface
         308 => 'Permanent Redirect', // defined in RFC-7538
     ];
 
-    /** @var \sfWebResponse */
+    /** @var \sfWebResponse|SfWebResponseSubsetInterface */
     protected $sfWebResponse;
 
     /** @var \ReflectionProperty */
@@ -31,9 +33,9 @@ class Response // TODO implements ResponseInterface
     /**
      * TODO ad minimal interface!
      *
-     * @param \sfWebResponse $sfWebResponse
+     * @param \sfWebResponse|SfWebResponseSubsetInterface $sfWebResponse
      */
-    public function __construct(\sfWebResponse $sfWebResponse)
+    public function __construct(SfWebResponseSubsetInterface $sfWebResponse)
     {
         $this->sfWebResponse = $sfWebResponse;
 
@@ -87,7 +89,7 @@ class Response // TODO implements ResponseInterface
     {
         $shadowedHeaders = [];
 
-        foreach ($this->getSymfonyHeaders() as $key => $value) {
+        foreach ($this->sfWebResponse->getHttpHeaders() as $key => $value) {
             $tryKey = strtolower($key);
             if (isset($this->headerNames[$tryKey])) {
                 $headerName = $this->headerNames[$tryKey];
@@ -100,19 +102,6 @@ class Response // TODO implements ResponseInterface
         }
 
         return $shadowedHeaders;
-    }
-
-    /**
-     * only fixes the IDE hinting, due to bogus phpdoc of getHttpHeaders()
-     *
-     * @return string[]
-     */
-    protected function getSymfonyHeaders()
-    {
-        /** @var string[] $headers */
-        $headers = $this->sfWebResponse->getHttpHeaders();
-
-        return $headers;
     }
 
     /**
@@ -207,7 +196,7 @@ class Response // TODO implements ResponseInterface
     protected function setHeader($name, $value)
     {
         $symfonyKey           = $this->normalizeSymfonyHeaderName($name);
-        $headers              = $this->getSymfonyHeaders();
+        $headers              = $this->sfWebResponse->getHttpHeaders();
         $headers[$symfonyKey] = is_array($value)? implode(',', $value) : $value;
         $this->setHeaders($headers); // raw access
     }
@@ -271,8 +260,8 @@ class Response // TODO implements ResponseInterface
      */
     public function withStatus($code, $reasonPhrase = '')
     {
-        $reasonPhrase = $this->useDefaultReasonPhrase($code, $reasonPhrase);
-        $this->sfWebResponse->setStatusCode($code, $reasonPhrase);
+        $defaultedReasonPhrase = $this->useDefaultReasonPhrase($code, $reasonPhrase);
+        $this->sfWebResponse->setStatusCode($code, $defaultedReasonPhrase);
 
         return $this;
     }
@@ -285,16 +274,17 @@ class Response // TODO implements ResponseInterface
      */
     protected function useDefaultReasonPhrase($code, $reasonPhrase)
     {
-        if (empty($reasonPhrase)) {
-            // to trigger symfony's default lookup
-            $reasonPhrase = null;
-            // override for 308
-            if (isset(static::$defaultReasonPhrases[$code])) {
-                $reasonPhrase = static::$defaultReasonPhrases[$code];
-            }
+        if (!empty($reasonPhrase)) {
+            return $reasonPhrase;
+        }
+        // to trigger symfony's default lookup
+        $defaultedReasonPhrase = null;
+        // override for 308
+        if (isset(static::$defaultReasonPhrases[$code])) {
+            $defaultedReasonPhrase = static::$defaultReasonPhrases[$code];
         }
 
-        return $reasonPhrase;
+        return $defaultedReasonPhrase;
     }
 
     /**
