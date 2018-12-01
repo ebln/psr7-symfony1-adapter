@@ -4,7 +4,6 @@ namespace brnc\Symfony1\Message\Adapter;
 
 use brnc\Contract\Http\Message\CommonHeadInterface;
 use brnc\Symfony1\Message\Obligation\SfWebRequestSubsetInterface;
-use Psr\Http\Message\UriInterface;
 
 /**
  * TODO
@@ -271,21 +270,6 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
     }
 
     /**
-     * TODO
-     */
-    public function getRequestTarget()
-    {
-    }
-
-    /** TODO or maybe not
-     *
-     * @param $requestTarget
-     */
-    public function withRequestTarget($requestTarget)
-    {
-    }
-
-    /**
      * @return string
      */
     public function getMethod()
@@ -314,22 +298,6 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
     }
 
     /**
-     * TODO!
-     */
-    public function getUri()
-    {
-    }
-
-    /** TODO or maybe not
-     *
-     * @param UriInterface $uri
-     * @param bool         $preserveHost
-     */
-    public function withUri(UriInterface $uri, $preserveHost = false)
-    {
-    }
-
-    /**
      * wrapper for symfony's getPathInfoArray()
      *
      * @return array symfony's getPathInfoArray()
@@ -349,28 +317,12 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
         return $_COOKIE; // as getCookie() is nothing but a lookup
     }
 
-    /** TODO or maybe not
-     *
-     * @param array $cookies
-     */
-    public function withCookieParams(array $cookies)
-    {
-    }
-
     /**
      * @return array
      */
     public function getQueryParams()
     {
         return $this->sfWebRequest->getGetParameters();
-    }
-
-    /** TODO or maybe not
-     *
-     * @param array $query
-     */
-    public function withQueryParams(array $query)
-    {
     }
 
     /**
