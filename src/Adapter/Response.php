@@ -3,11 +3,15 @@
 // TODO – common return $this including warning; access raw-request, access, cookies?
 namespace brnc\Symfony1\Message\Adapter;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
-
 class Response // TODO implements ResponseInterface
 {
+    /**
+     * @var string[]
+     */
+    protected static $defaultReasonPhrases = [
+        308 => 'Permanent Redirect', // defined in RFC-7538
+    ];
+
     /** @var \sfWebResponse */
     protected $sfWebResponse;
 
@@ -25,13 +29,8 @@ class Response // TODO implements ResponseInterface
     protected $headerNames = [];
 
     /**
-     * @var string[]
-     */
-    protected static $defaultReasonPhrases = [
-        308 => 'Permanent Redirect', // defined in RFC-7538
-    ];
-
-    /**
+     * TODO ad minimal interface!
+     *
      * @param \sfWebResponse $sfWebResponse
      */
     public function __construct(\sfWebResponse $sfWebResponse)
@@ -44,35 +43,6 @@ class Response // TODO implements ResponseInterface
 
         $this->reflexivePropertyHeaders = $reflexiveWebResponse->getProperty('headers');
         $this->reflexivePropertyHeaders->setAccessible(true);
-    }
-
-    /**
-     * @param array $options
-     */
-    protected function setOptions(array $options)
-    {
-        $this->reflexivePropertyOptions->setValue($this->sfWebResponse, $options);
-    }
-
-    /**
-     * @param string[] $headers
-     */
-    protected function setHeaders(array $headers)
-    {
-        $this->reflexivePropertyHeaders->setValue($this->sfWebResponse, $headers);
-    }
-
-    /**
-     * only fixes the IDE hinting, due to bogus phpdoc of getHttpHeaders()
-     *
-     * @return string[]
-     */
-    protected function getSymfonyHeaders()
-    {
-        /** @var string[] $headers */
-        $headers = $this->sfWebResponse->getHttpHeaders();
-
-        return $headers;
     }
 
     /**
@@ -103,6 +73,14 @@ class Response // TODO implements ResponseInterface
     }
 
     /**
+     * @param array $options
+     */
+    protected function setOptions(array $options)
+    {
+        $this->reflexivePropertyOptions->setValue($this->sfWebResponse, $options);
+    }
+
+    /**
      * @return string[][]
      */
     public function getHeaders()
@@ -125,37 +103,28 @@ class Response // TODO implements ResponseInterface
     }
 
     /**
+     * only fixes the IDE hinting, due to bogus phpdoc of getHttpHeaders()
+     *
+     * @return string[]
+     */
+    protected function getSymfonyHeaders()
+    {
+        /** @var string[] $headers */
+        $headers = $this->sfWebResponse->getHttpHeaders();
+
+        return $headers;
+    }
+
+    /**
      * @param string $line
      *
      * @return string[]
      */
-    private function explodeHeaderLine($line)
+    protected function explodeHeaderLine($line)
     {
         return array_map(function($v) {
             return trim($v, " \t");
         }, explode(',', $line));
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasHeader($name)
-    {
-        return $this->sfWebResponse->hasHttpHeader($name);
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return string[]
-     */
-    public function getHeader($name)
-    {
-        $value = $this->sfWebResponse->getHttpHeader($name, null);
-
-        return $value === null? [] : $this->explodeHeaderLine($value);
     }
 
     /**
@@ -166,55 +135,6 @@ class Response // TODO implements ResponseInterface
     public function getHeaderLine($name)
     {
         return $this->sfWebResponse->getHttpHeader($name, '');
-    }
-
-    /**
-     * @param string          $name
-     * @param string|string[] $value
-     *
-     * @return static
-     */
-    public function withHeader($name, $value)
-    {
-        // TODO had header name validation! (would be only valid for shadow)
-        $this->headerNames[$this->normalizeHeaderName($name)] = $name;
-        $this->setHeader($name, $value); // raw access
-        // $this->sfWebResponse->setHttpHeader($name, $value, true); // for using the fixContentType() extra mile
-
-        return $this;
-    }
-
-    /**
-     * @param string          $name
-     * @param string|string[] $value
-     */
-    private function setHeader($name, $value)
-    {
-        $symfonyKey           = $this->normalizeSymfonyHeaderName($name);
-        $headers              = $this->getSymfonyHeaders();
-        $headers[$symfonyKey] = is_array($value)? implode(',', $value) : $value;
-        $this->setHeaders($headers); // raw access
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return string
-     */
-    private function normalizeHeaderName($name)
-    {
-        // let's test.. if [] → '' works…
-        return str_replace(['_', ' '], '-', strtolower($name));
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return string
-     */
-    protected function normalizeSymfonyHeaderName($name)
-    {
-        return strtr(ucwords(strtr(strtolower($name), ['_' => ' ', '-' => ' '])), [' ' => '-']);
     }
 
     /**
@@ -241,6 +161,85 @@ class Response // TODO implements ResponseInterface
         $this->setHeader($name, $headers);
 
         return $this;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasHeader($name)
+    {
+        return $this->sfWebResponse->hasHttpHeader($name);
+    }
+
+    /**
+     * @param string          $name
+     * @param string|string[] $value
+     *
+     * @return static
+     */
+    public function withHeader($name, $value)
+    {
+        // TODO had header name validation! (would be only valid for shadow)
+        $this->headerNames[$this->normalizeHeaderName($name)] = $name;
+        $this->setHeader($name, $value); // raw access
+        // $this->sfWebResponse->setHttpHeader($name, $value, true); // for using the fixContentType() extra mile
+
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
+    protected function normalizeHeaderName($name)
+    {
+        // let's test.. if [] → '' works…
+        return str_replace(['_', ' '], '-', strtolower($name));
+    }
+
+    /**
+     * @param string          $name
+     * @param string|string[] $value
+     */
+    protected function setHeader($name, $value)
+    {
+        $symfonyKey           = $this->normalizeSymfonyHeaderName($name);
+        $headers              = $this->getSymfonyHeaders();
+        $headers[$symfonyKey] = is_array($value)? implode(',', $value) : $value;
+        $this->setHeaders($headers); // raw access
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
+    protected function normalizeSymfonyHeaderName($name)
+    {
+        return strtr(ucwords(strtr(strtolower($name), ['_' => ' ', '-' => ' '])), [' ' => '-']);
+    }
+
+    /**
+     * @param string[] $headers
+     */
+    protected function setHeaders(array $headers)
+    {
+        $this->reflexivePropertyHeaders->setValue($this->sfWebResponse, $headers);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return string[]
+     */
+    public function getHeader($name)
+    {
+        $value = $this->sfWebResponse->getHttpHeader($name, null);
+
+        return $value === null? [] : $this->explodeHeaderLine($value);
     }
 
     /**
