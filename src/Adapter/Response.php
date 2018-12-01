@@ -1,11 +1,12 @@
 <?php
 
-// TODO – common return $this including warning; access raw-request, access, cookies?
+// TODO – access raw-request, access, cookies?
 namespace brnc\Symfony1\Message\Adapter;
 
+use brnc\Contract\Http\Message\CommonHeadInterface;
 use brnc\Symfony1\Message\Obligation\SfWebResponseSubsetInterface;
 
-class Response // TODO implements ResponseInterface
+class Response implements CommonHeadInterface// TODO implements ResponseInterface
 {
     /** @var string[] */
     protected static $defaultReasonPhrases = [
@@ -72,6 +73,8 @@ class Response // TODO implements ResponseInterface
     }
 
     /**
+     * sets symfony response's options property using reflection
+     *
      * @param array $options
      */
     protected function setOptions(array $options)
@@ -102,6 +105,12 @@ class Response // TODO implements ResponseInterface
     }
 
     /**
+     * Explodes a HTTP header's value to address PSR-7 arrayfied sub-value approach
+     *
+     * N.b. duplication of …
+     *
+     * @see Request::explodeHeaderLine()
+     *
      * @param string $line
      *
      * @return string[]
@@ -109,7 +118,7 @@ class Response // TODO implements ResponseInterface
     protected function explodeHeaderLine($line)
     {
         return array_map(function($v) {
-            return trim($v, " \t");
+            return trim($v, " \t"); // https://tools.ietf.org/html/rfc7230#section-3.2.4
         }, explode(',', $line));
     }
 
@@ -202,6 +211,8 @@ class Response // TODO implements ResponseInterface
     }
 
     /**
+     * get the symfony's header name used by sfWebResponse's headers property
+     *
      * @param string $name
      *
      * @return string
@@ -212,6 +223,8 @@ class Response // TODO implements ResponseInterface
     }
 
     /**
+     * sets symfony response's headers property using reflection
+     *
      * @param string[] $headers
      */
     protected function setHeaders(array $headers)
