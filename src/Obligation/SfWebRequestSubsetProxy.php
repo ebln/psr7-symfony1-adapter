@@ -19,13 +19,16 @@ class SfWebRequestSubsetProxy implements SfWebRequestSubsetInterface
      */
     public static function create($request)
     {
+        /** @noinspection ClassConstantCanBeUsedInspection */
+        /** @noinspection NotOptimalIfConditionsInspection */
         if ((class_exists('\sfWebRequest') && $request instanceof \sfWebRequest)
             || ($request instanceof SfWebRequestSubsetInterface)) {
             return new static($request);
         }
 
-        $errorMessage = NoSfWebRequestException::DEFAULT_MSG . ' '
-                        . (is_object($request)? get_class($request) : gettype($request)) . ' provided.';
+        $errorMessage =
+            NoSfWebRequestException::DEFAULT_MSG . ' ' . (is_object($request)? get_class($request) : gettype($request))
+            . ' provided.';
 
         throw new NoSfWebRequestException($errorMessage);
     }
