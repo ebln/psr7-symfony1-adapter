@@ -8,6 +8,8 @@ use brnc\Symfony1\Message\Obligation\SfWebResponseSubsetInterface;
 
 class Response implements CommonHeadInterface// TODO implements ResponseInterface
 {
+    use CommonAdapterTrait;
+
     /** @var string[] */
     protected static $defaultReasonPhrases = [
         308 => 'Permanent Redirect', // defined in RFC-7538
@@ -22,12 +24,12 @@ class Response implements CommonHeadInterface// TODO implements ResponseInterfac
     /** @var \ReflectionProperty */
     protected $reflexivePropertyHeaders;
 
-    /**
-     * @var string[]
-     *
-     * shadow to honour: »[…]preserve the exact case in which headers were originally specified.«
-     */
-    protected $headerNames = [];
+    // /**
+    //  * @var string[]
+    //  *
+    //  * shadow to honour: »[…]preserve the exact case in which headers were originally specified.«
+    //  */
+    // protected $headerNames = [];
 
     /**
      * @param \sfWebResponse|SfWebResponseSubsetInterface $sfWebResponse
@@ -104,32 +106,32 @@ class Response implements CommonHeadInterface// TODO implements ResponseInterfac
         return $this->sfWebResponse->getHttpHeader($name, '');
     }
 
-    /**
-     * @param string          $name
-     * @param string|string[] $value
-     *
-     * @return $this In conflict with PSR-7's immutability paradigm, this method return not a clone but the very same
-     *               instance due to the nature of the underlying adapted symfony object
-     */
-    public function withAddedHeader($name, $value)
-    {
-        if (!$this->hasHeader($name)) {
-            // to preserve the original header name
-            return $this->withHeader($name, $value);
-        }
-
-        $headers = $this->getHeader($name);
-        if (is_array($value)) {
-            $headers = array_merge($headers, $value);
-        }
-        else {
-            $headers[] = $headers;
-        }
-
-        $this->setHeader($name, $headers);
-
-        return $this;
-    }
+    // /**
+    //  * @param string          $name
+    //  * @param string|string[] $value
+    //  *
+    //  * @return $this In conflict with PSR-7's immutability paradigm, this method return not a clone but the very same
+    //  *               instance due to the nature of the underlying adapted symfony object
+    //  */
+    // public function withAddedHeader($name, $value)
+    // {
+    //     if (!$this->hasHeader($name)) {
+    //         // to preserve the original header name
+    //         return $this->withHeader($name, $value);
+    //     }
+    //
+    //     $headers = $this->getHeader($name);
+    //     if (is_array($value)) {
+    //         $headers = array_merge($headers, $value);
+    //     }
+    //     else {
+    //         $headers[] = $headers;
+    //     }
+    //
+    //     $this->setHeader($name, $headers);
+    //
+    //     return $this;
+    // }
 
     /**
      * @param string $name
@@ -141,23 +143,22 @@ class Response implements CommonHeadInterface// TODO implements ResponseInterfac
         return $this->sfWebResponse->hasHttpHeader($name);
     }
 
-    /**
-     * N.b. this is *not* applying the extra call to fixContentType() by setHttpHeader()
-     *
-     * @param string          $name
-     * @param string|string[] $value
-     *
-     * @return $this In conflict with PSR-7's immutability paradigm, this method return not a clone but the very same
-     *               instance due to the nature of the underlying adapted symfony object
-     */
-    public function withHeader($name, $value)
-    {
-        // TODO had header name validation! (would be only valid for shadow)
-        $this->headerNames[$this->normalizeHeaderName($name)] = $name;
-        $this->setHeader($name, $value); // raw access
-
-        return $this;
-    }
+    // /**
+    //  * N.b. this is *not* applying the extra call to fixContentType() by setHttpHeader()
+    //  *
+    //  * @param string          $name
+    //  * @param string|string[] $value
+    //  *
+    //  * @return $this In conflict with PSR-7's immutability paradigm, this method return not a clone but the very same
+    //  *               instance due to the nature of the underlying adapted symfony object
+    //  */
+    // public function withHeader($name, $value)
+    // {
+    //     $this->headerNames[$this->normalizeHeaderName($name)] = $name;
+    //     $this->setHeader($name, $value);
+    //
+    //     return $this;
+    // }
 
     /**
      * @param string $name
@@ -226,34 +227,36 @@ class Response implements CommonHeadInterface// TODO implements ResponseInterfac
         $this->reflexivePropertyOptions->setValue($this->sfWebResponse, $options);
     }
 
-    /**
-     * Explodes a HTTP header's value to address PSR-7 arrayfied sub-value approach
-     *
-     * N.b. duplication of …
-     *
-     * @see Request::explodeHeaderLine()
-     *
-     * @param string $line
-     *
-     * @return string[]
-     */
-    protected function explodeHeaderLine($line)
-    {
-        return array_map(function($v) {
-            return trim($v, " \t"); // https://tools.ietf.org/html/rfc7230#section-3.2.4
-        }, explode(',', $line));
-    }
+    // /**
+    //  * Explodes a HTTP header's value to address PSR-7 arrayfied sub-value approach
+    //  *
+    //  * N.b. duplication of …
+    //  *
+    //  * @see Request::explodeHeaderLine()
+    //  *
+    //  * @param string $line
+    //  *
+    //  * @return string[]
+    //  */
+    // protected function explodeHeaderLine($line)
+    // {
+    //     return array_map(function($v) {
+    //         return trim($v, " \t"); // https://tools.ietf.org/html/rfc7230#section-3.2.4
+    //     }, explode(',', $line));
+    // }
 
-    /**
-     * @param string $name
-     *
-     * @return string
-     */
-    protected function normalizeHeaderName($name)
-    {
-        // let's test.. if [] → '' works…
-        return str_replace(['_', ' '], '-', strtolower($name));
-    }
+    // /**
+    //  * TODO had header name validation! (would be only valid for shadow)
+    //  *
+    //  * @param string $name
+    //  *
+    //  * @return string
+    //  */
+    // protected function normalizeHeaderName($name)
+    // {
+    //     // let's test.. if [] → '' works…
+    //     return str_replace(['_', ' '], '-', strtolower($name));
+    // }
 
     /**
      * @param string          $name
@@ -263,8 +266,8 @@ class Response implements CommonHeadInterface// TODO implements ResponseInterfac
     {
         $symfonyKey           = $this->normalizeSymfonyHeaderName($name);
         $headers              = $this->sfWebResponse->getHttpHeaders();
-        $headers[$symfonyKey] = is_array($value)? implode(',', $value) : $value;
-        $this->setHeaders($headers); // raw access
+        $headers[$symfonyKey] = is_array($value)? implode(',', $value) : $value; // TODO implodeHeaders
+        $this->setHeaders($headers);
     }
 
     /**
