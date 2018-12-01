@@ -48,12 +48,7 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
      */
     public function getProtocolVersion()
     {
-        $pathInfoArray   = $this->sfWebRequest->getPathInfoArray();
-        $protocolVersion = (isset($pathInfoArray['SERVER_PROTOCOL'])
-                            && preg_match('/^HTTP\/(\d\.\d)$/si', $pathInfoArray['SERVER_PROTOCOL'],
-                                          $versionMatch))? $versionMatch[1] : '';
-
-        return $protocolVersion;
+        return $this->getVersionFromArray($this->sfWebRequest->getPathInfoArray(), 'SERVER_PROTOCOL');
     }
 
     /**

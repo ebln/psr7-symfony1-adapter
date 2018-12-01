@@ -44,12 +44,7 @@ class Response implements CommonHeadInterface// TODO implements ResponseInterfac
      */
     public function getProtocolVersion()
     {
-        $options         = $this->sfWebResponse->getOptions();
-        $protocolVersion = (isset($options['http_protocol'])
-                            && preg_match('/^HTTP\/(\d\.\d)$/si', $options['http_protocol'],
-                                          $versionMatch))? $versionMatch[1] : '';
-
-        return $protocolVersion;
+        return $this->getVersionFromArray($this->sfWebResponse->getOptions(), 'http_protocol');
     }
 
     /**

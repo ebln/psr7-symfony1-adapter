@@ -62,6 +62,20 @@ trait CommonAdapterTrait
     }
 
     /**
+     * Parsed the protocal version from an internal symfony array
+     *
+     * @param array  $array
+     * @param string $key
+     *
+     * @return string
+     */
+    public function getVersionFromArray(array $array, $key)
+    {
+        return (isset($array[$key])
+                && preg_match('/^HTTP\/(\d\.\d)$/i', $array[$key], $versionMatch))? $versionMatch[1] : '';
+    }
+
+    /**
      * Explodes a HTTP header's value to address PSR-7 arrayfied sub-value approach
      *
      * @param string $line
