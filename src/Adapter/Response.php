@@ -50,8 +50,8 @@ class Response implements CommonHeadInterface// TODO implements ResponseInterfac
     /**
      * @param string $version
      *
-     * @return $this In conflict with PSR-7's immutability paradigm, this method return not a clone but the very same
-     *               instance due to the nature of the underlying adapted symfony object
+     * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
+     *               same instance, due to the nature of the underlying adapted symfony object
      */
     public function withProtocolVersion($version)
     {
@@ -119,8 +119,8 @@ class Response implements CommonHeadInterface// TODO implements ResponseInterfac
     /**
      * @param string $name
      *
-     * @return $this In conflict with PSR-7's immutability paradigm, this method return not a clone but the very same
-     *               instance due to the nature of the underlying adapted symfony object
+     * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
+     *               same instance, due to the nature of the underlying adapted symfony object
      */
     public function withoutHeader($name)
     {
@@ -142,8 +142,8 @@ class Response implements CommonHeadInterface// TODO implements ResponseInterfac
      * @param int    $code
      * @param string $reasonPhrase
      *
-     * @return $this In conflict with PSR-7's immutability paradigm, this method return not a clone but the very same
-     *               instance due to the nature of the underlying adapted symfony object
+     * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
+     *               same instance, due to the nature of the underlying adapted symfony object
      */
     public function withStatus($code, $reasonPhrase = '')
     {
