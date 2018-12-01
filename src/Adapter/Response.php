@@ -50,7 +50,7 @@ class Response implements CommonHeadInterface// TODO implements ResponseInterfac
     {
         $options                  = $this->sfWebResponse->getOptions();
         $options['http_protocol'] = 'HTTP/' . $version;
-        $this->setOptions($options);
+        $this->retroduceOptions($options);
 
         return $this;
     }
@@ -159,7 +159,7 @@ class Response implements CommonHeadInterface// TODO implements ResponseInterfac
      *
      * @param array $options
      */
-    protected function setOptions(array $options)
+    protected function retroduceOptions(array $options)
     {
         if (null === $this->reflexivePropertyOptions) {
             $reflexiveWebResponse           = new \ReflectionObject($this->sfWebResponse);
@@ -179,7 +179,7 @@ class Response implements CommonHeadInterface// TODO implements ResponseInterfac
         $symfonyKey           = $this->normalizeSymfonyHeaderName($name);
         $headers              = $this->sfWebResponse->getHttpHeaders();
         $headers[$symfonyKey] = $this->implodeHeaders($value);
-        $this->setHeaders($headers);
+        $this->retroduceHeaders($headers);
     }
 
     /**
@@ -199,7 +199,7 @@ class Response implements CommonHeadInterface// TODO implements ResponseInterfac
      *
      * @param string[] $headers
      */
-    protected function setHeaders(array $headers)
+    protected function retroduceHeaders(array $headers)
     {
         if (null === $this->reflexivePropertyHeaders) {
             $reflexiveWebResponse           = new \ReflectionObject($this->sfWebResponse);

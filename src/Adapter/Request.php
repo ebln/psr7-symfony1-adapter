@@ -66,7 +66,7 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
     {
         $pathInfoArray                    = $this->sfWebRequest->getPathInfoArray();
         $pathInfoArray['SERVER_PROTOCOL'] = 'HTTP/' . $version;
-        $this->setPathInfoArray($pathInfoArray);
+        $this->retroducePathInfoArray($pathInfoArray);
 
         return $this;
     }
@@ -145,7 +145,7 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
         $keyName       = $this->getPathInfoKey($name);
         $pathInfoArray = $this->sfWebRequest->getPathInfoArray();
         unset($pathInfoArray[$keyName]);
-        $this->setPathInfoArray($pathInfoArray);
+        $this->retroducePathInfoArray($pathInfoArray);
         unset($this->headerNames[$this->normalizeHeaderName($name)]);
 
         return $this;
@@ -265,7 +265,7 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
      *
      * @param array $pathInfo
      */
-    protected function setPathInfoArray(array $pathInfo)
+    protected function retroducePathInfoArray(array $pathInfo)
     {
         if (null === $this->reflexivePropertyPathInfoArray) {
             $reflexiveWebRequest                  = new \ReflectionObject($this->sfWebRequest);
@@ -287,7 +287,7 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
         $keyName                 = $this->getPathInfoKey($name);
         $pathInfoArray           = $this->sfWebRequest->getPathInfoArray();
         $pathInfoArray[$keyName] = $this->implodeHeaders($value);
-        $this->setPathInfoArray($pathInfoArray);
+        $this->retroducePathInfoArray($pathInfoArray);
     }
 
     /**
