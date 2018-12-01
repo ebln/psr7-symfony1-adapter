@@ -5,6 +5,9 @@ namespace brnc\Symfony1\Message\Adapter;
 use brnc\Symfony1\Message\Obligation\SfWebRequestSubsetInterface;
 use Psr\Http\Message\UriInterface;
 
+/**
+ * TODO
+ */
 class Request // TODO implements ServerRequestInterface
 {
     /** @var bool[] */
@@ -48,13 +51,13 @@ class Request // TODO implements ServerRequestInterface
     /**
      * @param array $pathInfo
      */
-    private function setPathInfoArray(array $pathInfo)
+    protected function setPathInfoArray(array $pathInfo)
     {
         $this->reflexivePropertyPathInfoArray->setValue($this->sfWebRequest, $pathInfo);
     }
 
     /**
-     * @inheritdoc.
+     * @return string
      */
     public function getProtocolVersion()
     {
@@ -114,7 +117,7 @@ class Request // TODO implements ServerRequestInterface
      *
      * @return string
      */
-    private function normalizeHeaderName($name)
+    protected function normalizeHeaderName($name)
     {
         return str_replace('_', '-', strtolower($name));
     }
@@ -124,10 +127,10 @@ class Request // TODO implements ServerRequestInterface
      *
      * @return string[]
      */
-    private function explodeHeaderLine($line)
+    protected function explodeHeaderLine($line)
     {
         return array_map(function($v) {
-            return trim($v, " \t");
+            return trim($v, " \t"); // https://tools.ietf.org/html/rfc7230#section-3.2.4
         }, explode(',', $line));
     }
 
@@ -169,7 +172,7 @@ class Request // TODO implements ServerRequestInterface
      * @param string          $name
      * @param string|string[] $value
      */
-    private function setHeader($name, $value)
+    protected function setHeader($name, $value)
     {
         $keyName = $this->getPathInfoKey($name);
 
@@ -183,7 +186,7 @@ class Request // TODO implements ServerRequestInterface
      *
      * @return string
      */
-    private function getPathInfoKey($name)
+    protected function getPathInfoKey($name)
     {
         $keyName = strtoupper(str_replace('-', '_', $name));
         if (!isset(self::$contentHeaders[$name])) {
@@ -250,10 +253,16 @@ class Request // TODO implements ServerRequestInterface
         return $this;
     }
 
+    /**
+     *
+     */
     public function getRequestTarget()
     {
     }
 
+    /**
+     * @param $requestTarget
+     */
     public function withRequestTarget($requestTarget)
     {
     }
@@ -288,12 +297,16 @@ class Request // TODO implements ServerRequestInterface
     }
 
     /**
-     * TODO:!
+     * TODO!
      */
     public function getUri()
     {
     }
 
+    /**
+     * @param UriInterface $uri
+     * @param bool         $preserveHost
+     */
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
     }
@@ -318,6 +331,9 @@ class Request // TODO implements ServerRequestInterface
         return $_COOKIE; // as getCookie() is nothing but a lookup
     }
 
+    /**
+     * @param array $cookies
+     */
     public function withCookieParams(array $cookies)
     {
     }
@@ -330,6 +346,9 @@ class Request // TODO implements ServerRequestInterface
         return $this->sfWebRequest->getGetParameters();
     }
 
+    /**
+     * @param array $query
+     */
     public function withQueryParams(array $query)
     {
     }
