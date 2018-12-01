@@ -6,7 +6,7 @@ namespace brnc\Symfony1\Message\Adapter;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
-class Response implements ResponseInterface
+class Response // TODO implements ResponseInterface
 {
     /** @var \sfWebResponse */
     protected $sfWebResponse;
