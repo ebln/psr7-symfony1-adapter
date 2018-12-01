@@ -40,7 +40,7 @@ class Request // TODO implements ServerRequestInterface
     public function __construct(SfWebRequestSubsetInterface $sfWebRequest)
     {
         $this->sfWebRequest = $sfWebRequest;
-        // init path array
+        // inititialise path array
         $sfWebRequest->getPathInfoArray();
 
         $reflexiveWebRequest                  = new \ReflectionObject($this->sfWebRequest);
@@ -77,6 +77,8 @@ class Request // TODO implements ServerRequestInterface
     }
 
     /**
+     * sets symfony request's pathInfoArray property using reflection
+     *
      * @param array $pathInfo
      */
     protected function setPathInfoArray(array $pathInfo)
@@ -124,6 +126,12 @@ class Request // TODO implements ServerRequestInterface
     }
 
     /**
+     * Explodes a HTTP header's value to address PSR-7 arrayfied sub-value approach
+     *
+     * N.b. duplication of …
+     *
+     * @see Response::explodeHeaderLine()
+     *
      * @param string $line
      *
      * @return string[]
@@ -269,6 +277,7 @@ class Request // TODO implements ServerRequestInterface
     }
 
     /** TODO or maybe not
+     *
      * @param $requestTarget
      */
     public function withRequestTarget($requestTarget)
@@ -311,6 +320,7 @@ class Request // TODO implements ServerRequestInterface
     }
 
     /** TODO or maybe not
+     *
      * @param UriInterface $uri
      * @param bool         $preserveHost
      */
@@ -339,6 +349,7 @@ class Request // TODO implements ServerRequestInterface
     }
 
     /** TODO or maybe not
+     *
      * @param array $cookies
      */
     public function withCookieParams(array $cookies)
@@ -354,6 +365,7 @@ class Request // TODO implements ServerRequestInterface
     }
 
     /** TODO or maybe not
+     *
      * @param array $query
      */
     public function withQueryParams(array $query)
