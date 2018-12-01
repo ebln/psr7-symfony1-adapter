@@ -21,6 +21,9 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
     /** @var \ReflectionProperty */
     protected $reflexivePropertyPathInfoArray;
 
+    /** @var mixed[] */
+    protected $attributes;
+
     /**
      * @var string
      *
@@ -54,8 +57,8 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
     /**
      * @param string $version
      *
-     * @return $this In conflict with PSR-7's immutability paradigm, this method return not a clone but the very same
-     *               instance due to the nature of the underlying adapted symfony object
+     * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
+     *               same instance, due to the nature of the underlying adapted symfony object
      */
     public function withProtocolVersion($version)
     {
@@ -132,8 +135,8 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
     /**
      * @param string $name
      *
-     * @return $this In conflict with PSR-7's immutability paradigm, this method return not a clone but the very same
-     *               instance due to the nature of the underlying adapted symfony object
+     * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
+     *               same instance, due to the nature of the underlying adapted symfony object
      */
     public function withoutHeader($name)
     {
@@ -163,8 +166,8 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
     /**
      * @param string $method
      *
-     * @return $this In conflict with PSR-7's immutability paradigm, this method return not a clone but the very same
-     *               instance due to the nature of the underlying adapted symfony object
+     * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
+     *               same instance, due to the nature of the underlying adapted symfony object
      */
     public function withMethod($method)
     {
@@ -208,6 +211,51 @@ class Request implements CommonHeadInterface // TODO implements ServerRequestInt
     public function getParsedBody()
     {
         return $this->sfWebRequest->getPostParameters();
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function getAttributes()
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * @param string $name
+     * @param null   $default
+     *
+     * @return mixed
+     */
+    public function getAttribute($name, $default = null)
+    {
+        return array_key_exists($name, $this->attributes)? $this->attributes[$name] : $default;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @param  mixed $value
+     *
+     * @return $this In conflict with PSR-7's immutability paradigm, this method doesn't return a clone but the instance
+     */
+    public function withAttribute($name, $value)
+    {
+        $this->attributes[$name] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return $this In conflict with PSR-7's immutability paradigm, this method doesn't return a clone but the instance
+     */
+    public function withoutAttribute($name)
+    {
+        unset($this->attributes[$name]);
+
+        return $this;
     }
 
     /**
