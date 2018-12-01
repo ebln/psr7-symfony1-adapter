@@ -7,9 +7,7 @@ use brnc\Symfony1\Message\Obligation\SfWebResponseSubsetInterface;
 
 class Response // TODO implements ResponseInterface
 {
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     protected static $defaultReasonPhrases = [
         308 => 'Permanent Redirect', // defined in RFC-7538
     ];
@@ -31,8 +29,6 @@ class Response // TODO implements ResponseInterface
     protected $headerNames = [];
 
     /**
-     * TODO ad minimal interface!
-     *
      * @param \sfWebResponse|SfWebResponseSubsetInterface $sfWebResponse
      */
     public function __construct(SfWebResponseSubsetInterface $sfWebResponse)
@@ -63,7 +59,8 @@ class Response // TODO implements ResponseInterface
     /**
      * @param string $version
      *
-     * @return static
+     * @return $this In conflict with PSR-7's immutability paradigm, this method return not a clone but the very same
+     *               instance due to the nature of the underlying adapted symfony object
      */
     public function withProtocolVersion($version)
     {
@@ -130,7 +127,8 @@ class Response // TODO implements ResponseInterface
      * @param string          $name
      * @param string|string[] $value
      *
-     * @return static
+     * @return $this In conflict with PSR-7's immutability paradigm, this method return not a clone but the very same
+     *               instance due to the nature of the underlying adapted symfony object
      */
     public function withAddedHeader($name, $value)
     {
@@ -163,17 +161,19 @@ class Response // TODO implements ResponseInterface
     }
 
     /**
+     * N.b. this is *not* applying the extra call to fixContentType() by setHttpHeader()
+     *
      * @param string          $name
      * @param string|string[] $value
      *
-     * @return static
+     * @return $this In conflict with PSR-7's immutability paradigm, this method return not a clone but the very same
+     *               instance due to the nature of the underlying adapted symfony object
      */
     public function withHeader($name, $value)
     {
         // TODO had header name validation! (would be only valid for shadow)
         $this->headerNames[$this->normalizeHeaderName($name)] = $name;
         $this->setHeader($name, $value); // raw access
-        // $this->sfWebResponse->setHttpHeader($name, $value, true); // for using the fixContentType() extra mile
 
         return $this;
     }
@@ -234,7 +234,8 @@ class Response // TODO implements ResponseInterface
     /**
      * @param string $name
      *
-     * @return static
+     * @return $this In conflict with PSR-7's immutability paradigm, this method return not a clone but the very same
+     *               instance due to the nature of the underlying adapted symfony object
      */
     public function withoutHeader($name)
     {
@@ -256,7 +257,8 @@ class Response // TODO implements ResponseInterface
      * @param int    $code
      * @param string $reasonPhrase
      *
-     * @return static
+     * @return $this In conflict with PSR-7's immutability paradigm, this method return not a clone but the very same
+     *               instance due to the nature of the underlying adapted symfony object
      */
     public function withStatus($code, $reasonPhrase = '')
     {

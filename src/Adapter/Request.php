@@ -64,7 +64,8 @@ class Request // TODO implements ServerRequestInterface
     /**
      * @param string $version
      *
-     * @return static
+     * @return $this In conflict with PSR-7's immutability paradigm, this method return not a clone but the very same
+     *               instance due to the nature of the underlying adapted symfony object
      */
     public function withProtocolVersion($version)
     {
@@ -150,7 +151,8 @@ class Request // TODO implements ServerRequestInterface
      * @param string          $name
      * @param string|string[] $value
      *
-     * @return static
+     * @return $this In conflict with PSR-7's immutability paradigm, this method return not a clone but the very same
+     *               instance due to the nature of the underlying adapted symfony object
      */
     public function withAddedHeader($name, $value)
     {
@@ -186,7 +188,8 @@ class Request // TODO implements ServerRequestInterface
      * @param string          $name
      * @param string|string[] $value
      *
-     * @return static
+     * @return $this In conflict with PSR-7's immutability paradigm, this method return not a clone but the very same
+     *               instance due to the nature of the underlying adapted symfony object
      */
     public function withHeader($name, $value)
     {
@@ -244,7 +247,8 @@ class Request // TODO implements ServerRequestInterface
     /**
      * @param string $name
      *
-     * @return static
+     * @return $this In conflict with PSR-7's immutability paradigm, this method return not a clone but the very same
+     *               instance due to the nature of the underlying adapted symfony object
      */
     public function withoutHeader($name)
     {
@@ -288,7 +292,8 @@ class Request // TODO implements ServerRequestInterface
     /**
      * @param string $method
      *
-     * @return static
+     * @return $this In conflict with PSR-7's immutability paradigm, this method return not a clone but the very same
+     *               instance due to the nature of the underlying adapted symfony object
      */
     public function withMethod($method)
     {
