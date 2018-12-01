@@ -7,8 +7,14 @@ use brnc\Symfony1\Message\Obligation\SfWebRequestSubsetInterface;
 
 /**
  * TODO
+ *      Proper Interface
+ *      Cookie handling
+ *          Cookie Abstraction
+ *              including Header transcription
+ *      Make this abstract and use falsification traits to fake PSR-7 compliance
+ *          as well as to suggest extentions, to contruct from sfWebRequest
  */
-class Request implements CommonHeadInterface // TODO implements ServerRequestInterface
+class Request implements CommonHeadInterface
 {
     use CommonAdapterTrait;
     CONST ATTRIBUTE_SF_WEB_REQUEST = 'sfWebRequest';

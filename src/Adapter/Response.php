@@ -1,12 +1,22 @@
 <?php
 
-// TODO – access raw-request, access, cookies?
 namespace brnc\Symfony1\Message\Adapter;
 
 use brnc\Contract\Http\Message\CommonHeadInterface;
 use brnc\Symfony1\Message\Obligation\SfWebResponseSubsetInterface;
 
-class Response implements CommonHeadInterface// TODO implements ResponseInterface
+/**
+ * TODO
+ *      Proper Interface
+ *      Cookie handling
+ *          Access raw Response?
+ *          Cookie Abstraction
+ *              including Header transcription
+ *      ResponseProxy
+ *      Make this abstract and use falsification traits to fake PSR-7 compliance
+ *          as well as to suggest extentions, to contruct from sfWebRequest
+ */
+class Response implements CommonHeadInterface
 {
     use CommonAdapterTrait;
 
