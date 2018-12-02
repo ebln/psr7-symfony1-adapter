@@ -87,7 +87,7 @@ class RequestReadingTest extends TestCase
     public function provideHeaderTestData()
     {
         return [
-            'happy case' => [
+            'happy case'            => [
                 'request'              => [
                     'method' => '',
                     'server' => [
@@ -101,6 +101,74 @@ class RequestReadingTest extends TestCase
                 'expect getHeaderLine' => 'foo, bar',
                 'expect headers'       => [
                     'x-test' => ['foo', 'bar'],
+                ],
+            ],
+            'Content-Type set'      => [
+                'request'              => [
+                    'method' => '',
+                    'server' => [
+                        'SERVER_PROTOCOL'       => 'HTTP/1.0',
+                        'CONTENT_TYPE'          => 'multipart/form-data; boundary=foobar',
+                        'HTTP_X_ANOTHER_HEADER' => 'was set',
+                    ],
+                ],
+                'test for header'      => 'Content-Type',
+                'expect hasHeader'     => true,
+                'expect getHeader'     => ['multipart/form-data; boundary=foobar'],
+                'expect getHeaderLine' => 'multipart/form-data; boundary=foobar',
+                'expect headers'       => [
+                    'content-type'     => ['multipart/form-data; boundary=foobar'],
+                    'x-another-header' => ['was set'],
+                ],
+            ],
+            'Content-Type not set'  => [
+                'request'              => [
+                    'method' => '',
+                    'server' => [
+                        'SERVER_PROTOCOL'       => 'HTTP/1.0',
+                        'HTTP_CONTENT_TYPE'     => 'BOGUS',
+                        'HTTP_X_ANOTHER_HEADER' => 'was set',
+                    ],
+                ],
+                'test for header'      => 'Content-Type',
+                'expect hasHeader'     => false,
+                'expect getHeader'     => [],
+                'expect getHeaderLine' => '',
+                'expect headers'       => [
+                    'content-type'     => ['BOGUS'],
+                    'x-another-header' => ['was set'],
+                ],
+            ],
+            'Content-Type Quirk I'  => [
+                'request'              => [
+                    'method' => '',
+                    'server' => [
+                        'HTTP_CONTENT_TYPE' => 'BOGUS (is overridden by following)',
+                        'CONTENT_TYPE'      => 'multipart/form-data; boundary=foobar',
+                    ],
+                ],
+                'test for header'      => 'Content-Type',
+                'expect hasHeader'     => true,
+                'expect getHeader'     => ['multipart/form-data; boundary=foobar'],
+                'expect getHeaderLine' => 'multipart/form-data; boundary=foobar',
+                'expect headers'       => [
+                    'content-type' => ['multipart/form-data; boundary=foobar'],
+                ],
+            ],
+            'Content-Type Quirk II' => [
+                'request'              => [
+                    'method' => '',
+                    'server' => [
+                        'CONTENT_TYPE'      => 'multipart/form-data; boundary=foobar',
+                        'HTTP_CONTENT_TYPE' => 'BOGUS HEADER!',
+                    ],
+                ],
+                'test for header'      => 'Content-Type',
+                'expect hasHeader'     => true,
+                'expect getHeader'     => ['multipart/form-data; boundary=foobar'],
+                'expect getHeaderLine' => 'multipart/form-data; boundary=foobar',
+                'expect headers'       => [
+                    'content-type' => ['BOGUS HEADER!'], // while getHeader & getHeaderLine report fine
                 ],
             ],
         ];

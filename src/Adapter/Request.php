@@ -112,7 +112,7 @@ class Request implements CommonHeadInterface
      */
     public function getHeaderLine($name)
     {
-        $value = $this->sfWebRequest->getHttpHeader($name);
+        $value = $this->sfWebRequest->getHttpHeader($name, $this->getPathInfoPrefix($name));
 
         return $value === null? '' : $value;
     }
@@ -124,7 +124,7 @@ class Request implements CommonHeadInterface
      */
     public function hasHeader($name)
     {
-        return null !== $this->sfWebRequest->getHttpHeader($name);
+        return null !== $this->sfWebRequest->getHttpHeader($name, $this->getPathInfoPrefix($name));
     }
 
     /**
@@ -134,7 +134,7 @@ class Request implements CommonHeadInterface
      */
     public function getHeader($name)
     {
-        $value = $this->sfWebRequest->getHttpHeader($name);
+        $value = $this->sfWebRequest->getHttpHeader($name, $this->getPathInfoPrefix($name));
 
         return $value === null? [] : $this->explodeHeaderLine($value);
     }
@@ -310,5 +310,22 @@ class Request implements CommonHeadInterface
         }
 
         return $keyName;
+    }
+
+    /**
+     * in order to also obtain content headers via getHttpHeader()
+     *
+     * @param string $name
+     *
+     * @return string|null
+     */
+    protected function getPathInfoPrefix($name)
+    {
+        $keyName = strtoupper(str_replace('-', '_', $name));
+        if (isset(self::$contentHeaders[$keyName])) {
+            return null;
+        }
+
+        return 'HTTP';
     }
 }

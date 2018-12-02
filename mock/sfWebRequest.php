@@ -79,7 +79,7 @@ class sfWebRequest implements \brnc\Symfony1\Message\Obligation\SfWebRequestSubs
      */
     public function getHttpHeader($name, $prefix = 'HTTP')
     {
-        $key = strtoupper(str_replace('-', '_', (empty($prefix)? '' :$prefix . '_') . $name));
+        $key = strtoupper(str_replace('-', '_', ($prefix? $prefix . '_' : '') . $name));
 
         return isset($this->pathInfoArray[$key])? $this->pathInfoArray[$key] : null;
     }
