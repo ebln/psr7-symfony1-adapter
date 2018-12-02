@@ -6,3 +6,4 @@
 /vendor             export-ignore
 /.idea              export-ignore
 /*.tar              export-ignore
+/mock               export-ignore
