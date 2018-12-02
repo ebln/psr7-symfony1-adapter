@@ -306,8 +306,8 @@ class Request implements CommonHeadInterface
     protected function getPathInfoKey($name)
     {
         $keyName = strtoupper(str_replace('-', '_', $name));
-        if (!isset(self::$contentHeaders[$name])) {
-            $keyName = 'HTTP_' . $name;
+        if (!isset(self::$contentHeaders[$keyName])) {
+            $keyName = 'HTTP_' . $keyName;
         }
 
         return $keyName;
