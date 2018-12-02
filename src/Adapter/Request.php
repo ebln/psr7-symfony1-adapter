@@ -3,7 +3,6 @@
 namespace brnc\Symfony1\Message\Adapter;
 
 use brnc\Contract\Http\Message\CommonHeadInterface;
-use brnc\Symfony1\Message\Obligation\SfWebRequestSubsetInterface;
 
 /**
  * TODO

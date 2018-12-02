@@ -3,14 +3,10 @@
 namespace brnc\Tests\Symfony1\Message\Adapter;
 
 use brnc\Symfony1\Message\Adapter\Request;
-use brnc\Symfony1\Message\Obligation\SfWebRequestSubsetProxy;
-use brnc\Tests\Symfony1\Message\Obligation\MockSfWebRequestSubsetTrait;
 use PHPUnit\Framework\TestCase;
 
-class RequestAdapterReadingTest extends TestCase
+class RequestReadingTest extends TestCase
 {
-    use MockSfWebRequestSubsetTrait;
-
     /**
      * @param array  $request
      * @param string $headerName
