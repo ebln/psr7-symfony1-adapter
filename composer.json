@@ -29,7 +29,8 @@
     "autoload-dev": {
         "psr-4": {
             "brnc\\Tests\\Symfony1\\Message\\": "tests/"
-        }
+        },
+        "files": ["mock/sfWebRequest.php"]
     },
     "scripts": {
         "phpunit": "phpunit --coverage-text",

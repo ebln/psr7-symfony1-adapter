@@ -28,12 +28,6 @@ interface SfWebRequestSubsetInterface
     /**  @return  array */
     public function getRequestParameters();
 
-    /**  @return  SfParameterHolderSubsetInterface */
-    public function getAttributeHolder();
-
-    /**  @return  SfParameterHolderSubsetInterface */
-    public function getParameterHolder();
-
     /**  @return  array */
     public function getGetParameters();
 

@@ -5,6 +5,8 @@ namespace brnc\Symfony1\Message\Obligation;
 /**
  * Transparent proxy to wrap \sfWebRequest just once in order to
  * completely rely on the sfWebRequestSubsetInterface afterwards esp. by means of type hinting
+ *
+ * @deprecated use \sfWebRequest instead
  */
 class SfWebRequestSubsetProxy implements SfWebRequestSubsetInterface
 {

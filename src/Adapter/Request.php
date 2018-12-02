@@ -22,7 +22,7 @@ class Request implements CommonHeadInterface
     /** @var bool[] */
     protected static $contentHeaders = ['CONTENT_LENGTH' => true, 'CONTENT_MD5' => true, 'CONTENT_TYPE' => true];
 
-    /** @var \sfWebRequest|SfWebRequestSubsetInterface */
+    /** @var \sfWebRequest */
     protected $sfWebRequest;
 
     /** @var \ReflectionProperty */
@@ -40,10 +40,10 @@ class Request implements CommonHeadInterface
     protected $method;
 
     /**
-     * @param SfWebRequestSubsetInterface $sfWebRequest
-     * @param bool                        $populateAttributes
+     * @param \sfWebRequest $sfWebRequest
+     * @param bool          $populateAttributes
      */
-    public function __construct(SfWebRequestSubsetInterface $sfWebRequest, $populateAttributes = false)
+    public function __construct(\sfWebRequest $sfWebRequest, $populateAttributes = false)
     {
         $this->sfWebRequest = $sfWebRequest;
         // inititialise path array

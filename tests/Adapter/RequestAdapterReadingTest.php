@@ -23,12 +23,11 @@ class RequestAdapterReadingTest extends TestCase
      */
     public function testHasHeader(array $request, $headerName, $hasHeader, $getHeader, $getHeaderLine, $expectedHeaders)
     {
-        $sfWebRequest       =
-            $this->createSfWebRequestSubsetMock($request['method'], $request['version'], $request['headers']);
+        $sfWebRequest = new \sfWebRequest();
+        $sfWebRequest->prepare($request['method'], $request['server']);
         $readingRequestMock = new Request($sfWebRequest);
-        $this->assertSame($hasHeader, $readingRequestMock->hasHeader($headerName), 'before calling getHeaders()');
-        $readingRequestMock->getHeaders();
-        $this->assertSame($hasHeader, $readingRequestMock->hasHeader($headerName), 'after calling getHeaders()');
+
+        $this->assertSame($hasHeader, $readingRequestMock->hasHeader($headerName));
     }
 
     /**
@@ -43,12 +42,10 @@ class RequestAdapterReadingTest extends TestCase
      */
     public function testGetHeader(array $request, $headerName, $hasHeader, $getHeader, $getHeaderLine, $expectedHeaders)
     {
-        $sfWebRequest       =
-            $this->createSfWebRequestSubsetMock($request['method'], $request['version'], $request['headers']);
+        $sfWebRequest = new \sfWebRequest();
+        $sfWebRequest->prepare($request['method'], $request['server']);
         $readingRequestMock = new Request($sfWebRequest);
-        $this->assertSame($getHeader, $readingRequestMock->getHeader($headerName), 'before calling getHeaders()');
-        $readingRequestMock->getHeaders();
-        $this->assertSame($getHeader, $readingRequestMock->getHeader($headerName), 'after calling getHeaders()');
+        $this->assertSame($getHeader, $readingRequestMock->getHeader($headerName));
     }
 
     /**
@@ -64,14 +61,10 @@ class RequestAdapterReadingTest extends TestCase
     public function testGetHeaderLine(array $request, $headerName, $hasHeader, $getHeader, $getHeaderLine,
                                       $expectedHeaders
     ) {
-        $sfWebRequest       =
-            $this->createSfWebRequestSubsetMock($request['method'], $request['version'], $request['headers']);
+        $sfWebRequest = new \sfWebRequest();
+        $sfWebRequest->prepare($request['method'], $request['server']);
         $readingRequestMock = new Request($sfWebRequest);
-        $this->assertSame($getHeaderLine, $readingRequestMock->getHeaderLine($headerName),
-                          'before calling getHeaders()');
-        $readingRequestMock->getHeaders();
-        $this->assertSame($getHeaderLine, $readingRequestMock->getHeaderLine($headerName),
-                          'after calling getHeaders()');
+        $this->assertSame($getHeaderLine, $readingRequestMock->getHeaderLine($headerName));
     }
 
     /**
@@ -86,31 +79,9 @@ class RequestAdapterReadingTest extends TestCase
      */
     public function testGetHeaders(array $request, $headerName, $hasHeader, $getHeader, $getHeaderLine, $expectedHeaders
     ) {
-        $sfWebRequest       =
-            $this->createSfWebRequestSubsetMock($request['method'], $request['version'], $request['headers']);
+        $sfWebRequest = new \sfWebRequest();
+        $sfWebRequest->prepare($request['method'], $request['server']);
         $readingRequestMock = new Request($sfWebRequest);
-        $this->assertSame($expectedHeaders, $readingRequestMock->getHeaders($headerName));
-    }
-
-    /**
-     * NOTE: this actually belongs to an own test for sfWebRequestSubsetProxy
-     *
-     * @param array  $request
-     * @param string $headerName
-     * @param bool   $hasHeader
-     * @param string $getHeader
-     * @param string $getHeaderLine
-     * @param array  $expectedHeaders
-     *
-     * @dataProvider provideHeaderTestData
-     */
-    public function testSfWebRequestSubsetProxyGetHeaders(array $request, $headerName, $hasHeader, $getHeader,
-                                                          $getHeaderLine, $expectedHeaders
-    ) {
-        $sfWebRequest       =
-            $this->createSfWebRequestSubsetMock($request['method'], $request['version'], $request['headers']);
-        $proxy              = SfWebRequestSubsetProxy::create($sfWebRequest);
-        $readingRequestMock = new Request($proxy);
         $this->assertSame($expectedHeaders, $readingRequestMock->getHeaders($headerName));
     }
 
@@ -122,10 +93,10 @@ class RequestAdapterReadingTest extends TestCase
         return [
             'happy case' => [
                 'request'              => [
-                    'method'  => '',
-                    'version' => '1.0',
-                    'headers' => [
-                        'X-Test' => 'foo, bar',
+                    'method' => '',
+                    'server' => [
+                        'SERVER_PROTOCOL' => 'HTTP/1.0',
+                        'HTTP_X_TEST'     => 'foo, bar',
                     ],
                 ],
                 'test for header'      => 'X-Test',
@@ -147,8 +118,8 @@ class RequestAdapterReadingTest extends TestCase
      */
     public function testGetProtocolVersion(array $request, $expectedVersion)
     {
-        $sfWebRequest       =
-            $this->createSfWebRequestSubsetMock($request['method'], $request['version'], $request['headers']);
+        $sfWebRequest = new \sfWebRequest();
+        $sfWebRequest->prepare($request['method'], $request['server']);
         $readingRequestMock = new Request($sfWebRequest);
         $this->assertSame($expectedVersion, $readingRequestMock->getProtocolVersion());
     }
@@ -161,41 +132,49 @@ class RequestAdapterReadingTest extends TestCase
         return [
             'happy case'                                                                     => [
                 'request'          => [
-                    'version' => '1.0',
-                    'method'  => '',
-                    'headers' => [],
+                    'server' => [
+                        'SERVER_PROTOCOL' => 'HTTP/1.0',
+                    ],
+                    'method' => '',
+
                 ],
                 'expected version' => '1.0',
             ],
             'empty string → due to symfony\'s own fallback to \'\''                          => [
                 'request'          => [
-                    'version' => '',
-                    'method'  => '',
-                    'headers' => [],
+                    'server' => [
+                        'SERVER_PROTOCOL' => 'HTTP/',
+                    ],
+                    'method' => '',
+
                 ],
                 'expected version' => '',
             ],
             'null → due to symfony\'s own fallback to \'\''                                  => [
                 'request'          => [
-                    'version' => null,
-                    'method'  => '',
-                    'headers' => [],
+                    'server' => [],
+                    'method' => '',
+
                 ],
                 'expected version' => '',
             ],
             'Not number dot number I → empty string: due to symfony\'s own check to \d\.\d'  => [
                 'request'          => [
-                    'version' => 'foo bar baz',
-                    'method'  => 'x.9',
-                    'headers' => [],
+                    'method' => 'x.9',
+                    'server' => [
+                        'SERVER_PROTOCOL' => 'HTTP/foo bar baz',
+                    ],
+
                 ],
                 'expected version' => '',
             ],
             'Not number dot number II → empty string: due to symfony\'s own check to \d\.\d' => [
                 'request'          => [
-                    'version' => 'foo bar baz',
-                    'method'  => '5.y',
-                    'headers' => [],
+                    'method' => '5.y',
+                    'server' => [
+                        'SERVER_PROTOCOL' => 'foo bar baz',
+                    ],
+
                 ],
                 'expected version' => '',
             ],

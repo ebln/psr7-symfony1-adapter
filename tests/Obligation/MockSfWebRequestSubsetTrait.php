@@ -51,13 +51,13 @@ trait MockSfWebRequestSubsetTrait
         $requestProphecy->getRequestParameters()->willReturn([]);
         $requestProphecy->getGetParameters()->willReturn([]);
         $requestProphecy->getPostParameters()->willReturn([]);
-        // mock now-unused other methods returning sfParameterHolder
-        $attributeHolderMock = $this->prophesize(SfParameterHolderSubsetInterface::class);
-        $attributeHolderMock->getAll()->willReturn([]);
-        $requestProphecy->getAttributeHolder()->willReturn($attributeHolderMock->reveal());
-        $parameterHolderMock = $this->prophesize(SfParameterHolderSubsetInterface::class);
-        $parameterHolderMock->getAll()->willReturn([]);
-        $requestProphecy->getParameterHolder()->willReturn($parameterHolderMock->reveal());
+        // // mock now-unused other methods returning sfParameterHolder
+        // $attributeHolderMock = $this->prophesize(SfParameterHolderSubsetInterface::class);
+        // $attributeHolderMock->getAll()->willReturn([]);
+        // $requestProphecy->getAttributeHolder()->willReturn($attributeHolderMock->reveal());
+        // $parameterHolderMock = $this->prophesize(SfParameterHolderSubsetInterface::class);
+        // $parameterHolderMock->getAll()->willReturn([]);
+        // $requestProphecy->getParameterHolder()->willReturn($parameterHolderMock->reveal());
 
         return $requestProphecy->reveal();
     }
