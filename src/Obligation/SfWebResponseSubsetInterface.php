@@ -4,27 +4,15 @@
 namespace brnc\Symfony1\Message\Obligation;
 
 /**
- *
+ * Subset of sfWebResponse, just enough to enable self-sufficent testing
  */
 interface SfWebResponseSubsetInterface
 {
-    /**
-     * @return array
-     */
-    public function getOptions();
+    /** @return int */
+    public function getStatusCode();
 
-    /**
-     * @param  string $name
-     * @param  string $value
-     * @param  string $expire
-     * @param  string $path
-     * @param  string $domain
-     * @param  bool   $secure
-     * @param  bool   $httpOnly
-     */
-    public function setCookie($name, $value, $expire = null, $path = '/', $domain = '', $secure = false,
-                              $httpOnly = false
-    );
+    /** @return string */
+    public function getStatusText();
 
     /**
      * @param string      $code
@@ -32,23 +20,15 @@ interface SfWebResponseSubsetInterface
      */
     public function setStatusCode($code, $name = null);
 
-    /**
-     * @return string
-     */
-    public function getStatusText();
-
-    /**
-     * @return integer
-     */
-    public function getStatusCode();
+    /** @return string[] */
+    public function getHttpHeaders();
 
     /**
      * @param string $name
-     * @param string $value
-     * @param bool   $replace
      *
+     * @return bool
      */
-    public function setHttpHeader($name, $value, $replace = true);
+    public function hasHttpHeader($name);
 
     /**
      * @param  string $name
@@ -60,18 +40,28 @@ interface SfWebResponseSubsetInterface
 
     /**
      * @param string $name
+     * @param string $value
+     * @param bool   $replace
      *
-     * @return bool
      */
-    public function hasHttpHeader($name);
+    public function setHttpHeader($name, $value, $replace = true);
 
-    /**
-     * @return array
-     */
+    /** @return array */
+    public function getOptions();
+
+    /** @return array */
     public function getCookies();
 
     /**
-     * @return string[]
+     * @param  string          $name
+     * @param  string          $value
+     * @param  int|string|null $expire
+     * @param  string          $path
+     * @param  string          $domain
+     * @param  bool            $secure
+     * @param  bool            $httpOnly
      */
-    public function getHttpHeaders();
+    public function setCookie($name, $value, $expire = null, $path = '/', $domain = '', $secure = false,
+                              $httpOnly = false
+    );
 }

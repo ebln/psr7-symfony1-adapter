@@ -3,7 +3,7 @@
 namespace brnc\Symfony1\Message\Obligation;
 
 /**
- * subset of sfWebRequest
+ * Subset of sfWebRequest, just enough to enable self-sufficent testing
  */
 interface SfWebRequestSubsetInterface
 {

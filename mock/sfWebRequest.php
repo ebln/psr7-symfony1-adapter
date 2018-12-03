@@ -1,5 +1,8 @@
-<?php
+<?php /** @noinspection PhpUnusedParameterInspection */
 
+/**
+ * Minimal mock of symfony's sfWebRequest to enable standalone testing
+ */
 class sfWebRequest implements \brnc\Symfony1\Message\Obligation\SfWebRequestSubsetInterface
 {
     /** @var string */
@@ -31,7 +34,7 @@ class sfWebRequest implements \brnc\Symfony1\Message\Obligation\SfWebRequestSubs
      * @param array $attributes
      * @param array $options
      */
-    public function __construct($dispatcher = null, $parameters = array(), $attributes = array(), $options = array())
+    public function __construct($dispatcher = null, $parameters = [], $attributes = [], $options = [])
     {
         $this->options = $options;
     }
