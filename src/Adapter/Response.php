@@ -3,7 +3,6 @@
 namespace brnc\Symfony1\Message\Adapter;
 
 use brnc\Contract\Http\Message\CommonHeadInterface;
-use brnc\Symfony1\Message\Obligation\SfWebResponseSubsetInterface;
 
 /**
  * TODO
@@ -25,7 +24,7 @@ class Response implements CommonHeadInterface
         308 => 'Permanent Redirect', // defined in RFC-7538
     ];
 
-    /** @var \sfWebResponse|SfWebResponseSubsetInterface */
+    /** @var \sfWebResponse */
     protected $sfWebResponse;
 
     /** @var \ReflectionProperty */
@@ -35,9 +34,9 @@ class Response implements CommonHeadInterface
     protected $reflexivePropertyHeaders;
 
     /**
-     * @param \sfWebResponse|SfWebResponseSubsetInterface $sfWebResponse
+     * @param \sfWebResponse $sfWebResponse
      */
-    public function __construct(SfWebResponseSubsetInterface $sfWebResponse)
+    public function __construct(\sfWebResponse $sfWebResponse)
     {
         $this->sfWebResponse = $sfWebResponse;
     }
