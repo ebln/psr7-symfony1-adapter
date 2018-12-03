@@ -10,6 +10,7 @@ use brnc\Contract\Http\Message\CommonHeadInterface;
  *      Cookie handling
  *          Cookie Abstraction
  *              including Header transcription
+ *      Request Target and URI handling (using guzzle PSR-7?)
  *      Make this abstract and use falsification traits to fake PSR-7 compliance
  *          as well as to suggest extentions, to contruct from sfWebRequest
  */
