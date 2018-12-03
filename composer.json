@@ -30,7 +30,7 @@
         "psr-4": {
             "brnc\\Tests\\Symfony1\\Message\\": "tests/"
         },
-        "files": ["mock/sfWebRequest.php"]
+        "files": ["mock/sfWebRequest.php", "mock/sfWebResponse.php"]
     },
     "scripts": {
         "phpunit": "phpunit --coverage-text",
