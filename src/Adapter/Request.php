@@ -87,8 +87,7 @@ class Request implements CommonHeadInterface
             $useKey = null;
             if (strpos($key, 'HTTP_') === 0) {
                 $useKey = substr($key, 5);
-            }
-            elseif (isset(self::$contentHeaders[$key])) {
+            } elseif (isset(self::$contentHeaders[$key])) {
                 $useKey = $key;
             }
 
@@ -115,7 +114,7 @@ class Request implements CommonHeadInterface
     {
         $value = $this->sfWebRequest->getHttpHeader($name, $this->getPathInfoPrefix($name));
 
-        return $value === null? '' : $value;
+        return $value === null ? '' : $value;
     }
 
     /**
@@ -137,7 +136,7 @@ class Request implements CommonHeadInterface
     {
         $value = $this->sfWebRequest->getHttpHeader($name, $this->getPathInfoPrefix($name));
 
-        return $value === null? [] : $this->explodeHeaderLine($value);
+        return $value === null ? [] : $this->explodeHeaderLine($value);
     }
 
     /**
@@ -237,7 +236,7 @@ class Request implements CommonHeadInterface
      */
     public function getAttribute($name, $default = null)
     {
-        return array_key_exists($name, $this->attributes)? $this->attributes[$name] : $default;
+        return array_key_exists($name, $this->attributes) ? $this->attributes[$name] : $default;
     }
 
     /**

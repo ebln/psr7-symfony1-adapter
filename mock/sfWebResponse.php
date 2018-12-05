@@ -70,8 +70,7 @@ class sfWebResponse implements \brnc\Symfony1\Message\Obligation\SfWebResponseSu
                 default:
                     $this->reasonPhrase = 'No reason phrase given';
             }
-        }
-        else {
+        } else {
             $this->reasonPhrase = $name;
         }
     }
@@ -102,7 +101,7 @@ class sfWebResponse implements \brnc\Symfony1\Message\Obligation\SfWebResponseSu
     {
         $normalizedName = $this->normalizeHeaderName($name);
 
-        return isset($this->headers[$normalizedName])? $this->headers[$normalizedName] : $default;
+        return isset($this->headers[$normalizedName]) ? $this->headers[$normalizedName] : $default;
     }
 
     /**
@@ -153,8 +152,14 @@ class sfWebResponse implements \brnc\Symfony1\Message\Obligation\SfWebResponseSu
      * @param bool   $secure
      * @param bool   $httpOnly
      */
-    public function setCookie($name, $value, $expire = null, $path = '/', $domain = '', $secure = false,
-                              $httpOnly = false
+    public function setCookie(
+        $name,
+        $value,
+        $expire = null,
+        $path = '/',
+        $domain = '',
+        $secure = false,
+        $httpOnly = false
     ) {
         // skipping original verification of expiration
         $this->cookies[$name] = [
@@ -163,7 +168,7 @@ class sfWebResponse implements \brnc\Symfony1\Message\Obligation\SfWebResponseSu
             'expire'   => $expire,
             'path'     => $path,
             'domain'   => $domain,
-            'secure'   => $secure? true : false,
+            'secure'   => $secure ? true : false,
             'httpOnly' => $httpOnly,
         ];
     }

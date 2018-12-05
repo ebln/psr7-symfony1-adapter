@@ -54,8 +54,13 @@ class RequestReadingTest extends TestCase
      *
      * @dataProvider provideHeaderTestData
      */
-    public function testGetHeaderLine(array $request, $headerName, $hasHeader, $getHeader, $getHeaderLine,
-                                      $expectedHeaders
+    public function testGetHeaderLine(
+        array $request,
+        $headerName,
+        $hasHeader,
+        $getHeader,
+        $getHeaderLine,
+        $expectedHeaders
     ) {
         $sfWebRequest = new \sfWebRequest();
         $sfWebRequest->prepare($request['method'], $request['server']);
@@ -73,7 +78,13 @@ class RequestReadingTest extends TestCase
      *
      * @dataProvider provideHeaderTestData
      */
-    public function testGetHeaders(array $request, $headerName, $hasHeader, $getHeader, $getHeaderLine, $expectedHeaders
+    public function testGetHeaders(
+        array $request,
+        $headerName,
+        $hasHeader,
+        $getHeader,
+        $getHeaderLine,
+        $expectedHeaders
     ) {
         $sfWebRequest = new \sfWebRequest();
         $sfWebRequest->prepare($request['method'], $request['server']);

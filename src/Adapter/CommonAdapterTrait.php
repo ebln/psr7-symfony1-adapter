@@ -1,6 +1,5 @@
 <?php
 
-
 namespace brnc\Symfony1\Message\Adapter;
 
 trait CommonAdapterTrait
@@ -66,7 +65,7 @@ trait CommonAdapterTrait
     public function getVersionFromArray(array $array, $key)
     {
         return (isset($array[$key])
-                && preg_match('/^HTTP\/(\d\.\d)$/i', $array[$key], $versionMatch))? $versionMatch[1] : '';
+            && preg_match('/^HTTP\/(\d\.\d)$/i', $array[$key], $versionMatch)) ? $versionMatch[1] : '';
     }
 
     /**
@@ -78,9 +77,12 @@ trait CommonAdapterTrait
      */
     protected function explodeHeaderLine($line)
     {
-        return array_map(function($v) {
-            return trim($v, " \t"); // https://tools.ietf.org/html/rfc7230#section-3.2.4
-        }, explode(',', $line));
+        return array_map(
+            function ($v) {
+                return trim($v, " \t"); // https://tools.ietf.org/html/rfc7230#section-3.2.4
+            },
+            explode(',', $line)
+        );
     }
 
     /**
@@ -90,7 +92,7 @@ trait CommonAdapterTrait
      */
     protected function implodeHeaders($value)
     {
-        return is_array($value)? implode(',', $value) : $value;
+        return is_array($value) ? implode(',', $value) : $value;
     }
 
     /**

@@ -75,8 +75,7 @@ class Response implements CommonHeadInterface
             $tryKey = strtolower($key);
             if (isset($this->headerNames[$tryKey])) {
                 $headerName = $this->headerNames[$tryKey];
-            }
-            else {
+            } else {
                 $headerName = $key;
             }
 
@@ -115,7 +114,7 @@ class Response implements CommonHeadInterface
     {
         $value = $this->sfWebResponse->getHttpHeader($name, null);
 
-        return $value === null? [] : $this->explodeHeaderLine($value);
+        return $value === null ? [] : $this->explodeHeaderLine($value);
     }
 
     /**

@@ -18,7 +18,9 @@ trait FalseBodyTrait
 
     /**
      * @deprecated Never implemented!
+     *
      * @param \Psr\Http\Message\StreamInterface $body
+     *
      * @throws Psr7SubsetException
      */
     public function withBody(\Psr\Http\Message\StreamInterface $body)

@@ -47,8 +47,13 @@ class sfWebRequest implements \brnc\Symfony1\Message\Obligation\SfWebRequestSubs
      * @param array  $cookie
      * @param array  $requestParameters
      */
-    public function prepare($method, array $server = [], array $get = [], array $post = [], array $cookie = [],
-                            array $requestParameters = []
+    public function prepare(
+        $method,
+        array $server = [],
+        array $get = [],
+        array $post = [],
+        array $cookie = [],
+        array $requestParameters = []
     ) {
         $this->method            = $method;
         $this->pathInfoArray     = $server;
@@ -82,9 +87,9 @@ class sfWebRequest implements \brnc\Symfony1\Message\Obligation\SfWebRequestSubs
      */
     public function getHttpHeader($name, $prefix = 'HTTP')
     {
-        $key = strtoupper(str_replace('-', '_', ($prefix? $prefix . '_' : '') . $name));
+        $key = strtoupper(str_replace('-', '_', ($prefix ? $prefix . '_' : '') . $name));
 
-        return isset($this->pathInfoArray[$key])? $this->pathInfoArray[$key] : null;
+        return isset($this->pathInfoArray[$key]) ? $this->pathInfoArray[$key] : null;
     }
 
     /**
@@ -95,7 +100,7 @@ class sfWebRequest implements \brnc\Symfony1\Message\Obligation\SfWebRequestSubs
      */
     public function getCookie($name, $defaultValue = null)
     {
-        return isset($this->cookie[$name])? $this->cookie[$name] : $defaultValue;
+        return isset($this->cookie[$name]) ? $this->cookie[$name] : $defaultValue;
     }
 
     /**

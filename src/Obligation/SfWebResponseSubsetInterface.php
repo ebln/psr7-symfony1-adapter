@@ -1,6 +1,5 @@
 <?php
 
-
 namespace brnc\Symfony1\Message\Obligation;
 
 /**
@@ -61,7 +60,13 @@ interface SfWebResponseSubsetInterface
      * @param  bool            $secure
      * @param  bool            $httpOnly
      */
-    public function setCookie($name, $value, $expire = null, $path = '/', $domain = '', $secure = false,
-                              $httpOnly = false
+    public function setCookie(
+        $name,
+        $value,
+        $expire = null,
+        $path = '/',
+        $domain = '',
+        $secure = false,
+        $httpOnly = false
     );
 }
