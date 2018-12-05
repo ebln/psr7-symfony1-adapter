@@ -2,6 +2,9 @@
 
 namespace brnc\Symfony1\Message\Adapter;
 
+/**
+ * collects common behaviour of request and response
+ */
 trait CommonAdapterTrait
 {
     /**

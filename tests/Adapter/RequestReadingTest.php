@@ -1,10 +1,14 @@
-<?php /** @noinspection PhpUnusedParameterInspection */
+<?php
+/** @noinspection PhpUnusedParameterInspection */
 
 namespace brnc\Tests\Symfony1\Message\Adapter;
 
 use brnc\Symfony1\Message\Adapter\Request;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * artifactial test
+ */
 class RequestReadingTest extends TestCase
 {
     /**
