@@ -163,11 +163,11 @@ class Request implements CommonHeadInterface
     {
         $method = $this->sfWebRequest->getMethod();
         if ($this->method && $method === strtoupper($this->method)) {
-            return $this->method;
+            return $this->method;   // return shadowed capitalisation
         }
-        $this->method = null;
+        $this->method = null;       // unset shadowed value
 
-        return $method;
+        return $method;             // return value from real object as default
     }
 
     /**

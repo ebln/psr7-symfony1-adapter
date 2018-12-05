@@ -72,6 +72,16 @@ class sfWebRequest implements \brnc\Symfony1\Message\Obligation\SfWebRequestSubs
     }
 
     /**
+     * WARNING this mock is not checking symfony's rules of allowed methods
+     *
+     * @return string
+     */
+    public function setMethod($method)
+    {
+        return $this->method = strtoupper($method);
+    }
+
+    /**
      * @return array
      */
     public function getPathInfoArray()
