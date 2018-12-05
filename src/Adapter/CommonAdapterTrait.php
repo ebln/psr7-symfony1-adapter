@@ -29,9 +29,8 @@ trait CommonAdapterTrait
         $headers = $this->getHeader($name);
         if (is_array($value)) {
             $headers = array_merge($headers, $value);
-        }
-        else {
-            $headers[] = $headers;
+        } else {
+            $headers[] = $value;
         }
 
         $this->setHeader($name, $headers);
