@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection ALL */
 
 namespace brnc\Tests\Symfony1\Message\Adapter;
 
