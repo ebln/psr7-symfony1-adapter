@@ -119,6 +119,22 @@ class RequestBasicTest extends TestCase
         $this->assertSame(['HTTP_X_FOO' => 'bar,baz'], $request->getServerParams());
     }
 
+    public function testwithArrayAddedHeader()
+    {
+        $request = $this->getRequest();
+        $this->assertSame(false, $request->hasHeader('X-Foo'));
+        $this->assertSame([], $request->getHeader('X-Foo'));
+        $this->assertSame([], $request->getServerParams());
+        $request = $request->withAddedHeader('X-Foo', 'foo');
+        $this->assertSame(true, $request->hasHeader('X-Foo'));
+        $request = $request->withAddedHeader('X-Foo', ['bar', 'baz']);
+        $this->assertSame(true, $request->hasHeader('X-Foo'));
+        $this->assertSame(['foo', 'bar', 'baz'], $request->getHeader('X-Foo'));
+        $this->assertSame('foo,bar,baz', $request->getHeaderLine('X-Foo'));
+        $this->assertSame(['X-Foo' => ['foo', 'bar', 'baz']], $request->getHeaders());
+        $this->assertSame(['HTTP_X_FOO' => 'foo,bar,baz'], $request->getServerParams());
+    }
+
     public function testwithoutHeader()
     {
         $request = $this->getRequest(null, ['HTTP_X_FOO' => 'bar, baz']);
