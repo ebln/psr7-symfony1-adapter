@@ -58,12 +58,6 @@ class ResponseBasicTest extends TestCase
         $this->assertSame('*** Bad Request ***', $response->getReasonPhrase());
         $this->assertSame(400, $symfony->getStatusCode());
         $this->assertSame('*** Bad Request ***', $symfony->getStatusText());
-
-        $response = $response->withStatus('308');
-        $this->assertSame(308, $response->getStatusCode());
-        $this->assertSame('OK', $response->getReasonPhrase());
-        $this->assertSame(308, $symfony->getStatusCode());
-        $this->assertSame('OK', $symfony->getStatusText());
     }
 
     public function testDefaultReasonPhrase()
