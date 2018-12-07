@@ -7,3 +7,4 @@
 /.idea              export-ignore
 /*.tar              export-ignore
 /mock               export-ignore
+/coverage           export-ignore
