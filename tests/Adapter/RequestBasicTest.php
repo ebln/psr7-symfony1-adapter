@@ -1,4 +1,4 @@
-<?php /** @noinspection ALL */
+<?php
 
 namespace brnc\Tests\Symfony1\Message\Adapter;
 
@@ -10,6 +10,9 @@ class RequestBasicTest extends TestCase
 
     CONST QUIRK = 'This is rather a quirk, than a requirement.';
 
+    /**
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
     public function testProtocolVersion()
     {
         $request = $this->createRequest();
@@ -20,6 +23,9 @@ class RequestBasicTest extends TestCase
         $this->assertSame(['SERVER_PROTOCOL' => 'HTTP/1.1'], $request->getServerParams());
     }
 
+    /**
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
     public function testPresetProtocolVersion()
     {
         $request = $this->createRequest(null, ['SERVER_PROTOCOL' => 'HTTP/1.1']);
@@ -31,6 +37,9 @@ class RequestBasicTest extends TestCase
         $this->assertSame('', $request->getProtocolVersion(), self::QUIRK);
     }
 
+    /**
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
     public function testMethod()
     {
         $mock    = $this->createSymfonyMock();
@@ -51,6 +60,8 @@ class RequestBasicTest extends TestCase
      * @param string $value
      * @param array  $expectedHeaders
      * @param        $expectedInteral
+     *
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testHeader($name, $value, $expectedHeaders, $expectedInteral)
     {
@@ -106,6 +117,9 @@ class RequestBasicTest extends TestCase
         ];
     }
 
+    /**
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
     public function testwithAddedHeader()
     {
         $request = $this->createRequest();
@@ -122,6 +136,9 @@ class RequestBasicTest extends TestCase
         $this->assertSame(['HTTP_X_FOO' => 'bar,baz'], $request->getServerParams());
     }
 
+    /**
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
     public function testwithArrayAddedHeader()
     {
         $request = $this->createRequest();
@@ -138,6 +155,9 @@ class RequestBasicTest extends TestCase
         $this->assertSame(['HTTP_X_FOO' => 'foo,bar,baz'], $request->getServerParams());
     }
 
+    /**
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
     public function testwithoutHeader()
     {
         $request = $this->createRequest(null, ['HTTP_X_FOO' => 'bar, baz']);

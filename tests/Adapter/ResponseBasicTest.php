@@ -7,6 +7,9 @@ use PHPUnit\Framework\TestCase;
 
 class ResponseBasicTest extends TestCase
 {
+    /**
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
     public function testProtocolVersion()
     {
         /**
@@ -22,6 +25,9 @@ class ResponseBasicTest extends TestCase
         $this->assertSame(['http_protocol' => 'HTTP/1.1'], $symfony->getOptions());
     }
 
+    /**
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
     public function testPresetProtocolVersion()
     {
         /**
@@ -35,6 +41,9 @@ class ResponseBasicTest extends TestCase
         $this->assertSame(['http_protocol' => 'HTTP/1.1'], $symfony->getOptions());
     }
 
+    /**
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
     public function testStatus()
     {
         /**
@@ -60,6 +69,9 @@ class ResponseBasicTest extends TestCase
         $this->assertSame('*** Bad Request ***', $symfony->getStatusText());
     }
 
+    /**
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
     public function testDefaultReasonPhrase()
     {
         /**
@@ -81,6 +93,8 @@ class ResponseBasicTest extends TestCase
      * @param string $value
      * @param array  $expectedHeaders
      * @param        $expectedInteral
+     *
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testHeader($name, $value, $expectedHeaders, $expectedInteral)
     {
@@ -94,7 +108,7 @@ class ResponseBasicTest extends TestCase
         $this->assertSame([], $symfony->getHttpHeaders());
         $response = $response->withHeader($name, 'FIRST VALUE');
         $response = $response->withHeader($name, $value);
-        $this->assertSame(true, $response->hasHeader($name));
+        $this->assertTrue($response->hasHeader($name));
         $this->assertSame([$value], $response->getHeader($name));
         $this->assertSame($value, $response->getHeaderLine($name));
         $this->assertSame($expectedHeaders, $response->getHeaders());
@@ -125,6 +139,9 @@ class ResponseBasicTest extends TestCase
         ];
     }
 
+    /**
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
     public function testwithAddedHeader()
     {
         /**
@@ -132,19 +149,22 @@ class ResponseBasicTest extends TestCase
          * @var \sfWebResponse $symfony
          */
         list($response, $symfony) = $this->createResponse();
-        $this->assertSame(false, $response->hasHeader('X-Foo'));
+        $this->assertFalse($response->hasHeader('X-Foo'));
         $this->assertSame([], $response->getHeader('X-Foo'));
         $this->assertSame([], $symfony->getHttpHeaders());
         $response = $response->withAddedHeader('X-Foo', 'bar');
-        $this->assertSame(true, $response->hasHeader('X-Foo'));
+        $this->assertTrue($response->hasHeader('X-Foo'));
         $response = $response->withAddedHeader('X-Foo', 'baz');
-        $this->assertSame(true, $response->hasHeader('X-Foo'));
+        $this->assertTrue($response->hasHeader('X-Foo'));
         $this->assertSame(['bar', 'baz'], $response->getHeader('X-Foo'));
         $this->assertSame('bar,baz', $response->getHeaderLine('X-Foo'));
         $this->assertSame(['X-Foo' => ['bar', 'baz']], $response->getHeaders());
         $this->assertSame(['X-Foo' => 'bar,baz'], $symfony->getHttpHeaders());
     }
 
+    /**
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
     public function testwithArrayAddedHeader()
     {
         /**
@@ -152,19 +172,22 @@ class ResponseBasicTest extends TestCase
          * @var \sfWebResponse $symfony
          */
         list($response, $symfony) = $this->createResponse();
-        $this->assertSame(false, $response->hasHeader('X-Foo'));
+        $this->assertFalse($response->hasHeader('X-Foo'));
         $this->assertSame([], $response->getHeader('X-Foo'));
         $this->assertSame([], $symfony->getHttpHeaders());
         $response = $response->withAddedHeader('X-Foo', 'foo');
-        $this->assertSame(true, $response->hasHeader('X-Foo'));
+        $this->assertTrue($response->hasHeader('X-Foo'));
         $response = $response->withAddedHeader('X-Foo', ['bar', 'baz']);
-        $this->assertSame(true, $response->hasHeader('X-Foo'));
+        $this->assertTrue($response->hasHeader('X-Foo'));
         $this->assertSame(['foo', 'bar', 'baz'], $response->getHeader('X-Foo'));
         $this->assertSame('foo,bar,baz', $response->getHeaderLine('X-Foo'));
         $this->assertSame(['X-Foo' => ['foo', 'bar', 'baz']], $response->getHeaders());
         $this->assertSame(['X-Foo' => 'foo,bar,baz'], $symfony->getHttpHeaders());
     }
 
+    /**
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
     public function testwithoutHeader()
     {
         /**
@@ -173,13 +196,13 @@ class ResponseBasicTest extends TestCase
          */
         list($response, $symfony) = $this->createResponse(204, 'No Content', ['X-Foo' => 'bar, baz']);
 
-        $this->assertSame(true, $response->hasHeader('X-FOO'));
+        $this->assertTrue($response->hasHeader('X-FOO'));
         $this->assertSame(['bar', 'baz'], $response->getHeader('X-Foo'));
         $this->assertSame('bar, baz', $response->getHeaderLine('X-Foo'));
         $this->assertSame(['X-Foo' => ['bar', 'baz']], $response->getHeaders());
         $this->assertSame(['X-Foo' => 'bar, baz'], $symfony->getHttpHeaders());
         $response = $response->withoutHeader('x-FoO');
-        $this->assertSame(false, $response->hasHeader('X-Foo'));
+        $this->assertFalse($response->hasHeader('X-Foo'));
         $this->assertSame([], $response->getHeader('X-Foo'));
         $this->assertSame([], $symfony->getHttpHeaders());
     }

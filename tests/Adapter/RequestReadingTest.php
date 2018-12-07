@@ -20,6 +20,7 @@ class RequestReadingTest extends TestCase
      * @param array  $expectedHeaders
      *
      * @dataProvider provideHeaderTestData
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testHasHeader(array $request, $headerName, $hasHeader, $getHeader, $getHeaderLine, $expectedHeaders)
     {
@@ -39,6 +40,7 @@ class RequestReadingTest extends TestCase
      * @param array  $expectedHeaders
      *
      * @dataProvider provideHeaderTestData
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testGetHeader(array $request, $headerName, $hasHeader, $getHeader, $getHeaderLine, $expectedHeaders)
     {
@@ -57,6 +59,7 @@ class RequestReadingTest extends TestCase
      * @param array  $expectedHeaders
      *
      * @dataProvider provideHeaderTestData
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testGetHeaderLine(
         array $request,
@@ -81,6 +84,7 @@ class RequestReadingTest extends TestCase
      * @param array  $expectedHeaders
      *
      * @dataProvider provideHeaderTestData
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testGetHeaders(
         array $request,
@@ -194,6 +198,7 @@ class RequestReadingTest extends TestCase
      * @param mixed $expectedVersion
      *
      * @dataProvider provideProtocolVersionData
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testGetProtocolVersion(array $request, $expectedVersion)
     {
