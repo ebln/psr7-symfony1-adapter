@@ -50,7 +50,7 @@ class Request implements CommonHeadInterface
         $sfWebRequest->getPathInfoArray();
 
         if ($populateAttributes) {
-            $attributes[self::ATTRIBUTE_SF_WEB_REQUEST] = $sfWebRequest;
+            $this->attributes[self::ATTRIBUTE_SF_WEB_REQUEST] = $sfWebRequest;
         }
     }
 
