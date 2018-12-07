@@ -8,6 +8,8 @@ use PHPUnit\Framework\TestCase;
 class RequestBasicTest extends TestCase
 {
 
+    CONST QUIRK = 'This is rather a quirk, than a requirement.';
+
     public function testProtocolVersion()
     {
         $request = $this->getRequest();
@@ -18,13 +20,24 @@ class RequestBasicTest extends TestCase
         $this->assertSame(['SERVER_PROTOCOL' => 'HTTP/1.1'], $request->getServerParams());
     }
 
+    public function testPresetProtocolVersion()
+    {
+        $request = $this->getRequest(null, ['SERVER_PROTOCOL' => 'HTTP/1.1']);
+        $this->assertSame('1.1', $request->getProtocolVersion());
+        $this->assertSame(['SERVER_PROTOCOL' => 'HTTP/1.1'], $request->getServerParams());
+
+        $request = $request->withProtocolVersion(null);
+        $this->assertSame(['SERVER_PROTOCOL' => 'HTTP/'], $request->getServerParams(), self::QUIRK);
+        $this->assertSame('', $request->getProtocolVersion(), self::QUIRK);
+    }
+
     public function testMethod()
     {
         $request = $this->getRequest();
         $this->assertSame(null, $request->getMethod());
         $request = $request->withMethod('PuRgE');
         $this->assertSame('PuRgE', $request->getMethod());
-        $request = $request->withMethod( 'GET');
+        $request = $request->withMethod('GET');
         $this->assertSame('GET', $request->getMethod());
     }
 
