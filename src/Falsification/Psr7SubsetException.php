@@ -1,13 +1,16 @@
 <?php
 
-namespace brnc\Symfony1\Message\Obligation;
+namespace brnc\Symfony1\Message\Falsification;
 
-class NoSfWebRequestException extends \InvalidArgumentException
+/**
+ * this allows forgery and make the interfaces of consumers more permissive
+ */
+class Psr7SubsetException extends \BadMethodCallException
 {
-    const DEFAULT_MSG = 'Expected sfWebRequest as argument!';
+    const DEFAULT_MSG = '¯\_(ツ)_/¯ This class is only implementing a subset of PSR-7! ごめんなさい';
 
     /**
-     * NoSfWebRequestException constructor.
+     * Psr7SubsetException constructor.
      *
      * @param string                     $message
      * @param int                        $code

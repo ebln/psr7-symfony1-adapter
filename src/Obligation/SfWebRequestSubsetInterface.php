@@ -3,7 +3,7 @@
 namespace brnc\Symfony1\Message\Obligation;
 
 /**
- * subset of sfWebRequest
+ * Subset of sfWebRequest, just enough to enable self-sufficent testing
  */
 interface SfWebRequestSubsetInterface
 {
@@ -27,12 +27,6 @@ interface SfWebRequestSubsetInterface
 
     /**  @return  array */
     public function getRequestParameters();
-
-    /**  @return  SfParameterHolderSubsetInterface */
-    public function getAttributeHolder();
-
-    /**  @return  SfParameterHolderSubsetInterface */
-    public function getParameterHolder();
 
     /**  @return  array */
     public function getGetParameters();
