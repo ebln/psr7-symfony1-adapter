@@ -59,8 +59,8 @@ class sfWebRequest implements \brnc\Symfony1\Message\Obligation\SfWebRequestSubs
         $this->pathInfoArray     = $server;
         $this->getParameters     = $get;
         $this->postParameters    = $post;
-        $this->requestParameters = $requestParameters;
         $this->cookie            = $cookie;
+        $this->requestParameters = $requestParameters;
     }
 
     /**
