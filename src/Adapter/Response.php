@@ -6,14 +6,12 @@ use brnc\Contract\Http\Message\CommonHeadInterface;
 
 /**
  * TODO
- *      Proper Interface
  *      Cookie handling
  *          Access raw Response?
  *          Cookie Abstraction
  *              including Header transcription
- *      ResponseProxy
- *      Make this abstract and use falsification traits to fake PSR-7 compliance
- *          as well as to suggest extentions, to contruct from sfWebRequest
+ *      Extend with falsification traits added to fake PSR-7 compliance (FalseBodyTrait)
+ *      Proper Interface
  */
 class Response implements CommonHeadInterface
 {

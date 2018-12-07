@@ -6,13 +6,13 @@ use brnc\Contract\Http\Message\CommonHeadInterface;
 
 /**
  * TODO
- *      Proper Interface
  *      Cookie handling
  *          Cookie Abstraction
  *              including Header transcription
  *      Request Target and URI handling (using guzzle PSR-7?)
- *      Make this abstract and use falsification traits to fake PSR-7 compliance
- *          as well as to suggest extentions, to contruct from sfWebRequest
+ *      Extend with falsification traits added to fake PSR-7 compliance (FalseBody & FalseServerRequestUpload)
+ *          maybe also with* methods
+ *      Proper Interface
  */
 class Request implements CommonHeadInterface
 {
