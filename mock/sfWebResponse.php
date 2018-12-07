@@ -180,6 +180,6 @@ class sfWebResponse implements \brnc\Symfony1\Message\Obligation\SfWebResponseSu
      */
     protected function normalizeHeaderName($name)
     {
-        return ucwords(str_replace(['_', ' '], '-', strtolower($name)), ['-']);
+        return ucwords(str_replace(['_', ' '], '-', strtolower($name)), '-');
     }
 }

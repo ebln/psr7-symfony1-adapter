@@ -61,6 +61,116 @@ class ResponseBasicTest extends TestCase
     }
 
     /**
+     * @dataProvider withHeaderProvider
+     *
+     * @param string $name
+     * @param string $value
+     * @param array  $expectedHeaders
+     * @param        $expectedInteral
+     */
+    public function testHeader($name, $value, $expectedHeaders, $expectedInteral)
+    {
+        /**
+         * @var Response       $response
+         * @var \sfWebResponse $symfony
+         */
+        list($response, $symfony) = $this->createResponse();
+        $this->assertFalse($response->hasHeader($name));
+        $this->assertSame([], $response->getHeader($name));
+        $this->assertSame([], $symfony->getHttpHeaders());
+        $response = $response->withHeader($name, 'FIRST VALUE');
+        $response = $response->withHeader($name, $value);
+        $this->assertSame(true, $response->hasHeader($name));
+        $this->assertSame([$value], $response->getHeader($name));
+        $this->assertSame($value, $response->getHeaderLine($name));
+        $this->assertSame($expectedHeaders, $response->getHeaders());
+        $this->assertSame($expectedInteral, $symfony->getHttpHeaders());
+    }
+
+    /**
+     * @return array
+     */
+    public function withHeaderProvider()
+    {
+        return [
+            [
+                'X-Foo',
+                'bar',
+                ['X-Foo' => ['bar']],
+                ['X-Foo' => 'bar'],
+            ],
+            [
+                'CONTENT-type',
+                'text/plain',
+                [
+                    'CONTENT-type' =>
+                        ['text/plain'],
+                ],
+                ['Content-Type' => 'text/plain'],
+            ],
+        ];
+    }
+
+    public function testwithAddedHeader()
+    {
+        /**
+         * @var Response       $response
+         * @var \sfWebResponse $symfony
+         */
+        list($response, $symfony) = $this->createResponse();
+        $this->assertSame(false, $response->hasHeader('X-Foo'));
+        $this->assertSame([], $response->getHeader('X-Foo'));
+        $this->assertSame([], $symfony->getHttpHeaders());
+        $response = $response->withAddedHeader('X-Foo', 'bar');
+        $this->assertSame(true, $response->hasHeader('X-Foo'));
+        $response = $response->withAddedHeader('X-Foo', 'baz');
+        $this->assertSame(true, $response->hasHeader('X-Foo'));
+        $this->assertSame(['bar', 'baz'], $response->getHeader('X-Foo'));
+        $this->assertSame('bar,baz', $response->getHeaderLine('X-Foo'));
+        $this->assertSame(['X-Foo' => ['bar', 'baz']], $response->getHeaders());
+        $this->assertSame(['X-Foo' => 'bar,baz'], $symfony->getHttpHeaders());
+    }
+
+    public function testwithArrayAddedHeader()
+    {
+        /**
+         * @var Response       $response
+         * @var \sfWebResponse $symfony
+         */
+        list($response, $symfony) = $this->createResponse();
+        $this->assertSame(false, $response->hasHeader('X-Foo'));
+        $this->assertSame([], $response->getHeader('X-Foo'));
+        $this->assertSame([], $symfony->getHttpHeaders());
+        $response = $response->withAddedHeader('X-Foo', 'foo');
+        $this->assertSame(true, $response->hasHeader('X-Foo'));
+        $response = $response->withAddedHeader('X-Foo', ['bar', 'baz']);
+        $this->assertSame(true, $response->hasHeader('X-Foo'));
+        $this->assertSame(['foo', 'bar', 'baz'], $response->getHeader('X-Foo'));
+        $this->assertSame('foo,bar,baz', $response->getHeaderLine('X-Foo'));
+        $this->assertSame(['X-Foo' => ['foo', 'bar', 'baz']], $response->getHeaders());
+        $this->assertSame(['X-Foo' => 'foo,bar,baz'], $symfony->getHttpHeaders());
+    }
+
+    public function testwithoutHeader()
+    {
+        /**
+         * @var Response       $response
+         * @var \sfWebResponse $symfony
+         */
+        list($response, $symfony) = $this->createResponse(204, 'No Content', ['X-Foo' => 'bar, baz']);
+
+        $this->assertSame(true, $response->hasHeader('X-FOO'));
+        $this->assertSame(['bar', 'baz'], $response->getHeader('X-Foo'));
+        $this->assertSame('bar, baz', $response->getHeaderLine('X-Foo'));
+        $this->assertSame(['X-Foo' => ['bar', 'baz']], $response->getHeaders());
+        $this->assertSame(['X-Foo' => 'bar, baz'], $symfony->getHttpHeaders());
+        $response = $response->withoutHeader('x-FoO');
+        $this->assertSame(false, $response->hasHeader('X-Foo'));
+        $this->assertSame([], $response->getHeader('X-Foo'));
+        $this->assertSame([], $symfony->getHttpHeaders());
+    }
+
+    /**
      * @param int         $code
      * @param string|null $reasonPhrase
      * @param string[]    $headers
