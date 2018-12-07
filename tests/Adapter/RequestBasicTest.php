@@ -33,12 +33,15 @@ class RequestBasicTest extends TestCase
 
     public function testMethod()
     {
-        $request = $this->createRequest();
+        $mock    = $this->createSymfonyMock();
+        $request = new Request($mock);
         $this->assertSame(null, $request->getMethod());
         $request = $request->withMethod('PuRgE');
         $this->assertSame('PuRgE', $request->getMethod());
+        $this->assertSame('PURGE', $mock->getMethod());
         $request = $request->withMethod('GET');
         $this->assertSame('GET', $request->getMethod());
+        $this->assertSame('GET', $mock->getMethod());
     }
 
     /**
@@ -169,9 +172,32 @@ class RequestBasicTest extends TestCase
         array $requestParameters = [],
         array $options = []
     ) {
+        return new Request($this->createSymfonyMock($method, $server, $get, $post, $cookie, $requestParameters, $options));
+    }
+
+    /**
+     * @param null  $method
+     * @param array $server
+     * @param array $get
+     * @param array $post
+     * @param array $cookie
+     * @param array $requestParameters
+     * @param array $options
+     *
+     * @return \sfWebRequest
+     */
+    private function createSymfonyMock(
+        $method = null,
+        array $server = [],
+        array $get = [],
+        array $post = [],
+        array $cookie = [],
+        array $requestParameters = [],
+        array $options = []
+    ) {
         $symfonyRequestMock = new \sfWebRequest(null, [], [], $options);
         $symfonyRequestMock->prepare($method, $server, $get, $post, $cookie, $requestParameters);
 
-        return new Request($symfonyRequestMock);
+        return $symfonyRequestMock;
     }
 }
