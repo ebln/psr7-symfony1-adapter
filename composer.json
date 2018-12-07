@@ -20,10 +20,11 @@
         "psr/http-message": "^1.0"
     },
     "archive": {
-        "exclude": ["vendor/*", "tests/", "mock/", ".*", "phpunit.xml.dist"]
+        "exclude": ["vendor/*", "tests/", "mock/", ".*", "phpunit.xml.dist", "coverage/"]
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.7",
+        "php": "^7.1",
+        "phpunit/phpunit": "^7.4",
         "roave/security-advisories": "dev-master"
     },
     "autoload-dev": {
