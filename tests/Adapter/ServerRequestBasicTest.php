@@ -21,14 +21,14 @@ class ServerRequestBasicTest extends TestCase
     {
         $cookies = ['cookie_1' => 'asdf', 'cookie_2' => 'qwerty'];
         $_COOKIE = $cookies;
-        $request = $this->getRequest();
+        $request = $this->createRequest();
         $this->assertSame($cookies, $request->getCookieParams(), 'Rather a quirk: returns $_COOKIE');
     }
 
     public function testGetQueryParams()
     {
         $query   = ['q' => 'foo+bar', 'test' => 'true'];
-        $request = $this->getRequest(null, [], $query);
+        $request = $this->createRequest(null, [], $query);
 
         $this->assertSame($query, $request->getQueryParams());
     }
@@ -36,14 +36,14 @@ class ServerRequestBasicTest extends TestCase
     public function testGetParsedBody()
     {
         $post    = ['user' => 'foo', 'pass' => 'bar'];
-        $request = $this->getRequest(null, [], [], $post);
+        $request = $this->createRequest(null, [], [], $post);
 
         $this->assertSame($post, $request->getParsedBody());
     }
 
     public function testWithAttribute()
     {
-        $request = $this->getRequest();
+        $request = $this->createRequest();
         $this->assertSame([], $request->getAttributes());
 
         $attribute = (object)['name' => 'foo', 'id' => 42, 'bar' => 'baz',];
@@ -55,7 +55,7 @@ class ServerRequestBasicTest extends TestCase
 
     public function testWithoutAttribute()
     {
-        $request   = $this->getRequest();
+        $request   = $this->createRequest();
         $attribute = (object)['name' => 'foo', 'id' => 42, 'bar' => 'baz',];
         $request   = $request->withAttribute('Foo', $attribute);
         $request   = $request->withAttribute('Bar', 'remains!');
@@ -69,7 +69,7 @@ class ServerRequestBasicTest extends TestCase
 
     public function testGetAttribute()
     {
-        $request = $this->getRequest();
+        $request = $this->createRequest();
         $request = $request->withAttribute('Foo', 'bar');
 
         $this->assertNull($request->getAttribute('Baz'));
@@ -88,7 +88,7 @@ class ServerRequestBasicTest extends TestCase
      *
      * @return Request
      */
-    private function getRequest(
+    private function createRequest(
         $method = null,
         array $server = [],
         array $get = [],

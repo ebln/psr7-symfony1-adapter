@@ -12,7 +12,7 @@ class RequestBasicTest extends TestCase
 
     public function testProtocolVersion()
     {
-        $request = $this->getRequest();
+        $request = $this->createRequest();
         $this->assertSame('', $request->getProtocolVersion());
         $this->assertSame([], $request->getServerParams());
         $request = $request->withProtocolVersion('1.1');
@@ -22,7 +22,7 @@ class RequestBasicTest extends TestCase
 
     public function testPresetProtocolVersion()
     {
-        $request = $this->getRequest(null, ['SERVER_PROTOCOL' => 'HTTP/1.1']);
+        $request = $this->createRequest(null, ['SERVER_PROTOCOL' => 'HTTP/1.1']);
         $this->assertSame('1.1', $request->getProtocolVersion());
         $this->assertSame(['SERVER_PROTOCOL' => 'HTTP/1.1'], $request->getServerParams());
 
@@ -33,7 +33,7 @@ class RequestBasicTest extends TestCase
 
     public function testMethod()
     {
-        $request = $this->getRequest();
+        $request = $this->createRequest();
         $this->assertSame(null, $request->getMethod());
         $request = $request->withMethod('PuRgE');
         $this->assertSame('PuRgE', $request->getMethod());
@@ -51,7 +51,7 @@ class RequestBasicTest extends TestCase
      */
     public function testHeader($name, $value, $expectedHeaders, $expectedInteral)
     {
-        $request = $this->getRequest();
+        $request = $this->createRequest();
         $this->assertFalse($request->hasHeader($name));
         $this->assertSame([], $request->getHeader($name));
         $this->assertSame([], $request->getServerParams());
@@ -105,7 +105,7 @@ class RequestBasicTest extends TestCase
 
     public function testwithAddedHeader()
     {
-        $request = $this->getRequest();
+        $request = $this->createRequest();
         $this->assertSame(false, $request->hasHeader('X-Foo'));
         $this->assertSame([], $request->getHeader('X-Foo'));
         $this->assertSame([], $request->getServerParams());
@@ -121,7 +121,7 @@ class RequestBasicTest extends TestCase
 
     public function testwithArrayAddedHeader()
     {
-        $request = $this->getRequest();
+        $request = $this->createRequest();
         $this->assertSame(false, $request->hasHeader('X-Foo'));
         $this->assertSame([], $request->getHeader('X-Foo'));
         $this->assertSame([], $request->getServerParams());
@@ -137,7 +137,7 @@ class RequestBasicTest extends TestCase
 
     public function testwithoutHeader()
     {
-        $request = $this->getRequest(null, ['HTTP_X_FOO' => 'bar, baz']);
+        $request = $this->createRequest(null, ['HTTP_X_FOO' => 'bar, baz']);
         $this->assertSame(true, $request->hasHeader('X-Foo'));
         $this->assertSame(['bar', 'baz'], $request->getHeader('X-Foo'));
         $this->assertSame('bar, baz', $request->getHeaderLine('X-Foo'));
@@ -160,7 +160,7 @@ class RequestBasicTest extends TestCase
      *
      * @return Request
      */
-    private function getRequest(
+    private function createRequest(
         $method = null,
         array $server = [],
         array $get = [],
