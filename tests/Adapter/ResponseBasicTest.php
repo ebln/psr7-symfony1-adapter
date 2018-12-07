@@ -58,6 +58,26 @@ class ResponseBasicTest extends TestCase
         $this->assertSame('*** Bad Request ***', $response->getReasonPhrase());
         $this->assertSame(400, $symfony->getStatusCode());
         $this->assertSame('*** Bad Request ***', $symfony->getStatusText());
+
+        $response = $response->withStatus('308');
+        $this->assertSame(308, $response->getStatusCode());
+        $this->assertSame('OK', $response->getReasonPhrase());
+        $this->assertSame(308, $symfony->getStatusCode());
+        $this->assertSame('OK', $symfony->getStatusText());
+    }
+
+    public function testDefaultReasonPhrase()
+    {
+        /**
+         * @var Response       $response
+         * @var \sfWebResponse $symfony
+         */
+        list($response, $symfony) = $this->createResponse(204);
+        $response = $response->withStatus('308');
+        $this->assertSame(308, $response->getStatusCode());
+        $this->assertSame('Permanent Redirect', $response->getReasonPhrase());
+        $this->assertSame(308, $symfony->getStatusCode());
+        $this->assertSame('Permanent Redirect', $symfony->getStatusText());
     }
 
     /**
