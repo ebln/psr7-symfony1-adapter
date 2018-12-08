@@ -10,8 +10,6 @@ use brnc\Contract\Http\Message\CommonHeadInterface;
  *          Cookie Abstraction
  *              including Header transcription
  *      Request Target and URI handling (using guzzle PSR-7?)
- *      Extend with falsification traits added to fake PSR-7 compliance (FalseBody & FalseServerRequestUpload)
- *          maybe also with* methods
  *      Proper Interface
  */
 class Request implements CommonHeadInterface
