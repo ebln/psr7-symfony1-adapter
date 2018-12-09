@@ -10,7 +10,6 @@ use brnc\Contract\Http\Message\CommonHeadInterface;
  *          Access raw Response?
  *          Cookie Abstraction
  *              including Header transcription
- *      Extend with falsification traits added to fake PSR-7 compliance (FalseBodyTrait)
  *      Proper Interface
  */
 class Response implements CommonHeadInterface
