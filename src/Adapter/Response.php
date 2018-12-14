@@ -2,17 +2,15 @@
 
 namespace brnc\Symfony1\Message\Adapter;
 
-use brnc\Contract\Http\Message\CommonHeadInterface;
-
 /**
  * TODO
  *      Cookie handling
  *          Access raw Response?
  *          Cookie Abstraction
  *              including Header transcription
- *      Proper Interface
+ *      Proper Interface?
  */
-class Response implements CommonHeadInterface
+class Response
 {
     use CommonAdapterTrait;
 

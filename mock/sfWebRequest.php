@@ -3,7 +3,7 @@
 /**
  * Minimal mock of symfony's sfWebRequest to enable standalone testing
  */
-class sfWebRequest implements \brnc\Symfony1\Message\Obligation\SfWebRequestSubsetInterface
+class sfWebRequest
 {
     /** @var string */
     private $method;

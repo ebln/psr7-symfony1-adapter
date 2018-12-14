@@ -2,17 +2,15 @@
 
 namespace brnc\Symfony1\Message\Adapter;
 
-use brnc\Contract\Http\Message\CommonHeadInterface;
-
 /**
  * TODO
  *      Cookie handling
  *          Cookie Abstraction
  *              including Header transcription
  *      Request Target and URI handling (using guzzle PSR-7?)
- *      Proper Interface
+ *      Proper Interface?
  */
-class Request implements CommonHeadInterface
+class Request
 {
     use CommonAdapterTrait;
     CONST ATTRIBUTE_SF_WEB_REQUEST = 'sfWebRequest';
