@@ -3,7 +3,7 @@
 /**
  * Minimal mock of symfony's sfWebResponse to enable standalone testing
  */
-class sfWebResponse implements \brnc\Symfony1\Message\Obligation\SfWebResponseSubsetInterface
+class sfWebResponse
 {
     /** @var int */
     private $code;
