@@ -58,7 +58,7 @@ trait CommonAdapterTrait
     }
 
     /**
-     * Parsed the protocal version from an internal symfony array
+     * Parses the protocol version from an internal symfony array
      *
      * @param array  $array
      * @param string $key
@@ -99,7 +99,7 @@ trait CommonAdapterTrait
     }
 
     /**
-     * TODO had header name validation! (would be only valid for shadow)
+     * TODO add header name validation! (would be only valid for shadow)
      *
      * @param string $name
      *
