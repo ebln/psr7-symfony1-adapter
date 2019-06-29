@@ -65,7 +65,7 @@ trait CommonAdapterTrait
      *
      * @return string
      */
-    public function getVersionFromArray(array $array, $key): string
+    protected function getVersionFromArray(array $array, string $key): string
     {
         return (isset($array[$key])
             && preg_match('/^HTTP\/(\d\.\d)$/i', $array[$key], $versionMatch)) ? $versionMatch[1] : '';
