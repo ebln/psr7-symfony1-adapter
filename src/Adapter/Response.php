@@ -2,6 +2,8 @@
 
 namespace brnc\Symfony1\Message\Adapter;
 
+use ReflectionObject;
+
 /**
  * TODO
  *      Cookie handling
@@ -39,7 +41,7 @@ class Response
     /**
      * @return string
      */
-    public function getProtocolVersion()
+    public function getProtocolVersion(): string
     {
         return $this->getVersionFromArray($this->sfWebResponse->getOptions(), 'http_protocol');
     }
@@ -49,8 +51,9 @@ class Response
      *
      * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
      *               same instance, due to the nature of the underlying adapted symfony object
+     * @throws \ReflectionException
      */
-    public function withProtocolVersion($version)
+    public function withProtocolVersion($version): self
     {
         $options                  = $this->sfWebResponse->getOptions();
         $options['http_protocol'] = 'HTTP/' . $version;
@@ -62,7 +65,7 @@ class Response
     /**
      * @return string[][]
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         $shadowedHeaders = [];
 
@@ -85,7 +88,7 @@ class Response
      *
      * @return string
      */
-    public function getHeaderLine($name)
+    public function getHeaderLine($name): string
     {
         return $this->sfWebResponse->getHttpHeader($name, '');
     }
@@ -95,7 +98,7 @@ class Response
      *
      * @return bool
      */
-    public function hasHeader($name)
+    public function hasHeader($name): bool
     {
         return $this->sfWebResponse->hasHttpHeader($name);
     }
@@ -105,8 +108,9 @@ class Response
      *
      * @return string[]
      */
-    public function getHeader($name)
+    public function getHeader($name): array
     {
+        /** @noinspection ArgumentEqualsDefaultValueInspection */
         $value = $this->sfWebResponse->getHttpHeader($name, null);
 
         return $value === null ? [] : $this->explodeHeaderLine($value);
@@ -118,9 +122,10 @@ class Response
      * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
      *               same instance, due to the nature of the underlying adapted symfony object
      */
-    public function withoutHeader($name)
+    public function withoutHeader($name): self
     {
         unset($this->headerNames[$this->normalizeHeaderName($name)]);
+        /** @noinspection ArgumentEqualsDefaultValueInspection */
         $this->sfWebResponse->setHttpHeader($name, null, true);
 
         return $this;
@@ -129,7 +134,7 @@ class Response
     /**
      * @return int
      */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return $this->sfWebResponse->getStatusCode();
     }
@@ -141,7 +146,7 @@ class Response
      * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
      *               same instance, due to the nature of the underlying adapted symfony object
      */
-    public function withStatus($code, $reasonPhrase = '')
+    public function withStatus($code, $reasonPhrase = ''): self
     {
         $defaultedReasonPhrase = $this->useDefaultReasonPhrase($code, $reasonPhrase);
         $this->sfWebResponse->setStatusCode($code, $defaultedReasonPhrase);
@@ -152,7 +157,7 @@ class Response
     /**
      * @return string
      */
-    public function getReasonPhrase()
+    public function getReasonPhrase(): string
     {
         return $this->sfWebResponse->getStatusText();
     }
@@ -161,11 +166,14 @@ class Response
      * sets symfony response's options property using reflection
      *
      * @param array $options
+     *
+     * @throws \ReflectionException
+     * @throws \ReflectionException
      */
-    protected function retroduceOptions(array $options)
+    protected function retroduceOptions(array $options): void
     {
         if (null === $this->reflexivePropertyOptions) {
-            $reflexiveWebResponse           = new \ReflectionObject($this->sfWebResponse);
+            $reflexiveWebResponse           = new ReflectionObject($this->sfWebResponse);
             $this->reflexivePropertyOptions = $reflexiveWebResponse->getProperty('options');
             $this->reflexivePropertyOptions->setAccessible(true);
         }
@@ -176,8 +184,10 @@ class Response
     /**
      * @param string          $name
      * @param string|string[] $value
+     *
+     * @throws \ReflectionException
      */
-    protected function setHeader($name, $value)
+    protected function setHeader($name, $value): void
     {
         $symfonyKey           = $this->normalizeSymfonyHeaderName($name);
         $headers              = $this->sfWebResponse->getHttpHeaders();
@@ -192,7 +202,7 @@ class Response
      *
      * @return string
      */
-    protected function normalizeSymfonyHeaderName($name)
+    protected function normalizeSymfonyHeaderName($name): string
     {
         return strtr(ucwords(strtr(strtolower($name), ['_' => ' ', '-' => ' '])), [' ' => '-']);
     }
@@ -201,11 +211,13 @@ class Response
      * sets symfony response's headers property using reflection
      *
      * @param string[] $headers
+     *
+     * @throws \ReflectionException
      */
-    protected function retroduceHeaders(array $headers)
+    protected function retroduceHeaders(array $headers): void
     {
         if (null === $this->reflexivePropertyHeaders) {
-            $reflexiveWebResponse           = new \ReflectionObject($this->sfWebResponse);
+            $reflexiveWebResponse           = new ReflectionObject($this->sfWebResponse);
             $this->reflexivePropertyHeaders = $reflexiveWebResponse->getProperty('headers');
             $this->reflexivePropertyHeaders->setAccessible(true);
         }
@@ -218,7 +230,7 @@ class Response
      *
      * @return string|null
      */
-    protected function useDefaultReasonPhrase($code, $reasonPhrase)
+    protected function useDefaultReasonPhrase(int $code, string $reasonPhrase): ?string
     {
         if (!empty($reasonPhrase)) {
             return $reasonPhrase;

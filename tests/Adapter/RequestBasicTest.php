@@ -7,9 +7,6 @@ use PHPUnit\Framework\TestCase;
 
 class RequestBasicTest extends TestCase
 {
-
-    CONST QUIRK = 'This is rather a quirk, than a requirement.';
-
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
@@ -31,10 +28,6 @@ class RequestBasicTest extends TestCase
         $request = $this->createRequest(null, ['SERVER_PROTOCOL' => 'HTTP/1.1']);
         $this->assertSame('1.1', $request->getProtocolVersion());
         $this->assertSame(['SERVER_PROTOCOL' => 'HTTP/1.1'], $request->getServerParams());
-
-        $request = $request->withProtocolVersion(null);
-        $this->assertSame(['SERVER_PROTOCOL' => 'HTTP/'], $request->getServerParams(), self::QUIRK);
-        $this->assertSame('', $request->getProtocolVersion(), self::QUIRK);
     }
 
     /**
