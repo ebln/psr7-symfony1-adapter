@@ -74,11 +74,11 @@ class sfWebRequest
     /**
      * WARNING this mock is not checking symfony's rules of allowed methods
      *
-     * @return string
+     * @param string $method
      */
     public function setMethod($method)
     {
-        return $this->method = strtoupper($method);
+        $this->method = strtoupper($method);
     }
 
     /**
