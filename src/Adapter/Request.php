@@ -94,7 +94,7 @@ class Request
                 $headerName = $this->normalizeHeaderName($useKey);
 
                 if (isset($this->headerNames[$headerName])) {
-                    $headerName = $this->headerNames[$headerName];
+                    $headerName = $this->headerNames[$headerName]; // return shadowed header name
                 }
 
                 $headers[$headerName] = $this->explodeHeaderLine($value);
@@ -113,7 +113,7 @@ class Request
     {
         $value = $this->sfWebRequest->getHttpHeader($name, $this->getPathInfoPrefix($name));
 
-        return $value === null ? '' : $value;
+        return $value ?? '';
     }
 
     /**

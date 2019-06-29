@@ -70,13 +70,8 @@ class Response
         $shadowedHeaders = [];
 
         foreach ($this->sfWebResponse->getHttpHeaders() as $key => $value) {
-            $tryKey = strtolower($key);
-            if (isset($this->headerNames[$tryKey])) {
-                $headerName = $this->headerNames[$tryKey];
-            } else {
-                $headerName = $key;
-            }
-
+            $tryKey                       = strtolower($key);
+            $headerName                   = $this->headerNames[$tryKey] ?? $key;
             $shadowedHeaders[$headerName] = $this->explodeHeaderLine($value);
         }
 
@@ -235,13 +230,7 @@ class Response
         if (!empty($reasonPhrase)) {
             return $reasonPhrase;
         }
-        // to trigger symfony's default lookup
-        $defaultedReasonPhrase = null;
-        // override for 308
-        if (isset(static::$defaultReasonPhrases[$code])) {
-            $defaultedReasonPhrase = static::$defaultReasonPhrases[$code];
-        }
-
-        return $defaultedReasonPhrase;
+        // either return internal default for null to trigger symfony's default lookup
+        return static::$defaultReasonPhrases[$code] ?? null;
     }
 }
