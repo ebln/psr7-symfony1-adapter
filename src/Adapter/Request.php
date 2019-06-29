@@ -2,6 +2,8 @@
 
 namespace brnc\Symfony1\Message\Adapter;
 
+use ReflectionObject;
+
 /**
  * TODO
  *      Cookie handling
@@ -13,7 +15,7 @@ namespace brnc\Symfony1\Message\Adapter;
 class Request
 {
     use CommonAdapterTrait;
-    CONST ATTRIBUTE_SF_WEB_REQUEST = 'sfWebRequest';
+    public CONST ATTRIBUTE_SF_WEB_REQUEST = 'sfWebRequest';
 
     /** @var bool[] */
     protected static $contentHeaders = ['CONTENT_LENGTH' => true, 'CONTENT_MD5' => true, 'CONTENT_TYPE' => true];
@@ -39,7 +41,7 @@ class Request
      * @param \sfWebRequest $sfWebRequest
      * @param bool          $populateAttributes
      */
-    public function __construct(\sfWebRequest $sfWebRequest, $populateAttributes = false)
+    public function __construct(\sfWebRequest $sfWebRequest, bool $populateAttributes = false)
     {
         $this->sfWebRequest = $sfWebRequest;
         // inititialise path array
@@ -53,7 +55,7 @@ class Request
     /**
      * @return string
      */
-    public function getProtocolVersion()
+    public function getProtocolVersion(): string
     {
         return $this->getVersionFromArray($this->sfWebRequest->getPathInfoArray(), 'SERVER_PROTOCOL');
     }
@@ -63,8 +65,9 @@ class Request
      *
      * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
      *               same instance, due to the nature of the underlying adapted symfony object
+     * @throws \ReflectionException
      */
-    public function withProtocolVersion($version)
+    public function withProtocolVersion($version): self
     {
         $pathInfoArray                    = $this->sfWebRequest->getPathInfoArray();
         $pathInfoArray['SERVER_PROTOCOL'] = 'HTTP/' . $version;
@@ -76,7 +79,7 @@ class Request
     /**
      * @return string[][]
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         $headers = [];
         foreach ($this->sfWebRequest->getPathInfoArray() as $key => $value) {
@@ -91,7 +94,7 @@ class Request
                 $headerName = $this->normalizeHeaderName($useKey);
 
                 if (isset($this->headerNames[$headerName])) {
-                    $headerName = $this->headerNames[$headerName];
+                    $headerName = $this->headerNames[$headerName]; // return shadowed header name
                 }
 
                 $headers[$headerName] = $this->explodeHeaderLine($value);
@@ -106,11 +109,11 @@ class Request
      *
      * @return string
      */
-    public function getHeaderLine($name)
+    public function getHeaderLine($name): string
     {
         $value = $this->sfWebRequest->getHttpHeader($name, $this->getPathInfoPrefix($name));
 
-        return $value === null ? '' : $value;
+        return $value ?? '';
     }
 
     /**
@@ -118,7 +121,7 @@ class Request
      *
      * @return bool
      */
-    public function hasHeader($name)
+    public function hasHeader($name): bool
     {
         return null !== $this->sfWebRequest->getHttpHeader($name, $this->getPathInfoPrefix($name));
     }
@@ -128,7 +131,7 @@ class Request
      *
      * @return string[]
      */
-    public function getHeader($name)
+    public function getHeader($name): array
     {
         $value = $this->sfWebRequest->getHttpHeader($name, $this->getPathInfoPrefix($name));
 
@@ -140,8 +143,9 @@ class Request
      *
      * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
      *               same instance, due to the nature of the underlying adapted symfony object
+     * @throws \ReflectionException
      */
-    public function withoutHeader($name)
+    public function withoutHeader($name): self
     {
         $keyName       = $this->getPathInfoKey($name);
         $pathInfoArray = $this->sfWebRequest->getPathInfoArray();
@@ -155,7 +159,7 @@ class Request
     /**
      * @return string
      */
-    public function getMethod()
+    public function getMethod(): ?string
     {
         $method = $this->sfWebRequest->getMethod();
         if ($this->method && $method === strtoupper($this->method)) {
@@ -172,7 +176,7 @@ class Request
      * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
      *               same instance, due to the nature of the underlying adapted symfony object
      */
-    public function withMethod($method)
+    public function withMethod($method): self
     {
         $this->method = $method;
         $this->sfWebRequest->setMethod($method);
@@ -185,7 +189,7 @@ class Request
      *
      * @return array symfony's getPathInfoArray()
      */
-    public function getServerParams()
+    public function getServerParams(): array
     {
         return $this->sfWebRequest->getPathInfoArray();
     }
@@ -195,7 +199,7 @@ class Request
      *
      * @return array
      */
-    public function getCookieParams()
+    public function getCookieParams(): array
     {
         return $_COOKIE; // as getCookie() is nothing but a lookup
     }
@@ -203,7 +207,7 @@ class Request
     /**
      * @return array
      */
-    public function getQueryParams()
+    public function getQueryParams(): array
     {
         return $this->sfWebRequest->getGetParameters();
     }
@@ -211,7 +215,7 @@ class Request
     /**
      * @return array
      */
-    public function getParsedBody()
+    public function getParsedBody(): array
     {
         return $this->sfWebRequest->getPostParameters();
     }
@@ -219,7 +223,7 @@ class Request
     /**
      * @return mixed[]
      */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return $this->attributes;
     }
@@ -238,11 +242,11 @@ class Request
     /**
      * @param string $name
      *
-     * @param  mixed $value
+     * @param mixed  $value
      *
      * @return $this In conflict with PSR-7's immutability paradigm, this method doesn't return a clone but the instance
      */
-    public function withAttribute($name, $value)
+    public function withAttribute($name, $value): self
     {
         $this->attributes[$name] = $value;
 
@@ -254,7 +258,7 @@ class Request
      *
      * @return $this In conflict with PSR-7's immutability paradigm, this method doesn't return a clone but the instance
      */
-    public function withoutAttribute($name)
+    public function withoutAttribute($name): self
     {
         unset($this->attributes[$name]);
 
@@ -265,11 +269,13 @@ class Request
      * sets symfony request's pathInfoArray property using reflection
      *
      * @param array $pathInfo
+     *
+     * @throws \ReflectionException
      */
-    protected function retroducePathInfoArray(array $pathInfo)
+    protected function retroducePathInfoArray(array $pathInfo): void
     {
         if (null === $this->reflexivePropertyPathInfoArray) {
-            $reflexiveWebRequest                  = new \ReflectionObject($this->sfWebRequest);
+            $reflexiveWebRequest                  = new ReflectionObject($this->sfWebRequest);
             $this->reflexivePropertyPathInfoArray = $reflexiveWebRequest->getProperty('pathInfoArray');
             $this->reflexivePropertyPathInfoArray->setAccessible(true);
         }
@@ -282,8 +288,10 @@ class Request
      *
      * @param string          $name
      * @param string|string[] $value
+     *
+     * @throws \ReflectionException
      */
-    protected function setHeader($name, $value)
+    protected function setHeader(string $name, $value): void
     {
         $keyName                 = $this->getPathInfoKey($name);
         $pathInfoArray           = $this->sfWebRequest->getPathInfoArray();
@@ -298,7 +306,7 @@ class Request
      *
      * @return string
      */
-    protected function getPathInfoKey($name)
+    protected function getPathInfoKey(string $name) : string
     {
         $keyName = strtoupper(str_replace('-', '_', $name));
         if (!isset(self::$contentHeaders[$keyName])) {
@@ -315,7 +323,7 @@ class Request
      *
      * @return string|null
      */
-    protected function getPathInfoPrefix($name)
+    protected function getPathInfoPrefix(string $name): ?string
     {
         $keyName = strtoupper(str_replace('-', '_', $name));
         if (isset(self::$contentHeaders[$keyName])) {

@@ -21,7 +21,7 @@ trait CommonAdapterTrait
      * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
      *               same instance, due to the nature of the underlying adapted symfony object
      */
-    public function withAddedHeader($name, $value)
+    public function withAddedHeader($name, $value): self
     {
         if (!$this->hasHeader($name)) {
             // to preserve the original header name
@@ -49,7 +49,7 @@ trait CommonAdapterTrait
      * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
      *               same instance, due to the nature of the underlying adapted symfony object
      */
-    public function withHeader($name, $value)
+    public function withHeader($name, $value): self
     {
         $this->headerNames[$this->normalizeHeaderName($name)] = $name;
         $this->setHeader($name, $value);
@@ -58,14 +58,14 @@ trait CommonAdapterTrait
     }
 
     /**
-     * Parsed the protocal version from an internal symfony array
+     * Parses the protocol version from an internal symfony array
      *
      * @param array  $array
      * @param string $key
      *
      * @return string
      */
-    public function getVersionFromArray(array $array, $key)
+    protected function getVersionFromArray(array $array, string $key): string
     {
         return (isset($array[$key])
             && preg_match('/^HTTP\/(\d\.\d)$/i', $array[$key], $versionMatch)) ? $versionMatch[1] : '';
@@ -78,7 +78,7 @@ trait CommonAdapterTrait
      *
      * @return string[]
      */
-    protected function explodeHeaderLine($line)
+    protected function explodeHeaderLine(string $line): array
     {
         return array_map(
             function ($v) {
@@ -93,19 +93,19 @@ trait CommonAdapterTrait
      *
      * @return string
      */
-    protected function implodeHeaders($value)
+    protected function implodeHeaders($value): string
     {
         return is_array($value) ? implode(',', $value) : $value;
     }
 
     /**
-     * TODO had header name validation! (would be only valid for shadow)
+     * TODO add header name validation! (would be only valid for shadow)
      *
      * @param string $name
      *
      * @return string
      */
-    protected function normalizeHeaderName($name)
+    protected function normalizeHeaderName(string $name): string
     {
         return str_replace('_', '-', strtolower($name));
     }
