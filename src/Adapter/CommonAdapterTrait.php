@@ -78,7 +78,7 @@ trait CommonAdapterTrait
      *
      * @return string[]
      */
-    protected function explodeHeaderLine($line): array
+    protected function explodeHeaderLine(string $line): array
     {
         return array_map(
             function ($v) {
