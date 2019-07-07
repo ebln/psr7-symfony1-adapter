@@ -144,4 +144,12 @@ class sfWebRequest
     {
         return $this->requestParameters;
     }
+
+    /**
+     * @return string|false
+     */
+    public function getContent()
+    {
+        return false;
+    }
 }

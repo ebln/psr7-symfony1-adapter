@@ -15,7 +15,8 @@
         }
     },
     "require": {
-        "php": "^7.2"
+        "php": "^7.2",
+        "guzzlehttp/psr7": "^1.6"
     },
     "archive": {
         "exclude": ["vendor/*", "tests/", "mock/", ".*", "phpunit.xml.dist", "coverage/"]

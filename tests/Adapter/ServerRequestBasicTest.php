@@ -18,7 +18,7 @@ class ServerRequestBasicTest extends TestCase
     {
         $symfonyRequestMock = new \sfWebRequest();
         $symfonyRequestMock->prepare('GET');
-        $request = new Request($symfonyRequestMock, true);
+        $request = Request::fromSfWebRequest($symfonyRequestMock, [Request::OPTION_EXPOSE_SF_WEB_REQUEST => true]);
         $this->assertSame($symfonyRequestMock, $request->getAttribute(Request::ATTRIBUTE_SF_WEB_REQUEST));
         $this->assertSame(spl_object_hash($symfonyRequestMock), spl_object_hash($request->getAttribute(Request::ATTRIBUTE_SF_WEB_REQUEST)));
     }

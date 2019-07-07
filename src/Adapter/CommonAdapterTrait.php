@@ -1,6 +1,10 @@
 <?php
+declare(strict_types = 1);
 
 namespace brnc\Symfony1\Message\Adapter;
+
+use function GuzzleHttp\Psr7\stream_for;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * collects common behaviour of request and response
@@ -13,6 +17,9 @@ trait CommonAdapterTrait
      * shadow to honour: »[…]preserve the exact case in which headers were originally specified.«
      */
     protected $headerNames = [];
+
+    /** @var StreamInterface|null */
+    protected $body;
 
     /**
      * @param string          $name
@@ -55,6 +62,14 @@ trait CommonAdapterTrait
         $this->setHeader($name, $value);
 
         return $this;
+    }
+
+    /**
+     * @return StreamInterface
+     */
+    public function getBody(): StreamInterface
+    {
+        return $this->body ? $this->body : stream_for('');
     }
 
     /**

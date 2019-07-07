@@ -1,7 +1,12 @@
 <?php
+declare(strict_types = 1);
 
 namespace brnc\Symfony1\Message\Adapter;
 
+use GuzzleHttp\Psr7\CachingStream;
+use GuzzleHttp\Psr7\LazyOpenStream;
+use function GuzzleHttp\Psr7\stream_for;
+use Psr\Http\Message\StreamInterface;
 use ReflectionObject;
 
 /**
@@ -15,7 +20,11 @@ use ReflectionObject;
 class Request
 {
     use CommonAdapterTrait;
-    public CONST ATTRIBUTE_SF_WEB_REQUEST = 'sfWebRequest';
+
+    /** @see https://www.php.net/manual/en/wrappers.php.php#wrappers.php.input for reuseablity of php://input */
+    public CONST OPTION_BODY_USE_STREAM       = 'Use php://input directly';
+    public CONST OPTION_EXPOSE_SF_WEB_REQUEST = 'Populate attribute with sfWebRequest';
+    public CONST ATTRIBUTE_SF_WEB_REQUEST     = 'sfWebRequest';
 
     /** @var bool[] */
     protected static $contentHeaders = ['CONTENT_LENGTH' => true, 'CONTENT_MD5' => true, 'CONTENT_TYPE' => true];
@@ -39,17 +48,38 @@ class Request
 
     /**
      * @param \sfWebRequest $sfWebRequest
-     * @param bool          $populateAttributes
      */
-    public function __construct(\sfWebRequest $sfWebRequest, bool $populateAttributes = false)
+    public function __construct(\sfWebRequest $sfWebRequest)
     {
         $this->sfWebRequest = $sfWebRequest;
         // inititialise path array
         $sfWebRequest->getPathInfoArray();
+    }
 
-        if ($populateAttributes) {
-            $this->attributes[self::ATTRIBUTE_SF_WEB_REQUEST] = $sfWebRequest;
+    /**
+     * @param \sfWebRequest $sfWebRequest
+     * @param string[]      $options
+     *
+     * @return Request
+     */
+    public static function fromSfWebRequest(\sfWebRequest $sfWebRequest, array $options = []): self
+    {
+        $instance = new static($sfWebRequest);
+
+        if (isset($options[self::OPTION_BODY_USE_STREAM])) {
+            // CachingStream is writable unless target is specified, actuall sfWebRequest doesn't allow content manipulation
+            $instance->body = new CachingStream(new LazyOpenStream('php://input', 'r'));
+        } else {
+            $content = $sfWebRequest->getContent();
+            // here we cannot prefill a read-only stream, therefore it's r+
+            $instance->body = stream_for($content !== false ? $content : '');
         }
+
+        if (isset($options[self::OPTION_EXPOSE_SF_WEB_REQUEST])) {
+            $instance->attributes[self::ATTRIBUTE_SF_WEB_REQUEST] = $sfWebRequest;
+        }
+
+        return $instance;
     }
 
     /**
@@ -266,6 +296,18 @@ class Request
     }
 
     /**
+     * @param StreamInterface $body
+     *
+     * @return $this
+     */
+    public function withBody(StreamInterface $body)
+    {
+        throw new \LogicException('Altering content is not supported by sfRequest.');
+
+        return $this;
+    }
+
+    /**
      * sets symfony request's pathInfoArray property using reflection
      *
      * @param array $pathInfo
@@ -306,7 +348,7 @@ class Request
      *
      * @return string
      */
-    protected function getPathInfoKey(string $name) : string
+    protected function getPathInfoKey(string $name): string
     {
         $keyName = strtoupper(str_replace('-', '_', $name));
         if (!isset(self::$contentHeaders[$keyName])) {

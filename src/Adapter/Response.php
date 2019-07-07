@@ -12,7 +12,6 @@ use ReflectionObject;
  *          Cookie Abstraction
  *              including Header transcription
  *      Proper Interface?
- *      cover $setHeaderOnly with tests!
  *      Wrapper for Setters using sfEvent ~Dispatcher ?
  */
 class Response
