@@ -45,7 +45,7 @@ class ServerRequestBodyTest extends TestCase
     }
 
     /**
-     * @param null        $method
+     * @param string|null $method
      * @param array       $adapterOptions
      * @param string|null $content
      * @param string|null $uri
@@ -53,7 +53,7 @@ class ServerRequestBodyTest extends TestCase
      * @return Request
      */
     private function createRequest(
-        $method = null,
+        ?string $method = null,
         array $adapterOptions = [],
         ?string $content = null,
         ?string $uri = null

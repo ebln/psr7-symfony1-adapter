@@ -101,25 +101,25 @@ class ServerRequestBasicTest extends TestCase
     }
 
     /**
-     * @param null  $method
-     * @param array $server
-     * @param array $get
-     * @param array $post
-     * @param array $cookie
-     * @param array $requestParameters
-     * @param array $options
+     * @param string|null $method
+     * @param array       $server
+     * @param array       $get
+     * @param array       $post
+     * @param array       $cookie
+     * @param array       $requestParameters
+     * @param array       $options
      *
      * @return Request
      */
     private function createRequest(
-        $method = null,
+        ?string $method = null,
         array $server = [],
         array $get = [],
         array $post = [],
         array $cookie = [],
         array $requestParameters = [],
         array $options = []
-    ) {
+    ): Request {
         $symfonyRequestMock = new \sfWebRequest(null, [], [], $options);
         $symfonyRequestMock->prepare($method, $server, $get, $post, $cookie, $requestParameters);
 
