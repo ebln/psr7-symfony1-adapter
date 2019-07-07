@@ -38,12 +38,8 @@ class Response
     /** @var bool if setHeaderOnly()-automagic is used on withStatus() calls */
     protected $setHeaderOnly = true;
 
-    /**
-     * @param \sfWebResponse $sfWebResponse
-     */
-    public function __construct(\sfWebResponse $sfWebResponse)
+    private function __construct()
     {
-        $this->sfWebResponse = $sfWebResponse;
     }
 
     /**
@@ -54,13 +50,14 @@ class Response
      */
     public static function fromSfWebReponse(\sfWebResponse $sfWebResponse, array $options = []): self
     {
-        $instance = new static($sfWebResponse);
+        $new = new static();
+        $new->sfWebResponse = $sfWebResponse;
 
         if (isset($options[self::OPTION_SEND_BODY_ON_204])) {
-            $instance->setHeaderOnly = false;
+            $new->setHeaderOnly = false;
         }
 
-        return $instance;
+        return $new;
     }
 
     /**
