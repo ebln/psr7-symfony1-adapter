@@ -34,7 +34,7 @@ class ResponseBasicTest extends TestCase
          * @var Response       $response
          * @var \sfWebResponse $symfony
          */
-        list($response, $symfony) = $this->createResponse(200, null, [], [], ['http_protocol' => 'HTTP/1.0']);
+        list($response, $symfony) = $this->createResponse(200, null, [], [], false, ['http_protocol' => 'HTTP/1.0']);
         $this->assertSame('1.0', $response->getProtocolVersion());
         $response = $response->withProtocolVersion('1.1');
         $this->assertSame('1.1', $response->getProtocolVersion());
@@ -208,24 +208,116 @@ class ResponseBasicTest extends TestCase
     }
 
     /**
+     * @dataProvider withStatusNoContentProvider
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
+    public function testWithStatusNoContent(array $adapterOptions, int $initialCode, bool $initialHeaderOnly, int $setCode, bool $expectedHeadersOnly)
+    {
+        /**
+         * @var Response       $response
+         * @var \sfWebResponse $symfony
+         */
+        list($response, $symfony) = $this->createResponse($initialCode, null, [], [], $initialHeaderOnly, [], $adapterOptions);
+
+        $this->assertSame($initialCode, $symfony->getStatusCode());
+        $this->assertSame($initialCode, $response->getStatusCode());
+        $this->assertSame($initialHeaderOnly, $symfony->isHeaderOnly());
+
+        $newResponse = $response->withStatus($setCode);
+
+        $this->assertSame($setCode, $symfony->getStatusCode());
+        $this->assertSame($setCode, $newResponse->getStatusCode());
+        $this->assertSame($expectedHeadersOnly, $symfony->isHeaderOnly());
+    }
+
+    /**
+     * @return array
+     */
+    public function withStatusNoContentProvider()
+    {
+        return [
+            '200 → 204 - default: set headersOnly true'                            => [
+                'factory options'      => [],
+                'initial status'       => 200,
+                'initial headers only' => false,
+                'set to status'        => 204,
+                'expect headers only'  => true,
+            ],
+            '204 with setHeadersOnly(true) → 200 - default: set headersOnly false' => [
+                'factory options'      => [],
+                'initial status'       => 204,
+                'initial headers only' => true,
+                'set to status'        => 200,
+                'expect headers only'  => false,
+            ],
+            '200 → 201 - default : no change'                                      => [
+                'factory options'      => [],
+                'initial status'       => 200,
+                'initial headers only' => false,
+                'set to status'        => 201,
+                'expect headers only'  => false,
+            ],
+            '200 → 204 - no automagic'                                             => [
+                'factory options'      => [Response::OPTION_SEND_BODY_ON_204 => true],
+                'initial status'       => 200,
+                'initial headers only' => false,
+                'set to status'        => 204,
+                'expect headers only'  => false,
+            ],
+            '200 with setHeadersOnly(true) → 204: no change'                       => [
+                'factory options'      => [],
+                'initial status'       => 200,
+                'initial headers only' => true,
+                'set to status'        => 204,
+                'expect headers only'  => true,
+            ],
+            '204 with setHeadersOnly(false) → 200: no change'                      => [
+                'factory options'      => [],
+                'initial status'       => 204,
+                'initial headers only' => false,
+                'set to status'        => 200,
+                'expect headers only'  => false,
+            ],
+            '204 with setHeadersOnly(true) → 204: no change'                       => [
+                'factory options'      => [],
+                'initial status'       => 204,
+                'initial headers only' => true,
+                'set to status'        => 204,
+                'expect headers only'  => true,
+            ],
+            '204 with setHeadersOnly(false) → 204: no change'                      => [
+                'factory options'      => [],
+                'initial status'       => 204,
+                'initial headers only' => false,
+                'set to status'        => 200,
+                'expect headers only'  => false,
+            ],
+        ];
+    }
+
+    /**
      * @param int         $code
      * @param string|null $reasonPhrase
      * @param string[]    $headers
      * @param array       $cookies
-     * @param array       $options
+     * @param bool        $headerOnly
+     * @param array       $sfOptions
+     * @param array       $adapterOptions
      *
      * @return array
      */
     private function createResponse(
-        $code = 200,
-        $reasonPhrase = null,
-        $headers = [],
-        $cookies = [],
-        array $options = []
+        int $code = 200,
+        ?string $reasonPhrase = null,
+        array $headers = [],
+        array $cookies = [],
+        bool $headerOnly = false,
+        array $sfOptions = [],
+        array $adapterOptions = []
     ) {
-        $symfonyResponseMock = new \sfWebResponse(null, $options);
-        $symfonyResponseMock->prepare($code, $reasonPhrase, $headers, $cookies);
+        $symfonyResponseMock = new \sfWebResponse(null, $sfOptions);
+        $symfonyResponseMock->prepare($code, $reasonPhrase, $headers, $cookies, $headerOnly);
 
-        return [new Response($symfonyResponseMock), $symfonyResponseMock];
+        return [Response::fromSfWebReponse($symfonyResponseMock, $adapterOptions), $symfonyResponseMock];
     }
 }

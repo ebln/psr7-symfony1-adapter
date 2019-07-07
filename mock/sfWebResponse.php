@@ -37,12 +37,14 @@ class sfWebResponse
      * @param string|null $reasonPhrase
      * @param string[]    $headers
      * @param array       $cookies
+     * @param bool        $headerOnly
      */
-    public function prepare($code = 200, $reasonPhrase = null, $headers = [], $cookies = [])
+    public function prepare($code = 200, $reasonPhrase = null, $headers = [], $cookies = [], $headerOnly = false)
     {
         $this->setStatusCode($code, $reasonPhrase);
-        $this->headers = $headers;
-        $this->cookies = $cookies;
+        $this->headers    = $headers;
+        $this->cookies    = $cookies;
+        $this->headerOnly = $headerOnly;
     }
 
     /** @return int */
