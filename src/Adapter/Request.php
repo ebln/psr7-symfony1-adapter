@@ -63,25 +63,26 @@ class Request
      */
     public static function fromSfWebRequest(\sfWebRequest $sfWebRequest, array $options = []): self
     {
-        $instance               = new static();
-        $instance->sfWebRequest = $sfWebRequest;
+        $new               = new static();
+        $new->sfWebRequest = $sfWebRequest;
 
         if (isset($options[self::OPTION_BODY_USE_STREAM])) {
-            // CachingStream is writable unless target is specified, actuall sfWebRequest doesn't allow content manipulation
-            $instance->body = new CachingStream(new LazyOpenStream('php://input', 'r'));
+            $new->body = new CachingStream(new LazyOpenStream('php://input', 'r+'));
         } else {
             $content = $sfWebRequest->getContent();
-            // here we cannot prefill a read-only stream, therefore it's r+
-            $instance->body = stream_for($content !== false ? $content : '');
+            if (false !== $content) {
+                // lazy init, as getBody() defaults properly
+                $new->body = stream_for($content);
+            }
         }
 
         if (isset($options[self::OPTION_EXPOSE_SF_WEB_REQUEST])) {
-            $instance->attributes[self::ATTRIBUTE_SF_WEB_REQUEST] = $sfWebRequest;
+            $new->attributes[self::ATTRIBUTE_SF_WEB_REQUEST] = $sfWebRequest;
         }
 
-        $instance->uri = new Uri($sfWebRequest->getUri());
+        $new->uri = new Uri($sfWebRequest->getUri());
 
-        return $instance;
+        return $new;
     }
 
     /**
