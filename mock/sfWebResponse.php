@@ -20,6 +20,9 @@ class sfWebResponse
     /** @var array */
     private $cookies;
 
+    /** @var bool */
+    private $headerOnly = false;
+
     /**
      * @param mixed $dispatcher
      * @param array $options
@@ -92,8 +95,8 @@ class sfWebResponse
     }
 
     /**
-     * @param  string $name
-     * @param  string $default
+     * @param string $name
+     * @param string $default
      *
      * @return string
      */
@@ -174,12 +177,28 @@ class sfWebResponse
     }
 
     /**
-     * @param  string $name Header name
+     * @param string $name Header name
      *
      * @return string Normalized header
      */
     protected function normalizeHeaderName($name)
     {
         return ucwords(str_replace(['_', ' '], '-', strtolower($name)), '-');
+    }
+
+    /**
+     * @param bool $value
+     */
+    public function setHeaderOnly($value = true)
+    {
+        $this->headerOnly = (bool)$value;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHeaderOnly()
+    {
+        return $this->headerOnly;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace brnc\Symfony1\Message\Adapter;
 
@@ -11,10 +12,14 @@ use ReflectionObject;
  *          Cookie Abstraction
  *              including Header transcription
  *      Proper Interface?
+ *      cover $setHeaderOnly with tests!
+ *      Wrapper for Setters using sfEvent ~Dispatcher ?
  */
 class Response
 {
     use CommonAdapterTrait;
+    public const  OPTION_SEND_BODY_ON_204 = 'Will disable automatic setHeaderOnly() if 204 is set as status code.';
+    private const STATUS_NO_CONTENT       = 204;
 
     /** @var string[] */
     protected static $defaultReasonPhrases = [
@@ -30,12 +35,32 @@ class Response
     /** @var \ReflectionProperty */
     protected $reflexivePropertyHeaders;
 
+    /** @var bool if setHeaderOnly()-automagic is used on withStatus() calls */
+    protected $setHeaderOnly = true;
+
     /**
      * @param \sfWebResponse $sfWebResponse
      */
     public function __construct(\sfWebResponse $sfWebResponse)
     {
         $this->sfWebResponse = $sfWebResponse;
+    }
+
+    /**
+     * @param \sfWebResponse $sfWebResponse
+     * @param array          $options
+     *
+     * @return Response
+     */
+    public static function fromSfWebReponse(\sfWebResponse $sfWebResponse, array $options = []): self
+    {
+        $instance = new static($sfWebResponse);
+
+        if (isset($options[self::OPTION_SEND_BODY_ON_204])) {
+            $instance->setHeaderOnly = false;
+        }
+
+        return $instance;
     }
 
     /**
@@ -143,6 +168,17 @@ class Response
      */
     public function withStatus($code, $reasonPhrase = ''): self
     {
+        if ($this->setHeaderOnly) { // TODO: cover with tests!
+            $setNoContent = self::STATUS_NO_CONTENT === $code;
+            // only change if there's a transition from or to 204
+            if ($setNoContent xor self::STATUS_NO_CONTENT === (int)$this->sfWebResponse->getStatusCode()) {
+                // only change if HeaderOnly was not overridden externally (using sfWebResponse Object)
+                if ($setNoContent xor $this->sfWebResponse->isHeaderOnly()) {
+                    $this->sfWebResponse->setHeaderOnly($setNoContent);
+                }
+            }
+        }
+
         $defaultedReasonPhrase = $this->useDefaultReasonPhrase($code, $reasonPhrase);
         $this->sfWebResponse->setStatusCode($code, $defaultedReasonPhrase);
 
@@ -230,6 +266,7 @@ class Response
         if (!empty($reasonPhrase)) {
             return $reasonPhrase;
         }
+
         // either return internal default for null to trigger symfony's default lookup
         return static::$defaultReasonPhrases[$code] ?? null;
     }
