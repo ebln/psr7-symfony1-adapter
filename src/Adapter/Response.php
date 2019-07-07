@@ -12,6 +12,7 @@ use ReflectionObject;
  *          Access raw Response?
  *          Cookie Abstraction
  *              including Header transcription
+ *      withBody and how to sync writes to the stream with the underlying sfWebResponse
  *      Proper Interface?
  *      Wrapper for Setters using sfEvent ~Dispatcher ?
  */
