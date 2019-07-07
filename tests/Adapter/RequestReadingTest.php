@@ -26,7 +26,7 @@ class RequestReadingTest extends TestCase
     {
         $sfWebRequest = new \sfWebRequest();
         $sfWebRequest->prepare($request['method'], $request['server']);
-        $readingRequestMock = new Request($sfWebRequest);
+        $readingRequestMock = Request::fromSfWebRequest($sfWebRequest);
 
         $this->assertSame($hasHeader, $readingRequestMock->hasHeader($headerName));
     }
@@ -46,7 +46,7 @@ class RequestReadingTest extends TestCase
     {
         $sfWebRequest = new \sfWebRequest();
         $sfWebRequest->prepare($request['method'], $request['server']);
-        $readingRequestMock = new Request($sfWebRequest);
+        $readingRequestMock = Request::fromSfWebRequest($sfWebRequest);
         $this->assertSame($getHeader, $readingRequestMock->getHeader($headerName));
     }
 
@@ -71,7 +71,7 @@ class RequestReadingTest extends TestCase
     ) {
         $sfWebRequest = new \sfWebRequest();
         $sfWebRequest->prepare($request['method'], $request['server']);
-        $readingRequestMock = new Request($sfWebRequest);
+        $readingRequestMock = Request::fromSfWebRequest($sfWebRequest);
         $this->assertSame($getHeaderLine, $readingRequestMock->getHeaderLine($headerName));
     }
 
@@ -96,7 +96,7 @@ class RequestReadingTest extends TestCase
     ) {
         $sfWebRequest = new \sfWebRequest();
         $sfWebRequest->prepare($request['method'], $request['server']);
-        $readingRequestMock = new Request($sfWebRequest);
+        $readingRequestMock = Request::fromSfWebRequest($sfWebRequest);
         $this->assertSame($expectedHeaders, $readingRequestMock->getHeaders($headerName));
     }
 
@@ -204,7 +204,7 @@ class RequestReadingTest extends TestCase
     {
         $sfWebRequest = new \sfWebRequest();
         $sfWebRequest->prepare($request['method'], $request['server']);
-        $readingRequestMock = new Request($sfWebRequest);
+        $readingRequestMock = Request::fromSfWebRequest($sfWebRequest);
         $this->assertSame($expectedVersion, $readingRequestMock->getProtocolVersion());
     }
 

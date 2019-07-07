@@ -6,6 +6,6 @@ To enable the use of future-proof PSR-15 middlewares via partial PSR-7 adapers.
 ## Usage example
 ```php
 // not fully PSR-7 compliant lazy adapters
-$serverRequestAdapter = new \brnc\Symfony1\Message\Adapter\Request($sfWebRequest);
+$serverRequestAdapter = \brnc\Symfony1\Message\Adapter\Request::fromSfWebRequest($sfWebRequest);
 $responseAdapter      = new \brnc\Symfony1\Message\Adapter\Response($sfWebResponse);
 ```

@@ -46,14 +46,8 @@ class Request
      */
     protected $method;
 
-    /**
-     * @param \sfWebRequest $sfWebRequest
-     */
-    public function __construct(\sfWebRequest $sfWebRequest)
+    private function __construct()
     {
-        $this->sfWebRequest = $sfWebRequest;
-        // inititialise path array
-        $sfWebRequest->getPathInfoArray();
     }
 
     /**
@@ -64,7 +58,8 @@ class Request
      */
     public static function fromSfWebRequest(\sfWebRequest $sfWebRequest, array $options = []): self
     {
-        $instance = new static($sfWebRequest);
+        $instance               = new static();
+        $instance->sfWebRequest = $sfWebRequest;
 
         if (isset($options[self::OPTION_BODY_USE_STREAM])) {
             // CachingStream is writable unless target is specified, actuall sfWebRequest doesn't allow content manipulation

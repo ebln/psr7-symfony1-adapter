@@ -185,6 +185,6 @@ class ServerRequestBasicTest extends TestCase
         $symfonyRequestMock = new \sfWebRequest(null, [], [], $options);
         $symfonyRequestMock->prepare($method, $server, $get, $post, $cookie, $requestParameters);
 
-        return new Request($symfonyRequestMock);
+        return Request::fromSfWebRequest($symfonyRequestMock);
     }
 }

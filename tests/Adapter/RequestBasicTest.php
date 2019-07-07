@@ -36,7 +36,7 @@ class RequestBasicTest extends TestCase
     public function testMethod()
     {
         $mock    = $this->createSymfonyMock();
-        $request = new Request($mock);
+        $request = Request::fromSfWebRequest($mock);
         $this->assertSame(null, $request->getMethod());
         $request = $request->withMethod('PuRgE');
         $this->assertSame('PuRgE', $request->getMethod());
@@ -185,7 +185,7 @@ class RequestBasicTest extends TestCase
         array $requestParameters = [],
         array $options = []
     ) {
-        return new Request($this->createSymfonyMock($method, $server, $get, $post, $cookie, $requestParameters, $options));
+        return Request::fromSfWebRequest($this->createSymfonyMock($method, $server, $get, $post, $cookie, $requestParameters, $options));
     }
 
     /**
