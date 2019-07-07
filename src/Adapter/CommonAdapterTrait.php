@@ -69,7 +69,7 @@ trait CommonAdapterTrait
      */
     public function getBody(): StreamInterface
     {
-        return $this->body ? $this->body : stream_for('');
+        return $this->body ?: stream_for();
     }
 
     /**
@@ -96,7 +96,7 @@ trait CommonAdapterTrait
     protected function explodeHeaderLine(string $line): array
     {
         return array_map(
-            function ($v) {
+            static function ($v) {
                 return trim($v, " \t"); // https://tools.ietf.org/html/rfc7230#section-3.2.4
             },
             explode(',', $line)

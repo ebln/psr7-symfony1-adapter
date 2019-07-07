@@ -1,4 +1,6 @@
-<?php /** @noinspection PhpUnusedParameterInspection */
+<?php
+/** @noinspection PhpUnusedParameterInspection */
+/** @noinspection ReturnTypeCanBeDeclaredInspection */
 
 /**
  * Minimal mock of symfony's sfWebRequest to enable standalone testing
@@ -111,7 +113,7 @@ class sfWebRequest
     {
         $key = strtoupper(str_replace('-', '_', ($prefix ? $prefix . '_' : '') . $name));
 
-        return isset($this->pathInfoArray[$key]) ? $this->pathInfoArray[$key] : null;
+        return $this->pathInfoArray[$key] ?? null;
     }
 
     /**
@@ -122,7 +124,7 @@ class sfWebRequest
      */
     public function getCookie($name, $defaultValue = null)
     {
-        return isset($this->cookie[$name]) ? $this->cookie[$name] : $defaultValue;
+        return $this->cookie[$name] ?? $defaultValue;
     }
 
     /**

@@ -167,7 +167,7 @@ class Response
      */
     public function withStatus($code, $reasonPhrase = ''): self
     {
-        if ($this->setHeaderOnly) { // TODO: cover with tests!
+        if ($this->setHeaderOnly) {
             $setNoContent = self::STATUS_NO_CONTENT === $code;
             // only change if there's a transition from or to 204
             if ($setNoContent xor self::STATUS_NO_CONTENT === (int)$this->sfWebResponse->getStatusCode()) {
@@ -197,7 +197,6 @@ class Response
      *
      * @param array $options
      *
-     * @throws \ReflectionException
      * @throws \ReflectionException
      */
     protected function retroduceOptions(array $options): void

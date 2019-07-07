@@ -1,4 +1,6 @@
-<?php /** @noinspection PhpUnusedParameterInspection */
+<?php
+/** @noinspection PhpUnusedParameterInspection */
+/** @noinspection ReturnTypeCanBeDeclaredInspection */
 
 /**
  * Minimal mock of symfony's sfWebResponse to enable standalone testing
@@ -106,7 +108,7 @@ class sfWebResponse
     {
         $normalizedName = $this->normalizeHeaderName($name);
 
-        return isset($this->headers[$normalizedName]) ? $this->headers[$normalizedName] : $default;
+        return $this->headers[$normalizedName] ?? $default;
     }
 
     /**

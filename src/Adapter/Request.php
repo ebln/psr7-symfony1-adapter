@@ -43,10 +43,7 @@ class Request
     protected $uri;
 
     /**
-     * @var string
-     *
-     * shadow to honour: »[…]method names are case-sensitive and thus implementations SHOULD NOT modify the given
-     * string.«
+     * @var string shadow to honour: »[…]method names are case-sensitive and thus implementations SHOULD NOT modify the given string.«
      */
     protected $method;
 
@@ -124,7 +121,7 @@ class Request
 
             if (null !== $useKey) {
                 $headerName = $this->normalizeHeaderName($useKey);
-
+                /** @noinspection NullCoalescingOperatorCanBeUsedInspection */
                 if (isset($this->headerNames[$headerName])) {
                     $headerName = $this->headerNames[$headerName]; // return shadowed header name
                 }
