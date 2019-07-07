@@ -26,6 +26,9 @@ class sfWebRequest
     /** @var string[] */
     private $cookie;
 
+    /** @var string|null */
+    private $content;
+
     /**
      * dummy constructor to preserve the original signature → please initialise with prepare() afterwards!
      *
@@ -40,12 +43,13 @@ class sfWebRequest
     }
 
     /**
-     * @param string $method
-     * @param array  $server
-     * @param array  $get
-     * @param array  $post
-     * @param array  $cookie
-     * @param array  $requestParameters
+     * @param string      $method
+     * @param array       $server
+     * @param array       $get
+     * @param array       $post
+     * @param array       $cookie
+     * @param array       $requestParameters
+     * @param string|null $content
      */
     public function prepare(
         $method,
@@ -53,7 +57,8 @@ class sfWebRequest
         array $get = [],
         array $post = [],
         array $cookie = [],
-        array $requestParameters = []
+        array $requestParameters = [],
+        ?string $content = null
     ) {
         $this->method            = $method;
         $this->pathInfoArray     = $server;
@@ -61,6 +66,7 @@ class sfWebRequest
         $this->postParameters    = $post;
         $this->cookie            = $cookie;
         $this->requestParameters = $requestParameters;
+        $this->content           = $content;
     }
 
     /**
@@ -150,6 +156,6 @@ class sfWebRequest
      */
     public function getContent()
     {
-        return false;
+        return $this->content ?? false;
     }
 }
