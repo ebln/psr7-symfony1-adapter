@@ -16,7 +16,6 @@ use ReflectionObject;
  *      Cookie handling
  *          Cookie Abstraction
  *              including Header transcription
- *      Request Target and URI handling (using guzzle PSR-7?)
  *      Proper Interface?
  */
 class Request
@@ -308,6 +307,30 @@ class Request
         throw new \LogicException('Altering content is not supported by sfRequest.');
 
         return $this;
+    }
+
+    /**
+     * @return UriInterface
+     */
+    public function getUri(): UriInterface
+    {
+        return $this->uri;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestTarget(): string
+    {
+        $target = $this->uri->getPath();
+        if ('' === $target) {
+            $target = '/';
+        }
+        if ('' !== $this->uri->getQuery()) {
+            $target .= '?' . $this->uri->getQuery();
+        }
+
+        return $target;
     }
 
     /**
