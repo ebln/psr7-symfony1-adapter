@@ -3,17 +3,13 @@
 namespace brnc\Tests\Symfony1\Message\Adapter;
 
 use brnc\Symfony1\Message\Adapter\Request;
-use GuzzleHttp\Psr7\Stream;
-use function GuzzleHttp\Psr7\stream_for;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\StreamInterface;
 
 /**
  * tests methods beyond the scope of PSR-7's Message Interface
  */
 class ServerRequestBasicTest extends TestCase
 {
-
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
@@ -24,64 +20,6 @@ class ServerRequestBasicTest extends TestCase
         $request = Request::fromSfWebRequest($symfonyRequestMock, [Request::OPTION_EXPOSE_SF_WEB_REQUEST => true]);
         $this->assertSame($symfonyRequestMock, $request->getAttribute(Request::ATTRIBUTE_SF_WEB_REQUEST));
         $this->assertSame(spl_object_hash($symfonyRequestMock), spl_object_hash($request->getAttribute(Request::ATTRIBUTE_SF_WEB_REQUEST)));
-    }
-
-    public function testBareConstructorGetBody()
-    {
-        $request = $this->createRequest();
-        $body    = $request->getBody();
-        $this->assertInstanceOf(StreamInterface::class, $body);
-        $this->assertSame('', $body->getContents(), 'Expected empty stream.');
-        $this->assertSame(true, $body->isReadable(), 'Default getBody() should be readable.');
-        $this->assertSame(true, $body->isWritable(), 'Default getBody() should be writable.');
-    }
-
-    public function testStaticConstructionGetBody()
-    {
-        $symfonyRequestMock = new \sfWebRequest();
-        $symfonyRequestMock->prepare('GET');
-        $request = Request::fromSfWebRequest($symfonyRequestMock);
-        $body    = $request->getBody();
-        $this->assertInstanceOf(StreamInterface::class, $body);
-        $this->assertSame('', $body->getContents(), 'Expected empty stream.');
-        $this->assertSame(true, $body->isReadable(), 'Static constructed getBody() should be readable.');
-        $this->assertSame(true, $body->isWritable(), 'Static constructed getBody() is writable as a quirk.');
-    }
-
-    public function testStaticConstructionGetBodyHasContent()
-    {
-        $symfonyRequestMock = new \sfWebRequest();
-        $symfonyRequestMock->prepare('GET', [], [], [], [], [], 'dummy content');
-        $request = Request::fromSfWebRequest($symfonyRequestMock);
-        $body    = $request->getBody();
-        $this->assertInstanceOf(Stream::class, $body);
-        $this->assertSame('dummy content', $body->getContents(), 'Expected stream to have content.');
-        $this->assertSame(true, $body->isReadable(), 'Static constructed getBody() should be readable.');
-        $this->assertSame(true, $body->isWritable(), 'Static constructed getBody() is writable as a quirk.');
-    }
-
-    public function testStaticConstructionUsingPhpInputGetBody()
-    {
-        $symfonyRequestMock = new \sfWebRequest();
-        $symfonyRequestMock->prepare('GET');
-        $request = Request::fromSfWebRequest(
-            $symfonyRequestMock,
-            [Request::OPTION_BODY_USE_STREAM => true]
-        );
-        $body    = $request->getBody();
-        $this->assertInstanceOf(StreamInterface::class, $body);
-        $this->assertSame('', $body->getContents(), 'Expected empty stream.');
-        $this->assertSame(true, $body->isReadable(), 'Static constructed getBody() should be readable.');
-        $this->assertSame(true, $body->isWritable(), 'Static constructed  getBody() is writable as a quirk.');
-    }
-
-    /**
-     * @expectedException \LogicException
-     */
-    public function testItFailsWithBody()
-    {
-        $request    = $this->createRequest();
-        $newRequest = $request->withBody(stream_for(''));
     }
 
     /**
