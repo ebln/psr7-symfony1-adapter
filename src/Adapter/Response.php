@@ -1,4 +1,5 @@
 <?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
 declare(strict_types = 1);
 
 namespace brnc\Symfony1\Message\Adapter;
@@ -264,7 +265,6 @@ class Response
         if (!empty($reasonPhrase)) {
             return $reasonPhrase;
         }
-
         // either return internal default for null to trigger symfony's default lookup
         return static::$defaultReasonPhrases[$code] ?? null;
     }

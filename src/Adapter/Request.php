@@ -1,4 +1,5 @@
 <?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
 declare(strict_types = 1);
 
 namespace brnc\Symfony1\Message\Adapter;
@@ -296,14 +297,10 @@ class Request
 
     /**
      * @param StreamInterface $body
-     *
-     * @return $this
      */
     public function withBody(StreamInterface $body)
     {
         throw new \LogicException('Altering content is not supported by sfRequest.');
-
-        return $this;
     }
 
     /**
