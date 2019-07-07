@@ -29,6 +29,9 @@ class sfWebRequest
     /** @var string|null */
     private $content;
 
+    /** @var string|null */
+    private $uri;
+
     /**
      * dummy constructor to preserve the original signature → please initialise with prepare() afterwards!
      *
@@ -50,6 +53,7 @@ class sfWebRequest
      * @param array       $cookie
      * @param array       $requestParameters
      * @param string|null $content
+     * @param string|null $uri
      */
     public function prepare(
         $method,
@@ -58,7 +62,8 @@ class sfWebRequest
         array $post = [],
         array $cookie = [],
         array $requestParameters = [],
-        ?string $content = null
+        ?string $content = null,
+        ?string $uri = null
     ) {
         $this->method            = $method;
         $this->pathInfoArray     = $server;
@@ -67,6 +72,7 @@ class sfWebRequest
         $this->cookie            = $cookie;
         $this->requestParameters = $requestParameters;
         $this->content           = $content;
+        $this->uri               = $uri;
     }
 
     /**
@@ -157,5 +163,13 @@ class sfWebRequest
     public function getContent()
     {
         return $this->content ?? false;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUri(): ?string
+    {
+        return $this->uri ?? 'http://localhost:80/';
     }
 }

@@ -6,7 +6,9 @@ namespace brnc\Symfony1\Message\Adapter;
 use GuzzleHttp\Psr7\CachingStream;
 use GuzzleHttp\Psr7\LazyOpenStream;
 use function GuzzleHttp\Psr7\stream_for;
+use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UriInterface;
 use ReflectionObject;
 
 /**
@@ -37,6 +39,9 @@ class Request
 
     /** @var mixed[] */
     protected $attributes = [];
+
+    /** @var UriInterface */
+    protected $uri;
 
     /**
      * @var string
@@ -73,6 +78,8 @@ class Request
         if (isset($options[self::OPTION_EXPOSE_SF_WEB_REQUEST])) {
             $instance->attributes[self::ATTRIBUTE_SF_WEB_REQUEST] = $sfWebRequest;
         }
+
+        $instance->uri = new Uri($sfWebRequest->getUri());
 
         return $instance;
     }
