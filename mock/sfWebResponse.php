@@ -1,4 +1,8 @@
-<?php /** @noinspection PhpUnusedParameterInspection */
+<?php
+
+/** @noinspection PhpUnusedParameterInspection */
+
+/** @noinspection ReturnTypeCanBeDeclaredInspection */
 
 /**
  * Minimal mock of symfony's sfWebResponse to enable standalone testing
@@ -20,6 +24,9 @@ class sfWebResponse
     /** @var array */
     private $cookies;
 
+    /** @var bool */
+    private $headerOnly = false;
+
     /**
      * @param mixed $dispatcher
      * @param array $options
@@ -34,12 +41,14 @@ class sfWebResponse
      * @param string|null $reasonPhrase
      * @param string[]    $headers
      * @param array       $cookies
+     * @param bool        $headerOnly
      */
-    public function prepare($code = 200, $reasonPhrase = null, $headers = [], $cookies = [])
+    public function prepare($code = 200, $reasonPhrase = null, $headers = [], $cookies = [], $headerOnly = false)
     {
         $this->setStatusCode($code, $reasonPhrase);
-        $this->headers = $headers;
-        $this->cookies = $cookies;
+        $this->headers    = $headers;
+        $this->cookies    = $cookies;
+        $this->headerOnly = $headerOnly;
     }
 
     /** @return int */
@@ -92,8 +101,8 @@ class sfWebResponse
     }
 
     /**
-     * @param  string $name
-     * @param  string $default
+     * @param string $name
+     * @param string $default
      *
      * @return string
      */
@@ -101,7 +110,7 @@ class sfWebResponse
     {
         $normalizedName = $this->normalizeHeaderName($name);
 
-        return isset($this->headers[$normalizedName]) ? $this->headers[$normalizedName] : $default;
+        return $this->headers[$normalizedName] ?? $default;
     }
 
     /**
@@ -174,12 +183,28 @@ class sfWebResponse
     }
 
     /**
-     * @param  string $name Header name
+     * @param string $name Header name
      *
      * @return string Normalized header
      */
     protected function normalizeHeaderName($name)
     {
         return ucwords(str_replace(['_', ' '], '-', strtolower($name)), '-');
+    }
+
+    /**
+     * @param bool $value
+     */
+    public function setHeaderOnly($value = true)
+    {
+        $this->headerOnly = (bool)$value;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHeaderOnly()
+    {
+        return $this->headerOnly;
     }
 }

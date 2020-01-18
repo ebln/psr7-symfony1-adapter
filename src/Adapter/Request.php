@@ -1,7 +1,16 @@
 <?php
 
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+declare(strict_types=1);
+
 namespace brnc\Symfony1\Message\Adapter;
 
+use GuzzleHttp\Psr7\CachingStream;
+use GuzzleHttp\Psr7\LazyOpenStream;
+use function GuzzleHttp\Psr7\stream_for;
+use GuzzleHttp\Psr7\Uri;
+use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UriInterface;
 use ReflectionObject;
 
 /**
@@ -9,13 +18,16 @@ use ReflectionObject;
  *      Cookie handling
  *          Cookie Abstraction
  *              including Header transcription
- *      Request Target and URI handling (using guzzle PSR-7?)
  *      Proper Interface?
  */
 class Request
 {
     use CommonAdapterTrait;
-    public CONST ATTRIBUTE_SF_WEB_REQUEST = 'sfWebRequest';
+
+    /** @see https://www.php.net/manual/en/wrappers.php.php#wrappers.php.input for reuseablity of php://input */
+    public CONST OPTION_BODY_USE_STREAM       = 'Use php://input directly';
+    public CONST OPTION_EXPOSE_SF_WEB_REQUEST = 'Populate attribute with sfWebRequest';
+    public CONST ATTRIBUTE_SF_WEB_REQUEST     = 'sfWebRequest';
 
     /** @var bool[] */
     protected static $contentHeaders = ['CONTENT_LENGTH' => true, 'CONTENT_MD5' => true, 'CONTENT_TYPE' => true];
@@ -29,27 +41,46 @@ class Request
     /** @var mixed[] */
     protected $attributes = [];
 
+    /** @var UriInterface */
+    protected $uri;
+
     /**
-     * @var string
-     *
-     * shadow to honour: »[…]method names are case-sensitive and thus implementations SHOULD NOT modify the given
-     * string.«
+     * @var string shadow to honour: »[…]method names are case-sensitive and thus implementations SHOULD NOT modify the given string.«
      */
     protected $method;
 
+    private function __construct()
+    {
+    }
+
     /**
      * @param \sfWebRequest $sfWebRequest
-     * @param bool          $populateAttributes
+     * @param string[]      $options
+     *
+     * @return Request
      */
-    public function __construct(\sfWebRequest $sfWebRequest, bool $populateAttributes = false)
+    public static function fromSfWebRequest(\sfWebRequest $sfWebRequest, array $options = []): self
     {
-        $this->sfWebRequest = $sfWebRequest;
-        // inititialise path array
-        $sfWebRequest->getPathInfoArray();
+        $new               = new static();
+        $new->sfWebRequest = $sfWebRequest;
 
-        if ($populateAttributes) {
-            $this->attributes[self::ATTRIBUTE_SF_WEB_REQUEST] = $sfWebRequest;
+        if (isset($options[self::OPTION_BODY_USE_STREAM])) {
+            $new->body = new CachingStream(new LazyOpenStream('php://input', 'r+'));
+        } else {
+            $content = $sfWebRequest->getContent();
+            if (false !== $content) {
+                // lazy init, as getBody() defaults properly
+                $new->body = stream_for($content);
+            }
         }
+
+        if (isset($options[self::OPTION_EXPOSE_SF_WEB_REQUEST])) {
+            $new->attributes[self::ATTRIBUTE_SF_WEB_REQUEST] = $sfWebRequest;
+        }
+
+        $new->uri = new Uri($sfWebRequest->getUri());
+
+        return $new;
     }
 
     /**
@@ -92,7 +123,7 @@ class Request
 
             if (null !== $useKey) {
                 $headerName = $this->normalizeHeaderName($useKey);
-
+                /** @noinspection NullCoalescingOperatorCanBeUsedInspection */
                 if (isset($this->headerNames[$headerName])) {
                     $headerName = $this->headerNames[$headerName]; // return shadowed header name
                 }
@@ -266,6 +297,38 @@ class Request
     }
 
     /**
+     * @param StreamInterface $body
+     */
+    public function withBody(StreamInterface $body)
+    {
+        throw new \LogicException('Altering content is not supported by sfRequest.');
+    }
+
+    /**
+     * @return UriInterface
+     */
+    public function getUri(): UriInterface
+    {
+        return $this->uri;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestTarget(): string
+    {
+        $target = $this->uri->getPath();
+        if ('' === $target) {
+            $target = '/';
+        }
+        if ('' !== $this->uri->getQuery()) {
+            $target .= '?' . $this->uri->getQuery();
+        }
+
+        return $target;
+    }
+
+    /**
      * sets symfony request's pathInfoArray property using reflection
      *
      * @param array $pathInfo
@@ -306,7 +369,7 @@ class Request
      *
      * @return string
      */
-    protected function getPathInfoKey(string $name) : string
+    protected function getPathInfoKey(string $name): string
     {
         $keyName = strtoupper(str_replace('-', '_', $name));
         if (!isset(self::$contentHeaders[$keyName])) {

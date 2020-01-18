@@ -10,15 +10,14 @@ use PHPUnit\Framework\TestCase;
  */
 class ServerRequestBasicTest extends TestCase
 {
-
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function testConstrucWithAttribute()
+    public function testStaticConstructionWithAttribute()
     {
         $symfonyRequestMock = new \sfWebRequest();
         $symfonyRequestMock->prepare('GET');
-        $request = new Request($symfonyRequestMock, true);
+        $request = Request::fromSfWebRequest($symfonyRequestMock, [Request::OPTION_EXPOSE_SF_WEB_REQUEST => true]);
         $this->assertSame($symfonyRequestMock, $request->getAttribute(Request::ATTRIBUTE_SF_WEB_REQUEST));
         $this->assertSame(spl_object_hash($symfonyRequestMock), spl_object_hash($request->getAttribute(Request::ATTRIBUTE_SF_WEB_REQUEST)));
     }
@@ -102,28 +101,28 @@ class ServerRequestBasicTest extends TestCase
     }
 
     /**
-     * @param null  $method
-     * @param array $server
-     * @param array $get
-     * @param array $post
-     * @param array $cookie
-     * @param array $requestParameters
-     * @param array $options
+     * @param string|null $method
+     * @param array       $server
+     * @param array       $get
+     * @param array       $post
+     * @param array       $cookie
+     * @param array       $requestParameters
+     * @param array       $options
      *
      * @return Request
      */
     private function createRequest(
-        $method = null,
+        ?string $method = null,
         array $server = [],
         array $get = [],
         array $post = [],
         array $cookie = [],
         array $requestParameters = [],
         array $options = []
-    ) {
+    ): Request {
         $symfonyRequestMock = new \sfWebRequest(null, [], [], $options);
         $symfonyRequestMock->prepare($method, $server, $get, $post, $cookie, $requestParameters);
 
-        return new Request($symfonyRequestMock);
+        return Request::fromSfWebRequest($symfonyRequestMock);
     }
 }

@@ -15,7 +15,8 @@
         }
     },
     "require": {
-        "php": "^7.2"
+        "php": "^7.2",
+        "guzzlehttp/psr7": "^1.6"
     },
     "archive": {
         "exclude": ["vendor/*", "tests/", "mock/", ".*", "phpunit.xml.dist", "coverage/"]
@@ -32,7 +33,7 @@
         "files": ["mock/sfWebRequest.php", "mock/sfWebResponse.php"]
     },
     "scripts": {
-        "phpunit": "phpunit --coverage-text",
+        "phpunit": "phpunit --coverage-html coverage --coverage-text",
         "test": [
             "@phpunit"
         ]

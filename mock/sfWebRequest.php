@@ -1,4 +1,8 @@
-<?php /** @noinspection PhpUnusedParameterInspection */
+<?php
+
+/** @noinspection PhpUnusedParameterInspection */
+
+/** @noinspection ReturnTypeCanBeDeclaredInspection */
 
 /**
  * Minimal mock of symfony's sfWebRequest to enable standalone testing
@@ -26,6 +30,12 @@ class sfWebRequest
     /** @var string[] */
     private $cookie;
 
+    /** @var string|null */
+    private $content;
+
+    /** @var string|null */
+    private $uri;
+
     /**
      * dummy constructor to preserve the original signature → please initialise with prepare() afterwards!
      *
@@ -40,12 +50,14 @@ class sfWebRequest
     }
 
     /**
-     * @param string $method
-     * @param array  $server
-     * @param array  $get
-     * @param array  $post
-     * @param array  $cookie
-     * @param array  $requestParameters
+     * @param string      $method
+     * @param array       $server
+     * @param array       $get
+     * @param array       $post
+     * @param array       $cookie
+     * @param array       $requestParameters
+     * @param string|null $content
+     * @param string|null $uri
      */
     public function prepare(
         $method,
@@ -53,7 +65,9 @@ class sfWebRequest
         array $get = [],
         array $post = [],
         array $cookie = [],
-        array $requestParameters = []
+        array $requestParameters = [],
+        ?string $content = null,
+        ?string $uri = null
     ) {
         $this->method            = $method;
         $this->pathInfoArray     = $server;
@@ -61,6 +75,8 @@ class sfWebRequest
         $this->postParameters    = $post;
         $this->cookie            = $cookie;
         $this->requestParameters = $requestParameters;
+        $this->content           = $content;
+        $this->uri               = $uri;
     }
 
     /**
@@ -99,7 +115,7 @@ class sfWebRequest
     {
         $key = strtoupper(str_replace('-', '_', ($prefix ? $prefix . '_' : '') . $name));
 
-        return isset($this->pathInfoArray[$key]) ? $this->pathInfoArray[$key] : null;
+        return $this->pathInfoArray[$key] ?? null;
     }
 
     /**
@@ -110,7 +126,7 @@ class sfWebRequest
      */
     public function getCookie($name, $defaultValue = null)
     {
-        return isset($this->cookie[$name]) ? $this->cookie[$name] : $defaultValue;
+        return $this->cookie[$name] ?? $defaultValue;
     }
 
     /**
@@ -143,5 +159,21 @@ class sfWebRequest
     public function getRequestParameters()
     {
         return $this->requestParameters;
+    }
+
+    /**
+     * @return string|false
+     */
+    public function getContent()
+    {
+        return $this->content ?? false;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUri(): ?string
+    {
+        return $this->uri ?? 'http://localhost:80/';
     }
 }

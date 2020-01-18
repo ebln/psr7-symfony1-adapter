@@ -104,6 +104,6 @@ class ResponseMockTest extends TestCase
         $symfonyResponseMock = new \sfWebResponse(null, $options);
         $symfonyResponseMock->prepare($code, $reasonPhrase, $headers, $cookies);
 
-        return [new Response($symfonyResponseMock), $symfonyResponseMock];
+        return [Response::fromSfWebReponse($symfonyResponseMock), $symfonyResponseMock];
     }
 }

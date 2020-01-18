@@ -1,6 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace brnc\Symfony1\Message\Adapter;
+
+use function GuzzleHttp\Psr7\stream_for;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * collects common behaviour of request and response
@@ -13,6 +18,9 @@ trait CommonAdapterTrait
      * shadow to honour: »[…]preserve the exact case in which headers were originally specified.«
      */
     protected $headerNames = [];
+
+    /** @var StreamInterface|null */
+    protected $body;
 
     /**
      * @param string          $name
@@ -58,6 +66,14 @@ trait CommonAdapterTrait
     }
 
     /**
+     * @return StreamInterface
+     */
+    public function getBody(): StreamInterface
+    {
+        return $this->body ?: stream_for();
+    }
+
+    /**
      * Parses the protocol version from an internal symfony array
      *
      * @param array  $array
@@ -81,7 +97,7 @@ trait CommonAdapterTrait
     protected function explodeHeaderLine(string $line): array
     {
         return array_map(
-            function ($v) {
+            static function ($v) {
                 return trim($v, " \t"); // https://tools.ietf.org/html/rfc7230#section-3.2.4
             },
             explode(',', $line)
