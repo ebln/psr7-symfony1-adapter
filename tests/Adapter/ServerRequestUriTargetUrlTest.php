@@ -54,7 +54,7 @@ class ServerRequestUriTargetUrlTest extends TestCase
     /**
      *
      * @param string|null $uri
-     * @param string|null $method
+     * @param string      $method
      *
      * @return Request
      */
