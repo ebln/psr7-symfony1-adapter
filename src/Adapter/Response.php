@@ -12,7 +12,10 @@ use ReflectionObject;
  *          Access raw Response?
  *          Cookie Abstraction
  *              including Header transcription
+ *          how to sync to sfResponse? What happends if header and setRawCookie of sfResponse collide?
  *      withBody and how to sync writes to the stream with the underlying sfWebResponse
+ *         via Refl.eventDispatcher && response.filter_content ?
+ *         vs. clone Stream on withBody and write to sfResponse
  *      Proper Interface?
  *      Wrapper for Setters using sfEvent ~Dispatcher ?
  */
