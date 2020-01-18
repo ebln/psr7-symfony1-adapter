@@ -48,7 +48,7 @@ class ServerRequestUriTargetUrlTest extends TestCase
         $request = $this->createRequest();
         $uriMock = $this->createMock(UriInterface::class);
         $this->expectException(\LogicException::class);
-        $request->withUri($uriMock);
+        // $request->withUri($uriMock);
     }
 
     /**

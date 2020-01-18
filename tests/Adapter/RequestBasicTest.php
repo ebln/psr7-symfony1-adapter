@@ -25,7 +25,7 @@ class RequestBasicTest extends TestCase
      */
     public function testPresetProtocolVersion(): void
     {
-        $request = $this->createRequest(null, ['SERVER_PROTOCOL' => 'HTTP/1.1']);
+        $request = $this->createRequest('GET', ['SERVER_PROTOCOL' => 'HTTP/1.1']);
         $this->assertSame('1.1', $request->getProtocolVersion());
         $this->assertSame(['SERVER_PROTOCOL' => 'HTTP/1.1'], $request->getServerParams());
     }
@@ -37,7 +37,7 @@ class RequestBasicTest extends TestCase
     {
         $mock    = $this->createSymfonyMock();
         $request = Request::fromSfWebRequest($mock);
-        $this->assertSame(null, $request->getMethod());
+        $this->assertSame('GET', $request->getMethod());
         $request = $request->withMethod('PuRgE');
         $this->assertSame('PuRgE', $request->getMethod());
         $this->assertSame('PURGE', $mock->getMethod());
@@ -52,11 +52,11 @@ class RequestBasicTest extends TestCase
      * @param string $name
      * @param string $value
      * @param array  $expectedHeaders
-     * @param        $expectedInteral
+     * @param array  $expectedServerParams
      *
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function testHeader($name, $value, $expectedHeaders, $expectedInteral): void
+    public function testHeader(string $name, string $value, array $expectedHeaders, array $expectedServerParams): void
     {
         $request = $this->createRequest();
         $this->assertFalse($request->hasHeader($name));
@@ -68,7 +68,7 @@ class RequestBasicTest extends TestCase
         $this->assertSame([$value], $request->getHeader($name));
         $this->assertSame($value, $request->getHeaderLine($name));
         $this->assertSame($expectedHeaders, $request->getHeaders());
-        $this->assertSame($expectedInteral, $request->getServerParams());
+        $this->assertSame($expectedServerParams, $request->getServerParams());
     }
 
     public function withHeaderProvider(): array
@@ -150,7 +150,7 @@ class RequestBasicTest extends TestCase
      */
     public function testwithoutHeader(): void
     {
-        $request = $this->createRequest(null, ['HTTP_X_FOO' => 'bar, baz']);
+        $request = $this->createRequest('GET', ['HTTP_X_FOO' => 'bar, baz']);
         $this->assertSame(true, $request->hasHeader('X-Foo'));
         $this->assertSame(['bar', 'baz'], $request->getHeader('X-Foo'));
         $this->assertSame('bar, baz', $request->getHeaderLine('X-Foo'));
@@ -163,7 +163,7 @@ class RequestBasicTest extends TestCase
     }
 
     private function createRequest(
-        ?string $method = null,
+        string $method = 'GET',
         array $server = [],
         array $get = [],
         array $post = [],
@@ -175,7 +175,7 @@ class RequestBasicTest extends TestCase
     }
 
     private function createSymfonyMock(
-        ?string $method = null,
+        string $method = 'GET',
         array $server = [],
         array $get = [],
         array $post = [],

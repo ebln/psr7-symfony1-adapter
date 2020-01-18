@@ -92,11 +92,11 @@ class ResponseBasicTest extends TestCase
      * @param string $name
      * @param string $value
      * @param array  $expectedHeaders
-     * @param        $expectedInteral
+     * @param array  $expectedHttpHeaders
      *
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function testHeader($name, $value, $expectedHeaders, $expectedInteral): void
+    public function testHeader(string $name, string $value, array $expectedHeaders, array $expectedHttpHeaders): void
     {
         /**
          * @var Response       $response
@@ -112,7 +112,7 @@ class ResponseBasicTest extends TestCase
         $this->assertSame([$value], $response->getHeader($name));
         $this->assertSame($value, $response->getHeaderLine($name));
         $this->assertSame($expectedHeaders, $response->getHeaders());
-        $this->assertSame($expectedInteral, $symfony->getHttpHeaders());
+        $this->assertSame($expectedHttpHeaders, $symfony->getHttpHeaders());
     }
 
     public function withHeaderProvider(): array

@@ -34,10 +34,10 @@ class Response
     /** @var \sfWebResponse */
     protected $sfWebResponse;
 
-    /** @var \ReflectionProperty */
+    /** @var null|\ReflectionProperty */
     protected $reflexivePropertyOptions;
 
-    /** @var \ReflectionProperty */
+    /** @var null|\ReflectionProperty */
     protected $reflexivePropertyHeaders;
 
     /** @var bool if setHeaderOnly()-automagic is used on withStatus() calls */
@@ -112,7 +112,7 @@ class Response
      */
     public function getHeaderLine($name): string
     {
-        return $this->sfWebResponse->getHttpHeader($name, '');
+        return $this->sfWebResponse->getHttpHeader($name) ?? '';
     }
 
     /**

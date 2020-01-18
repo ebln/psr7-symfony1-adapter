@@ -35,7 +35,7 @@ class Request
     /** @var \sfWebRequest */
     protected $sfWebRequest;
 
-    /** @var \ReflectionProperty */
+    /** @var null|\ReflectionProperty */
     protected $reflexivePropertyPathInfoArray;
 
     /** @var mixed[] */
@@ -55,7 +55,7 @@ class Request
 
     /**
      * @param \sfWebRequest $sfWebRequest
-     * @param string[]      $options
+     * @param array         $options
      *
      * @return Request
      */
@@ -190,15 +190,14 @@ class Request
     /**
      * @return string
      */
-    public function getMethod(): ?string
+    public function getMethod(): string
     {
         $method = $this->sfWebRequest->getMethod();
-        if ($this->method && $method === strtoupper($this->method)) {
-            return $this->method;   // return shadowed capitalisation
+        if (!$this->method || $method !== strtoupper($this->method)) {
+            $this->method = $method;   // overwrite capitalisation despite the »SHOULD NOT« in the PSR-7 definition
         }
-        $this->method = null;       // unset shadowed value
 
-        return $method;             // return value from real object as default
+        return $this->method;
     }
 
     /**
@@ -260,8 +259,8 @@ class Request
     }
 
     /**
-     * @param string $name
-     * @param null   $default
+     * @param string      $name
+     * @param string|null $default
      *
      * @return mixed
      */
