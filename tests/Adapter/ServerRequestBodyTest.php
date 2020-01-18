@@ -8,7 +8,7 @@ use Psr\Http\Message\StreamInterface;
 
 class ServerRequestBodyTest extends TestCase
 {
-    public function testConstructorGetBody()
+    public function testConstructorGetBody(): void
     {
         $body = $this->createRequest('POST')->getBody();
         $this->assertInstanceOf(StreamInterface::class, $body);
@@ -17,7 +17,7 @@ class ServerRequestBodyTest extends TestCase
         $this->assertSame(true, $body->isWritable(), 'Default getBody() is writable as a quirk.');
     }
 
-    public function testStaticConstructionGetBodyHasContent()
+    public function testStaticConstructionGetBodyHasContent(): void
     {
         $body = $this->createRequest('POST', [], 'dummy content')->getBody();
         $this->assertInstanceOf(StreamInterface::class, $body);
@@ -26,7 +26,7 @@ class ServerRequestBodyTest extends TestCase
         $this->assertSame(true, $body->isWritable(), 'Static constructed getBody() is writable as a quirk.');
     }
 
-    public function testStaticConstructionUsingPhpInputGetBody()
+    public function testStaticConstructionUsingPhpInputGetBody(): void
     {
         $body = $this->createRequest('POST', [Request::OPTION_BODY_USE_STREAM => true])->getBody();
         $this->assertInstanceOf(StreamInterface::class, $body);

@@ -13,7 +13,7 @@ class ServerRequestBasicTest extends TestCase
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function testStaticConstructionWithAttribute()
+    public function testStaticConstructionWithAttribute(): void
     {
         $symfonyRequestMock = new \sfWebRequest();
         $symfonyRequestMock->prepare('GET');
@@ -25,7 +25,7 @@ class ServerRequestBasicTest extends TestCase
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function testGetCookieParams()
+    public function testGetCookieParams(): void
     {
         $cookies = ['cookie_1' => 'asdf', 'cookie_2' => 'qwerty'];
         $_COOKIE = $cookies;
@@ -36,7 +36,7 @@ class ServerRequestBasicTest extends TestCase
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function testGetQueryParams()
+    public function testGetQueryParams(): void
     {
         $query   = ['q' => 'foo+bar', 'test' => 'true'];
         $request = $this->createRequest(null, [], $query);
@@ -47,7 +47,7 @@ class ServerRequestBasicTest extends TestCase
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function testGetParsedBody()
+    public function testGetParsedBody(): void
     {
         $post    = ['user' => 'foo', 'pass' => 'bar'];
         $request = $this->createRequest(null, [], [], $post);
@@ -58,7 +58,7 @@ class ServerRequestBasicTest extends TestCase
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function testWithAttribute()
+    public function testWithAttribute(): void
     {
         $request = $this->createRequest();
         $this->assertSame([], $request->getAttributes());
@@ -73,7 +73,7 @@ class ServerRequestBasicTest extends TestCase
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function testWithoutAttribute()
+    public function testWithoutAttribute(): void
     {
         $request   = $this->createRequest();
         $attribute = (object)['name' => 'foo', 'id' => 42, 'bar' => 'baz',];
@@ -90,7 +90,7 @@ class ServerRequestBasicTest extends TestCase
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function testGetAttribute()
+    public function testGetAttribute(): void
     {
         $request = $this->createRequest();
         $request = $request->withAttribute('Foo', 'bar');

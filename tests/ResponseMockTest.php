@@ -14,13 +14,13 @@ class ResponseMockTest extends TestCase
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function testSetHttpHeaderAppend()
+    public function testSetHttpHeaderAppend(): void
     {
         /**
          * @var Response       $response
          * @var \sfWebResponse $symfony
          */
-        list($response, $symfony) = $this->createResponse();
+        [$response, $symfony] = $this->createResponse();
         $this->assertFalse($response->hasHeader('X-Append-Test'));
         $this->assertSame([], $response->getHeader('X-Append-Test'));
         $this->assertSame([], $symfony->getHttpHeaders());
@@ -51,13 +51,13 @@ class ResponseMockTest extends TestCase
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function testSetHttpHeaderNoAppendContentType()
+    public function testSetHttpHeaderNoAppendContentType(): void
     {
         /**
          * @var Response       $response
          * @var \sfWebResponse $symfony
          */
-        list($response, $symfony) = $this->createResponse();
+        [$response, $symfony] = $this->createResponse();
         $this->assertSame(false, $response->hasHeader('Content-Type'));
         $this->assertSame([], $response->getHeader('Content-Type'));
         $this->assertSame([], $symfony->getHttpHeaders());
@@ -100,7 +100,7 @@ class ResponseMockTest extends TestCase
         $headers = [],
         $cookies = [],
         array $options = []
-    ) {
+    ): array {
         $symfonyResponseMock = new \sfWebResponse(null, $options);
         $symfonyResponseMock->prepare($code, $reasonPhrase, $headers, $cookies);
 
