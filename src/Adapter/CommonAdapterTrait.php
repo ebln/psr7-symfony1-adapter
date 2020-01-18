@@ -76,7 +76,7 @@ trait CommonAdapterTrait
     /**
      * Parses the protocol version from an internal symfony array
      *
-     * @param array  $array
+     * @param array<string, string>  $array
      * @param string $key
      *
      * @return string

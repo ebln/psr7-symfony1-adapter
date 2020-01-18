@@ -60,7 +60,7 @@ class ServerRequestUriTargetUrlTest extends TestCase
      */
     private function createRequest(
         ?string $uri = null,
-        ?string $method = 'GET'
+        string $method = 'GET'
     ): Request {
         $symfonyRequestMock = new \sfWebRequest();
         $symfonyRequestMock->prepare($method, [], [], [], [], [], null, $uri);

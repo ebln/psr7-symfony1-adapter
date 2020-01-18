@@ -48,8 +48,8 @@ class Response
     }
 
     /**
-     * @param \sfWebResponse $sfWebResponse
-     * @param array          $options
+     * @param \sfWebResponse      $sfWebResponse
+     * @param array<string, bool> $options
      *
      * @return Response
      */
@@ -198,7 +198,7 @@ class Response
     /**
      * sets symfony response's options property using reflection
      *
-     * @param array $options
+     * @param array<string, string> $options
      *
      * @throws \ReflectionException
      */

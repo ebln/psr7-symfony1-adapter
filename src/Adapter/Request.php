@@ -54,8 +54,8 @@ class Request
     }
 
     /**
-     * @param \sfWebRequest $sfWebRequest
-     * @param array         $options
+     * @param \sfWebRequest       $sfWebRequest
+     * @param array<string, bool> $options
      *
      * @return Request
      */
@@ -217,7 +217,7 @@ class Request
     /**
      * wrapper for symfony's getPathInfoArray()
      *
-     * @return array symfony's getPathInfoArray()
+     * @return array<string, string> symfony's getPathInfoArray()
      */
     public function getServerParams(): array
     {
@@ -227,7 +227,7 @@ class Request
     /**
      * TODO: check SG-header-congruency
      *
-     * @return array
+     * @return array<string, string>
      */
     public function getCookieParams(): array
     {
@@ -235,7 +235,7 @@ class Request
     }
 
     /**
-     * @return array
+     * @return array<string, string>
      */
     public function getQueryParams(): array
     {
@@ -243,7 +243,7 @@ class Request
     }
 
     /**
-     * @return array
+     * @return array<string, string>
      */
     public function getParsedBody(): array
     {
@@ -297,8 +297,10 @@ class Request
 
     /**
      * @param StreamInterface $body
+     *
+     * @return $this In conflict with PSR-7's immutability paradigm, this method doesn't return a clone but the instance
      */
-    public function withBody(StreamInterface $body)
+    public function withBody(StreamInterface $body): self
     {
         throw new \LogicException('Altering content is not supported by sfRequest.');
     }
@@ -330,7 +332,7 @@ class Request
     /**
      * sets symfony request's pathInfoArray property using reflection
      *
-     * @param array $pathInfo
+     * @param array<string, string> $pathInfo
      *
      * @throws \ReflectionException
      */
