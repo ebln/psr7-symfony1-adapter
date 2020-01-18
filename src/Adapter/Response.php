@@ -1,6 +1,7 @@
 <?php
+
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace brnc\Symfony1\Message\Adapter;
 
@@ -54,7 +55,7 @@ class Response
      */
     public static function fromSfWebReponse(\sfWebResponse $sfWebResponse, array $options = []): self
     {
-        $new = new static();
+        $new                = new static();
         $new->sfWebResponse = $sfWebResponse;
 
         if (isset($options[self::OPTION_SEND_BODY_ON_204])) {
@@ -266,6 +267,7 @@ class Response
         if (!empty($reasonPhrase)) {
             return $reasonPhrase;
         }
+
         // either return internal default for null to trigger symfony's default lookup
         return static::$defaultReasonPhrases[$code] ?? null;
     }

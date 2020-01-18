@@ -1,5 +1,7 @@
 <?php
+
 /** @noinspection PhpUnusedParameterInspection */
+
 /** @noinspection ReturnTypeCanBeDeclaredInspection */
 
 /**
