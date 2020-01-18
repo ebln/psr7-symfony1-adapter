@@ -35,13 +35,12 @@ class ServerRequestBodyTest extends TestCase
         $this->assertSame(true, $body->isWritable(), 'Static constructed  getBody() is writable as a quirk.');
     }
 
-    /**
-     * @expectedException \LogicException
-     */
-    public function testItFailsWithBody()
+    public function testItFailsWithBody(): void
     {
         $request    = $this->createRequest();
-        $newRequest = $request->withBody($this->createMock(StreamInterface::class));
+        $streamMock = $this->createMock(StreamInterface::class);
+        $this->expectException(\LogicException::class);
+        $request->withBody($streamMock);
     }
 
     /**
