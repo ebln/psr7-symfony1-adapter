@@ -7,9 +7,9 @@ namespace brnc\Symfony1\Message\Adapter;
 
 use GuzzleHttp\Psr7\CachingStream;
 use GuzzleHttp\Psr7\LazyOpenStream;
-use Psr\Http\Message\ServerRequestInterface;
 use function GuzzleHttp\Psr7\stream_for;
 use GuzzleHttp\Psr7\Uri;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 use ReflectionObject;
@@ -46,7 +46,7 @@ class Request implements ServerRequestInterface
     /** @var UriInterface */
     protected $uri;
 
-    /** @var null|array|object|false → false indicated non-initialization in order to fallback to sfRequest, while null overrides sfRequest */
+    /** @var null|array|false|object → false indicated non-initialization in order to fallback to sfRequest, while null overrides sfRequest */
     protected $parsedBody = false;
 
     /** @var array */
@@ -245,8 +245,6 @@ class Request implements ServerRequestInterface
 
     /**
      * TODO: check SG-header-congruency
-     *
-     * @return array
      */
     public function getCookieParams(): array
     {
@@ -343,27 +341,23 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function withRequestTarget($requestTarget)
     {
-        $new = $this->getNew();
-
-        return $new;
+        return $this->getNew();
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
-        $new = $this->getNew();
-
-        return $new;
+        return $this->getNew();
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function withCookieParams(array $cookies)
     {
@@ -374,17 +368,15 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function withQueryParams(array $query): self
     {
-        $new = $this->getNew();
-
-        return $new;
+        return $this->getNew();
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getUploadedFiles()
     {
@@ -392,17 +384,15 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function withUploadedFiles(array $uploadedFiles): self
     {
-        $new = $this->getNew();
-
-        return $new;
+        return $this->getNew();
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function withParsedBody($data): self
     {
