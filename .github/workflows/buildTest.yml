@@ -16,10 +16,14 @@ jobs:
 #    - name: Run test suite
 #      run: composer run-script test
     - name: Unit tests
-      run: phpunit --coverage-text
+      run: |
+        ./vendor/bin/phpunit --coverage-text  --colors=never
     - name: Psalm
-      run: ./vendor/bin/psalm
+      run: |
+        ./vendor/bin/psalm --monochrome --no-progress --stats --show-info=false
     - name: phpstan
-      run: ./vendor/bin/phpstan analyse
+      run: |
+        ./vendor/bin/phpstan --no-interaction --no-ansi analyse
     - name: Mess Detector
-      run: ./vendor/bin/phpmd src text codesize,design,naming
+      run: |
+        ./vendor/bin/phpmd src,tests text codesize,design,naming

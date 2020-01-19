@@ -36,12 +36,12 @@
         "files": ["mock/sfWebRequest.php", "mock/sfWebResponse.php"]
     },
     "scripts": {
-        "phpunit": "phpunit --coverage-html coverage --coverage-text",
+        "phpunit": "phpunit --coverage-html coverage --coverage-text --colors=auto",
         "test": [
-            "@phpunit",
-            "psalm",
+            "psalm --find-unused-psalm-suppress",
             "phpstan analyse",
-            "phpmd src ansi codesize,design,naming"
+            "phpmd src,tests ansi codesize,design,naming",
+            "@phpunit"
         ]
     }
 }
