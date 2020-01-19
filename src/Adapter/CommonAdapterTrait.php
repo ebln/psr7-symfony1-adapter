@@ -124,6 +124,12 @@ trait CommonAdapterTrait
         return str_replace('_', '-', strtolower($name));
     }
 
+    /**
+     * @param mixed $name
+     * @param-out string $name
+     *
+     * @throws InvalidTypeException
+     */
     protected function validateHeaderName($name): void
     {
         if (!is_string($name)) { // perhaps-do: improve validation according to https://tools.ietf.org/html/rfc7230#section-3.2

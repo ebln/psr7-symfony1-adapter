@@ -52,19 +52,19 @@ class Request implements ServerRequestInterface
     /** @var null|array|false|object → false indicated non-initialization in order to fallback to sfRequest, while null overrides sfRequest */
     protected $parsedBody;
 
-    /** @var array */
+    /** @var null|array */
     protected $cookieParams = [];
 
     /** @var bool */
     protected $isImmutable = true;
 
-    /** @var array */
+    /** @var null|array */
     protected $queryParams;
 
-    /** @var UploadedFileInterface[] */
+    /** @var null|UploadedFileInterface[]|array */
     protected $uploadedFiles;
 
-    /** @var string */
+    /** @var null|string */
     protected $requestTarget;
 
     /**
@@ -254,6 +254,9 @@ class Request implements ServerRequestInterface
         return $new;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getMethod(): string
     {
         $method = $this->sfWebRequest->getMethod();
@@ -265,13 +268,14 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @param string $method
+     * @param string|mixed $method
      */
     public function withMethod($method): self
     {
         if (!is_string($method)) {
             InvalidTypeException::throwStringExpected($method);
         }
+        /** @var string $method */
 
         $new         = $this->getNew();
         $new->method = $method;
@@ -297,7 +301,7 @@ class Request implements ServerRequestInterface
             $headerName = $this->normalizeHeaderName('host');
             $headerName = $this->headerNames[$headerName] ?? $headerName;
 
-            $new->setHeader($headerName, $uri->getHost() . ($uri->getPort() ? (':' . $uri->getPort()) : ''));
+            $new->setHeader($headerName, $uri->getHost() . ($uri->getPort() ? (':' . (string)$uri->getPort()) : ''));
         }
 
         return $new;
@@ -353,15 +357,10 @@ class Request implements ServerRequestInterface
      */
     public function getUploadedFiles()
     {
-        if (!$this->uploadedFiles) {
+        if (null === $this->uploadedFiles) {
+            /** @psalm-var array{tmp_name:string,size:int,error:int,name:string,type:string} $file */
             foreach ($this->sfWebRequest->getFiles() as $file) {
-                $this->uploadedFiles[] = new UploadedFile(
-                    $file['tmp_name'],
-                    (int)$file['size'],
-                    (int)$file['error'],
-                    $file['name'],
-                    $file['type']
-                );
+                $this->addUploadedFile($file);
             }
         }
 
@@ -389,6 +388,7 @@ class Request implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
+     * @param null|array|object|mixed $data
      */
     public function withParsedBody($data): self
     {
@@ -505,6 +505,22 @@ class Request implements ServerRequestInterface
         }
 
         return 'HTTP';
+    }
+
+    /**
+     * @param array $file expected to provide an element as of $_FILES
+     *
+     * @psalm-param array{tmp_name:string,size:int,error:int,name:string,type: string} $file
+     */
+    protected function addUploadedFile(array $file): void
+    {
+        $this->uploadedFiles[] = new UploadedFile(
+            $file['tmp_name'],
+            (int)$file['size'],
+            (int)$file['error'],
+            $file['name'],
+            $file['type']
+        );
     }
 
     protected function getNew(bool $failOnMutation = false): self

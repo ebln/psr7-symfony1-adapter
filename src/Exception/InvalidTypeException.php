@@ -6,6 +6,11 @@ namespace brnc\Symfony1\Message\Exception;
 
 class InvalidTypeException extends \InvalidArgumentException implements AdapterThrowableInterface
 {
+    /**
+     * @param mixed $value
+     *
+     * @throws InvalidTypeException
+     */
     public static function throwStringExpected($value): void
     {
         throw new self('String expected, ' . gettype($value) . ' given.');
@@ -16,11 +21,21 @@ class InvalidTypeException extends \InvalidArgumentException implements AdapterT
         throw new self('Non empty value expected!');
     }
 
+    /**
+     * @param mixed $value
+     *
+     * @throws InvalidTypeException
+     */
     public static function throwStringOrArrayOfStringsExpected($value): void
     {
         throw new self('String or array of strings expected, ' . gettype($value) . ' given.');
     }
 
+    /**
+     * @param mixed $value
+     *
+     * @throws InvalidTypeException
+     */
     public static function throwStringOrArrayOrNullExpected($value): void
     {
         throw new self('String, array or null expected, ' . gettype($value) . ' given.');
