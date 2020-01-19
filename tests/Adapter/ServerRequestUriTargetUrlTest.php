@@ -8,33 +8,33 @@ use Psr\Http\Message\UriInterface;
 
 class ServerRequestUriTargetUrlTest extends TestCase
 {
-    public function testGetUriDefault()
+    public function testGetUriDefault(): void
     {
         $uri = $this->createRequest(null)->getUri();
         $this->assertInstanceOf(UriInterface::class, $uri);
         $this->assertSame('http://localhost/', $uri->__toString());
     }
 
-    public function testGetUri()
+    public function testGetUri(): void
     {
         $uri = $this->createRequest('https://example.com:1337/foo/bar?q=bar&a=42#fragment')->getUri();
         $this->assertInstanceOf(UriInterface::class, $uri);
         $this->assertSame('https://example.com:1337/foo/bar?q=bar&a=42#fragment', $uri->__toString());
     }
 
-    public function testGetRequestTargetDefaultMock()
+    public function testGetRequestTargetDefaultMock(): void
     {
         $requestTarget = $this->createRequest(null)->getRequestTarget();
         $this->assertSame('/', $requestTarget);
     }
 
-    public function testGetRequestTargetDefaultEmpty()
+    public function testGetRequestTargetDefaultEmpty(): void
     {
         $request = $this->createRequest('');
         $this->assertSame('/', $request->getRequestTarget());;
     }
 
-    public function testGetRequestTarget()
+    public function testGetRequestTarget(): void
     {
         $requestTarget = $this->createRequest('https://example.com:1337/foo/bar?q=baz&a=42#fragment')->getRequestTarget();
         $this->assertSame('/foo/bar?q=baz&a=42', $requestTarget);
@@ -42,13 +42,13 @@ class ServerRequestUriTargetUrlTest extends TestCase
 
     /**
      * TODO cover and activate!
-     *
-     * @expectedException \LogicException
      */
-    public function ItFailsWithUri()
+    public function ItFailsWithUri(): void
     {
-        $request    = $this->createRequest();
-        $newRequest = $request->withUri($this->createMock(UriInterface::class));
+        $request = $this->createRequest();
+        $uriMock = $this->createMock(UriInterface::class);
+        $this->expectException(\LogicException::class);
+        $request->withUri($uriMock);
     }
 
     /**

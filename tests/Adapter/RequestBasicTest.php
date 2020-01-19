@@ -10,7 +10,7 @@ class RequestBasicTest extends TestCase
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function testProtocolVersion()
+    public function testProtocolVersion(): void
     {
         $request = $this->createRequest();
         $this->assertSame('', $request->getProtocolVersion());
@@ -23,7 +23,7 @@ class RequestBasicTest extends TestCase
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function testPresetProtocolVersion()
+    public function testPresetProtocolVersion(): void
     {
         $request = $this->createRequest(null, ['SERVER_PROTOCOL' => 'HTTP/1.1']);
         $this->assertSame('1.1', $request->getProtocolVersion());
@@ -33,7 +33,7 @@ class RequestBasicTest extends TestCase
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function testMethod()
+    public function testMethod(): void
     {
         $mock    = $this->createSymfonyMock();
         $request = Request::fromSfWebRequest($mock);
@@ -56,7 +56,7 @@ class RequestBasicTest extends TestCase
      *
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function testHeader($name, $value, $expectedHeaders, $expectedInteral)
+    public function testHeader($name, $value, $expectedHeaders, $expectedInteral): void
     {
         $request = $this->createRequest();
         $this->assertFalse($request->hasHeader($name));
@@ -71,10 +71,7 @@ class RequestBasicTest extends TestCase
         $this->assertSame($expectedInteral, $request->getServerParams());
     }
 
-    /**
-     * @return array
-     */
-    public function withHeaderProvider()
+    public function withHeaderProvider(): array
     {
         return [
             [
@@ -113,7 +110,7 @@ class RequestBasicTest extends TestCase
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function testwithAddedHeader()
+    public function testwithAddedHeader(): void
     {
         $request = $this->createRequest();
         $this->assertSame(false, $request->hasHeader('X-Foo'));
@@ -132,7 +129,7 @@ class RequestBasicTest extends TestCase
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function testwithArrayAddedHeader()
+    public function testwithArrayAddedHeader(): void
     {
         $request = $this->createRequest();
         $this->assertSame(false, $request->hasHeader('X-Foo'));
@@ -151,7 +148,7 @@ class RequestBasicTest extends TestCase
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function testwithoutHeader()
+    public function testwithoutHeader(): void
     {
         $request = $this->createRequest(null, ['HTTP_X_FOO' => 'bar, baz']);
         $this->assertSame(true, $request->hasHeader('X-Foo'));
@@ -165,49 +162,27 @@ class RequestBasicTest extends TestCase
         $this->assertSame([], $request->getServerParams());
     }
 
-    /**
-     * @param null  $method
-     * @param array $server
-     * @param array $get
-     * @param array $post
-     * @param array $cookie
-     * @param array $requestParameters
-     * @param array $options
-     *
-     * @return Request
-     */
     private function createRequest(
-        $method = null,
+        ?string $method = null,
         array $server = [],
         array $get = [],
         array $post = [],
         array $cookie = [],
         array $requestParameters = [],
         array $options = []
-    ) {
+    ): Request {
         return Request::fromSfWebRequest($this->createSymfonyMock($method, $server, $get, $post, $cookie, $requestParameters, $options));
     }
 
-    /**
-     * @param null  $method
-     * @param array $server
-     * @param array $get
-     * @param array $post
-     * @param array $cookie
-     * @param array $requestParameters
-     * @param array $options
-     *
-     * @return \sfWebRequest
-     */
     private function createSymfonyMock(
-        $method = null,
+        ?string $method = null,
         array $server = [],
         array $get = [],
         array $post = [],
         array $cookie = [],
         array $requestParameters = [],
         array $options = []
-    ) {
+    ): \sfWebRequest {
         $symfonyRequestMock = new \sfWebRequest(null, [], [], $options);
         $symfonyRequestMock->prepare($method, $server, $get, $post, $cookie, $requestParameters);
 
