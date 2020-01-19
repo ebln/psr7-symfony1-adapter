@@ -9,12 +9,12 @@ use brnc\Symfony1\Message\Exception\InvalidTypeException;
 use brnc\Symfony1\Message\Exception\LogicException;
 use GuzzleHttp\Psr7\CachingStream;
 use GuzzleHttp\Psr7\LazyOpenStream;
-use GuzzleHttp\Psr7\UploadedFile;
-use Psr\Http\Message\UploadedFileInterface;
 use function GuzzleHttp\Psr7\stream_for;
+use GuzzleHttp\Psr7\UploadedFile;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\UriInterface;
 use ReflectionObject;
 
