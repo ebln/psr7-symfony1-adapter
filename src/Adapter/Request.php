@@ -5,6 +5,8 @@ declare(strict_types=1);
 
 namespace brnc\Symfony1\Message\Adapter;
 
+use brnc\Symfony1\Message\Exception\InvalidTypeException;
+use brnc\Symfony1\Message\Exception\LogicException;
 use GuzzleHttp\Psr7\CachingStream;
 use GuzzleHttp\Psr7\LazyOpenStream;
 use GuzzleHttp\Psr7\UploadedFile;
@@ -213,7 +215,10 @@ class Request implements ServerRequestInterface
 
     public function withBody(StreamInterface $body): self
     {
-        throw new \LogicException('Altering content is not supported by sfRequest.');
+        $new       = $this->getNew(true);
+        $new->body = $body;
+
+        return $new;
     }
 
     public function getRequestTarget(): string
@@ -254,6 +259,10 @@ class Request implements ServerRequestInterface
      */
     public function withMethod($method): self
     {
+        if (!is_string($method)) {
+            InvalidTypeException::throwStringExpected($method);
+        }
+
         $new         = $this->getNew();
         $new->method = $method;
         $new->sfWebRequest->setMethod($method);
@@ -285,7 +294,7 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * TODO: check SG-header-congruency
+     * perhaps-do: check SG-header-congruency
      */
     public function getCookieParams(): array
     {
@@ -364,7 +373,7 @@ class Request implements ServerRequestInterface
     public function withParsedBody($data): self
     {
         if (!is_array($data) && !is_object($data) && null !== $data) {
-            throw new \InvalidArgumentException('Value for parsed body must be null, array or object!');
+            InvalidTypeException::throwStringOrArrayOrNullExpected($data);
         }
 
         $new             = $this->getNew(false);
@@ -464,9 +473,12 @@ class Request implements ServerRequestInterface
 
     /**
      * in order to also obtain content headers via getHttpHeader()
+     *
+     * @param string $name
      */
-    protected function getPathInfoPrefix(string $name): ?string
+    protected function getPathInfoPrefix($name): ?string
     {
+        $this->validateHeaderName($name);
         $keyName = strtoupper(str_replace('-', '_', $name));
         if (isset(self::$contentHeaders[$keyName])) {
             return null;
@@ -479,7 +491,7 @@ class Request implements ServerRequestInterface
     {
         if (!$this->isImmutable) {
             if ($failOnMutation) {
-                throw new \LogicException('This property cannot be overwritten with Symfony compatibility.');
+                LogicException::throwAdaptingSymfony();
             }
 
             return $this;

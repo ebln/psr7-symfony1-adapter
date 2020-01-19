@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace brnc\Symfony1\Message\Adapter;
 
+use brnc\Symfony1\Message\Exception\InvalidTypeException;
 use function GuzzleHttp\Psr7\stream_for;
 use Psr\Http\Message\StreamInterface;
 
@@ -101,14 +102,27 @@ trait CommonAdapterTrait
      */
     protected function implodeHeaders($value): string
     {
+        if (!is_string($value) && !is_array($value)) { // perhaps-do: improve validation
+            InvalidTypeException::throwStringOrArrayOfStringsExpected($value);
+        }
+
         return is_array($value) ? implode(',', $value) : $value;
     }
 
     /**
-     * TODO add header name validation! (would be only valid for shadow)
+     * @param string $name
      */
-    protected function normalizeHeaderName(string $name): string
+    protected function normalizeHeaderName($name): string
     {
+        $this->validateHeaderName($name);
+
         return str_replace('_', '-', strtolower($name));
+    }
+
+    protected function validateHeaderName($name): void
+    {
+        if (!is_string($name)) { // perhaps-do: improve validation according to https://tools.ietf.org/html/rfc7230#section-3.2
+            InvalidTypeException::throwStringExpected($name);
+        }
     }
 }
