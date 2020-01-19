@@ -163,7 +163,7 @@ class Response
         if ($this->setHeaderOnly) {
             $setNoContent = self::STATUS_NO_CONTENT === $code;
             // only change if there's a transition from or to 204
-            if ($setNoContent xor self::STATUS_NO_CONTENT === (int) $this->sfWebResponse->getStatusCode()) {
+            if ($setNoContent xor self::STATUS_NO_CONTENT === (int)$this->sfWebResponse->getStatusCode()) {
                 // only change if HeaderOnly was not overridden externally (using sfWebResponse Object)
                 if ($setNoContent xor $this->sfWebResponse->isHeaderOnly()) {
                     $this->sfWebResponse->setHeaderOnly($setNoContent);
@@ -249,5 +249,10 @@ class Response
 
         // either return internal default for null to trigger symfony's default lookup
         return static::$defaultReasonPhrases[$code] ?? null;
+    }
+
+    protected function getNew(bool $failOnMutation = false): self
+    {
+        return $this; // TODO!
     }
 }
