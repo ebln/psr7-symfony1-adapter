@@ -11,6 +11,8 @@ jobs:
       uses: actions/checkout@v1
     - name: Validate composer.json and composer.lock
       run: composer validate
+    - name: Require php-cs-fixer
+      run: composer require friendsofphp/php-cs-fixer --dev
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
 #    - name: Run test suite
@@ -27,3 +29,6 @@ jobs:
     - name: Mess Detector
       run: |
         ./vendor/bin/phpmd src,tests text codesize,design,naming
+    - name: php-cs-fixer
+      run: |
+        ./vendor/bin/php-cs-fixer fix -v --config=.php_cs.dist --using-cache=no --dry-run
