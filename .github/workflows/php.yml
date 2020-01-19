@@ -17,8 +17,8 @@ jobs:
     - name: Unit tests
       run: phpunit --coverage-text
     - name: Psalm
-      run: psalm
+      run: ./vendor/bin/psalm
     - name: phpstan
-      run: phpstan analyse
+      run: ./vendor/bin/phpstan analyse
     - name: Mess Detector
-      run: phpmd src text codesize,design,naming
+      run: ./vendor/bin/phpmd src text codesize,design,naming
