@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace brnc\Symfony1\Message\Adapter;
 
 use brnc\Symfony1\Message\Exception\InvalidTypeException;
-use Webmozart\Assert\Assert;
 use function GuzzleHttp\Psr7\stream_for;
 use Psr\Http\Message\StreamInterface;
+use Webmozart\Assert\Assert;
 
 /**
  * collects common behaviour of request and response
@@ -125,6 +125,7 @@ trait CommonAdapterTrait
 
     /**
      * @param mixed $name
+     *
      * @param-out string $name
      *
      * @throws InvalidTypeException

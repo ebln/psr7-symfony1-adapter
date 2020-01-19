@@ -58,7 +58,7 @@ class Request implements ServerRequestInterface
     /** @var bool */
     protected $isImmutable = true;
 
-    /** @var null|array<string, string|array> */
+    /** @var null|array<string, array|string> */
     protected $queryParams;
 
     /** @var UploadedFileInterface[] */
@@ -268,7 +268,7 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @param string|mixed $method
+     * @param mixed|string $method
      */
     public function withMethod($method): self
     {
@@ -276,7 +276,6 @@ class Request implements ServerRequestInterface
             InvalidTypeException::throwStringExpected($method);
         }
         /** @var string $method */
-
         $new         = $this->getNew();
         $new->method = $method;
         $new->sfWebRequest->setMethod($method);
@@ -341,7 +340,7 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @return array<string, string|array>
+     * @return array<string, array|string>
      */
     public function getQueryParams(): array
     {
@@ -349,7 +348,7 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @param array<string, string|array> $query
+     * @param array<string, array|string> $query
      *
      * @return static
      */
@@ -383,6 +382,7 @@ class Request implements ServerRequestInterface
      * @param UploadedFileInterface[] $uploadedFiles
      *
      * @throws LogicException
+     *
      * @return static
      */
     public function withUploadedFiles(array $uploadedFiles): self
@@ -406,7 +406,7 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @param null|array<string, mixed>|object|mixed $data
+     * @param null|array<string, mixed>|mixed|object $data
      */
     public function withParsedBody($data): self
     {
@@ -542,9 +542,8 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @param bool $failOnMutation
-     *
      * @throws LogicException
+     *
      * @return static
      */
     protected function getNew(bool $failOnMutation = false): self
