@@ -11,9 +11,9 @@ class InvalidTypeException extends \InvalidArgumentException implements AdapterT
         throw new self('String expected, ' . gettype($value) . ' given.');
     }
 
-    public static function throwStringOrArrayExpected($value)
+    public static function throwNotEmptyExpected()
     {
-        throw new self('String or array expected, ' . gettype($value) . ' given.');
+        throw new self('Non empty value expected!');
     }
 
     public static function throwStringOrArrayOfStringsExpected($value)
