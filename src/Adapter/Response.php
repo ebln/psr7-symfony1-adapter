@@ -48,7 +48,6 @@ class Response
     }
 
     /**
-     * @param \sfWebResponse      $sfWebResponse
      * @param array<string, bool> $options
      *
      * @return Response
@@ -65,9 +64,6 @@ class Response
         return $new;
     }
 
-    /**
-     * @return string
-     */
     public function getProtocolVersion(): string
     {
         return $this->getVersionFromArray($this->sfWebResponse->getOptions(), 'http_protocol');
@@ -76,9 +72,10 @@ class Response
     /**
      * @param string $version
      *
+     * @throws \ReflectionException
+     *
      * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
      *               same instance, due to the nature of the underlying adapted symfony object
-     * @throws \ReflectionException
      */
     public function withProtocolVersion($version): self
     {
@@ -107,8 +104,6 @@ class Response
 
     /**
      * @param string $name
-     *
-     * @return string
      */
     public function getHeaderLine($name): string
     {
@@ -117,8 +112,6 @@ class Response
 
     /**
      * @param string $name
-     *
-     * @return bool
      */
     public function hasHeader($name): bool
     {
@@ -135,7 +128,7 @@ class Response
         /** @noinspection ArgumentEqualsDefaultValueInspection */
         $value = $this->sfWebResponse->getHttpHeader($name, null);
 
-        return $value === null ? [] : $this->explodeHeaderLine($value);
+        return null === $value ? [] : $this->explodeHeaderLine($value);
     }
 
     /**
@@ -147,15 +140,12 @@ class Response
     public function withoutHeader($name): self
     {
         unset($this->headerNames[$this->normalizeHeaderName($name)]);
-        /** @noinspection ArgumentEqualsDefaultValueInspection */
+        /* @noinspection ArgumentEqualsDefaultValueInspection */
         $this->sfWebResponse->setHttpHeader($name, null, true);
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getStatusCode(): int
     {
         return $this->sfWebResponse->getStatusCode();
@@ -173,7 +163,7 @@ class Response
         if ($this->setHeaderOnly) {
             $setNoContent = self::STATUS_NO_CONTENT === $code;
             // only change if there's a transition from or to 204
-            if ($setNoContent xor self::STATUS_NO_CONTENT === (int)$this->sfWebResponse->getStatusCode()) {
+            if ($setNoContent xor self::STATUS_NO_CONTENT === (int) $this->sfWebResponse->getStatusCode()) {
                 // only change if HeaderOnly was not overridden externally (using sfWebResponse Object)
                 if ($setNoContent xor $this->sfWebResponse->isHeaderOnly()) {
                     $this->sfWebResponse->setHeaderOnly($setNoContent);
@@ -187,9 +177,6 @@ class Response
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getReasonPhrase(): string
     {
         return $this->sfWebResponse->getStatusText();
@@ -231,8 +218,6 @@ class Response
      * get the symfony's header name used by sfWebResponse's headers property
      *
      * @param string $name
-     *
-     * @return string
      */
     protected function normalizeSymfonyHeaderName($name): string
     {
@@ -256,12 +241,6 @@ class Response
         $this->reflexHeaders->setValue($this->sfWebResponse, $headers);
     }
 
-    /**
-     * @param int    $code
-     * @param string $reasonPhrase
-     *
-     * @return string|null
-     */
     protected function useDefaultReasonPhrase(int $code, string $reasonPhrase): ?string
     {
         if (!empty($reasonPhrase)) {

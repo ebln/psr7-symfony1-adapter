@@ -38,7 +38,7 @@ class Request
     /** @var null|\ReflectionProperty */
     protected $reflexPathInfoArray;
 
-    /** @var mixed[] */
+    /** @var array<string, mixed> */
     protected $attributes = [];
 
     /** @var UriInterface */
@@ -54,7 +54,6 @@ class Request
     }
 
     /**
-     * @param \sfWebRequest       $sfWebRequest
      * @param array<string, bool> $options
      *
      * @return Request
@@ -83,9 +82,6 @@ class Request
         return $new;
     }
 
-    /**
-     * @return string
-     */
     public function getProtocolVersion(): string
     {
         return $this->getVersionFromArray($this->sfWebRequest->getPathInfoArray(), 'SERVER_PROTOCOL');
@@ -97,6 +93,7 @@ class Request
      * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
      *               same instance, due to the nature of the underlying adapted symfony object
      * @throws \ReflectionException
+     *
      */
     public function withProtocolVersion($version): self
     {
@@ -115,7 +112,7 @@ class Request
         $headers = [];
         foreach ($this->sfWebRequest->getPathInfoArray() as $key => $value) {
             $useKey = null;
-            if (strpos($key, 'HTTP_') === 0) {
+            if (0 === strpos($key, 'HTTP_')) {
                 $useKey = substr($key, 5);
             } elseif (isset(self::$contentHeaders[$key])) {
                 $useKey = $key;
@@ -123,7 +120,7 @@ class Request
 
             if (null !== $useKey) {
                 $headerName = $this->normalizeHeaderName($useKey);
-                /** @noinspection NullCoalescingOperatorCanBeUsedInspection */
+                /* @noinspection NullCoalescingOperatorCanBeUsedInspection */
                 if (isset($this->headerNames[$headerName])) {
                     $headerName = $this->headerNames[$headerName]; // return shadowed header name
                 }
@@ -137,8 +134,6 @@ class Request
 
     /**
      * @param string $name
-     *
-     * @return string
      */
     public function getHeaderLine($name): string
     {
@@ -149,8 +144,6 @@ class Request
 
     /**
      * @param string $name
-     *
-     * @return bool
      */
     public function hasHeader($name): bool
     {
@@ -166,7 +159,7 @@ class Request
     {
         $value = $this->sfWebRequest->getHttpHeader($name, $this->getPathInfoPrefix($name));
 
-        return $value === null ? [] : $this->explodeHeaderLine($value);
+        return null === $value ? [] : $this->explodeHeaderLine($value);
     }
 
     /**
@@ -175,6 +168,7 @@ class Request
      * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
      *               same instance, due to the nature of the underlying adapted symfony object
      * @throws \ReflectionException
+     *
      */
     public function withoutHeader($name): self
     {
@@ -187,9 +181,6 @@ class Request
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getMethod(): string
     {
         $method = $this->sfWebRequest->getMethod();
@@ -259,10 +250,10 @@ class Request
     }
 
     /**
-     * @param string      $name
-     * @param string|null $default
+     * @param string     $name
+     * @param null|mixed $default
      *
-     * @return mixed
+     * @return null|mixed
      */
     public function getAttribute($name, $default = null)
     {
@@ -270,9 +261,9 @@ class Request
     }
 
     /**
-     * @param string $name
+     * @param string     $name
      *
-     * @param mixed  $value
+     * @param null|mixed $value
      *
      * @return $this In conflict with PSR-7's immutability paradigm, this method doesn't return a clone but the instance
      */
@@ -296,8 +287,6 @@ class Request
     }
 
     /**
-     * @param StreamInterface $body
-     *
      * @return $this In conflict with PSR-7's immutability paradigm, this method doesn't return a clone but the instance
      */
     public function withBody(StreamInterface $body): self
@@ -305,17 +294,11 @@ class Request
         throw new \LogicException('Altering content is not supported by sfRequest.');
     }
 
-    /**
-     * @return UriInterface
-     */
     public function getUri(): UriInterface
     {
         return $this->uri;
     }
 
-    /**
-     * @return string
-     */
     public function getRequestTarget(): string
     {
         $target = $this->uri->getPath();
@@ -350,7 +333,6 @@ class Request
     /**
      * injects a header into symfony's pathInfoArray via setPathInfoArray()'s reflection
      *
-     * @param string          $name
      * @param string|string[] $value
      *
      * @throws \ReflectionException
@@ -365,10 +347,6 @@ class Request
 
     /**
      * get the array key resp. to pathInfoArray from the header field name
-     *
-     * @param string $name
-     *
-     * @return string
      */
     protected function getPathInfoKey(string $name): string
     {
@@ -382,10 +360,6 @@ class Request
 
     /**
      * in order to also obtain content headers via getHttpHeader()
-     *
-     * @param string $name
-     *
-     * @return string|null
      */
     protected function getPathInfoPrefix(string $name): ?string
     {
