@@ -110,16 +110,16 @@ class RequestBasicTest extends TestCase
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function testwithAddedHeader(): void
+    public function testWithAddedHeader(): void
     {
         $request = $this->createRequest();
-        $this->assertSame(false, $request->hasHeader('X-Foo'));
+        $this->assertFalse($request->hasHeader('X-Foo'));
         $this->assertSame([], $request->getHeader('X-Foo'));
         $this->assertSame([], $request->getServerParams());
         $request = $request->withAddedHeader('X-Foo', 'bar');
-        $this->assertSame(true, $request->hasHeader('X-Foo'));
+        $this->assertTrue($request->hasHeader('X-Foo'));
         $request = $request->withAddedHeader('X-Foo', 'baz');
-        $this->assertSame(true, $request->hasHeader('X-Foo'));
+        $this->assertTrue($request->hasHeader('X-Foo'));
         $this->assertSame(['bar', 'baz'], $request->getHeader('X-Foo'));
         $this->assertSame('bar,baz', $request->getHeaderLine('X-Foo'));
         $this->assertSame(['X-Foo' => ['bar', 'baz']], $request->getHeaders());
@@ -129,16 +129,16 @@ class RequestBasicTest extends TestCase
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function testwithArrayAddedHeader(): void
+    public function testWithArrayAddedHeader(): void
     {
         $request = $this->createRequest();
-        $this->assertSame(false, $request->hasHeader('X-Foo'));
+        $this->assertFalse($request->hasHeader('X-Foo'));
         $this->assertSame([], $request->getHeader('X-Foo'));
         $this->assertSame([], $request->getServerParams());
         $request = $request->withAddedHeader('X-Foo', 'foo');
         $this->assertSame(true, $request->hasHeader('X-Foo'));
         $request = $request->withAddedHeader('X-Foo', ['bar', 'baz']);
-        $this->assertSame(true, $request->hasHeader('X-Foo'));
+        $this->assertTrue($request->hasHeader('X-Foo'));
         $this->assertSame(['foo', 'bar', 'baz'], $request->getHeader('X-Foo'));
         $this->assertSame('foo,bar,baz', $request->getHeaderLine('X-Foo'));
         $this->assertSame(['X-Foo' => ['foo', 'bar', 'baz']], $request->getHeaders());
@@ -148,7 +148,7 @@ class RequestBasicTest extends TestCase
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function testwithoutHeader(): void
+    public function testWithoutHeader(): void
     {
         $request = $this->createRequest('GET', ['HTTP_X_FOO' => 'bar, baz']);
         $this->assertSame(true, $request->hasHeader('X-Foo'));
@@ -157,7 +157,7 @@ class RequestBasicTest extends TestCase
         $this->assertSame(['x-foo' => ['bar', 'baz']], $request->getHeaders());
         $this->assertSame(['HTTP_X_FOO' => 'bar, baz'], $request->getServerParams());
         $request = $request->withoutHeader('x-FoO');
-        $this->assertSame(false, $request->hasHeader('X-Foo'));
+        $this->assertFalse($request->hasHeader('X-Foo'));
         $this->assertSame([], $request->getHeader('X-Foo'));
         $this->assertSame([], $request->getServerParams());
     }

@@ -88,7 +88,7 @@ trait CommonAdapterTrait
     }
 
     /**
-     * Explodes a HTTP header's value to address PSR-7 arrayfied sub-value approach
+     * Explodes a HTTP header's value to address PSR-7 arrayified sub-value approach
      *
      * @param string $line
      *

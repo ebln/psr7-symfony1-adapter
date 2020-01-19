@@ -13,7 +13,7 @@ use ReflectionObject;
  *          Access raw Response?
  *          Cookie Abstraction
  *              including Header transcription
- *          how to sync to sfResponse? What happends if header and setRawCookie of sfResponse collide?
+ *          how to sync to sfResponse? What happens if header and setRawCookie of sfResponse collide?
  *      withBody and how to sync writes to the stream with the underlying sfWebResponse
  *         via Refl.eventDispatcher && response.filter_content ?
  *         vs. clone Stream on withBody and write to sfResponse
@@ -53,7 +53,7 @@ class Response
      *
      * @return Response
      */
-    public static function fromSfWebReponse(\sfWebResponse $sfWebResponse, array $options = []): self
+    public static function fromSfWebResponse(\sfWebResponse $sfWebResponse, array $options = []): self
     {
         $new                = new static();
         $new->sfWebResponse = $sfWebResponse;

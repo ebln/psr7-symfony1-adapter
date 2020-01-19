@@ -25,9 +25,9 @@ class Request
     use CommonAdapterTrait;
 
     /** @see https://www.php.net/manual/en/wrappers.php.php#wrappers.php.input for reuseablity of php://input */
-    public CONST OPTION_BODY_USE_STREAM       = 'Use php://input directly';
-    public CONST OPTION_EXPOSE_SF_WEB_REQUEST = 'Populate attribute with sfWebRequest';
-    public CONST ATTRIBUTE_SF_WEB_REQUEST     = 'sfWebRequest';
+    public const OPTION_BODY_USE_STREAM       = 'Use php://input directly';
+    public const OPTION_EXPOSE_SF_WEB_REQUEST = 'Populate attribute with sfWebRequest';
+    public const ATTRIBUTE_SF_WEB_REQUEST     = 'sfWebRequest';
 
     /** @var bool[] */
     protected static $contentHeaders = ['CONTENT_LENGTH' => true, 'CONTENT_MD5' => true, 'CONTENT_TYPE' => true];

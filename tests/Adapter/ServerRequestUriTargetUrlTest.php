@@ -43,7 +43,7 @@ class ServerRequestUriTargetUrlTest extends TestCase
     /**
      * TODO cover and activate!
      */
-    public function ItFailsWithUri(): void
+    public function todoItFailsWithUri(): void
     {
         $request = $this->createRequest();
         $uriMock = $this->createMock(UriInterface::class);
