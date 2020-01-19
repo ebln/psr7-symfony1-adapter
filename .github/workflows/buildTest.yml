@@ -1,6 +1,6 @@
 name: PHPUnit Tests via Composer
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   build:
@@ -17,7 +17,7 @@ jobs:
 #      run: composer run-script test
     - name: Unit tests
       run: |
-        ./vendor/bin/phpunit --coverage-text  --colors=never
+        ./vendor/bin/phpunit --no-coverage --colors=never
     - name: Psalm
       run: |
         ./vendor/bin/psalm --monochrome --no-progress --stats --show-info=false
