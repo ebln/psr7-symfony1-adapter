@@ -24,13 +24,12 @@ trait CommonAdapterTrait
     protected $body;
 
     /**
-     * @param string          $name
-     * @param string|string[] $value
+     * @param string|mixed          $name
+     * @param string|string[]|mixed $value
      *
-     * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
-     *               same instance, due to the nature of the underlying adapted symfony object
+     * @return self
      */
-    public function withAddedHeader($name, $value): self
+    public function withAddedHeader($name, $value)
     {
         if (!$this->hasHeader($name)) {
             // to preserve the original header name
@@ -53,12 +52,14 @@ trait CommonAdapterTrait
     /**
      * N.b. in the Response this is *not* applying the extra call to fixContentType() by setHttpHeader()
      *
-     * @param string          $name
-     * @param string|string[] $value
+     * @param string|mixed          $name
+     * @param string|string[]|mixed $value
+     *
+     * @return self
      */
-    public function withHeader($name, $value): self
+    public function withHeader($name, $value)
     {
-        /** @var CommonAdapterTrait $new */
+        /** var @CommonAdapterTrait $new */
         $new                                                = $this->getNew(false);
         $new->headerNames[$new->normalizeHeaderName($name)] = $name;
         $new->setHeader($name, $value);
@@ -114,7 +115,7 @@ trait CommonAdapterTrait
     }
 
     /**
-     * @param string $name
+     * @param string|mixed $name
      */
     protected function normalizeHeaderName($name): string
     {
