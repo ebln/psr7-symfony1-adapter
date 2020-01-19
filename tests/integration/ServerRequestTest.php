@@ -13,7 +13,7 @@ class ServerRequestTest extends ServerRequestIntegrationTest
     {
         $symfonyRequestMock = new \sfWebRequest();
         $symfonyRequestMock->prepare('GET', $_SERVER, [], [], [], [], null, '/');
-        $request = Request::fromSfWebRequest($symfonyRequestMock, [/*Request::OPTION_IMMUTABLE_VIOLATION => false*/]);
+        $request = Request::fromSfWebRequest($symfonyRequestMock, [Request::OPTION_IMMUTABLE_VIOLATION => false]);
 
         return $request;
     }

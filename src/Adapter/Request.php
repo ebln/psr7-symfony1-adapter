@@ -27,6 +27,7 @@ class Request
     /** @see https://www.php.net/manual/en/wrappers.php.php#wrappers.php.input for reuseablity of php://input */
     public const OPTION_BODY_USE_STREAM       = 'Use php://input directly';
     public const OPTION_EXPOSE_SF_WEB_REQUEST = 'Populate attribute with sfWebRequest';
+    public const OPTION_IMMUTABLE_VIOLATION   = 'Violate PSR-7 as this is an adapter acting on the underlying sfWebRequest';
     public const ATTRIBUTE_SF_WEB_REQUEST     = 'sfWebRequest';
 
     /** @var bool[] */
@@ -43,6 +44,9 @@ class Request
 
     /** @var UriInterface */
     protected $uri;
+
+    /** @var bool */
+    protected $isImmutable = true;
 
     /**
      * @var string shadow to honour: »[…]method names are case-sensitive and thus implementations SHOULD NOT modify the given string.«
@@ -77,9 +81,23 @@ class Request
             $new->attributes[self::ATTRIBUTE_SF_WEB_REQUEST] = $sfWebRequest;
         }
 
+        // default to non-immutable PSR-7 violating behavior when creating from \sfWebRequest
+        if (!array_key_exists(self::OPTION_IMMUTABLE_VIOLATION, $options) || false !== $options[self::OPTION_IMMUTABLE_VIOLATION]) {
+            $new->isImmutable = false;
+        }
+
         $new->uri = new Uri($sfWebRequest->getUri());
 
         return $new;
+    }
+
+    public function __clone()
+    {
+        $this->uri                 = clone $this->uri;
+        $this->body                = $this->body ? clone $this->body : $this->body;
+        $this->sfWebRequest        = clone $this->sfWebRequest;
+        $this->reflexPathInfoArray = null;
+        //$this->parsedBody          = is_object($this->parsedBody) ? clone $this->parsedBody : $this->parsedBody;
     }
 
     public function getProtocolVersion(): string
@@ -90,18 +108,19 @@ class Request
     /**
      * @param string $version
      *
-     * @throws \ReflectionException
-     *
      * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
      *               same instance, due to the nature of the underlying adapted symfony object
+     * @throws \ReflectionException
+     *
      */
     public function withProtocolVersion($version): self
     {
-        $pathInfoArray                    = $this->sfWebRequest->getPathInfoArray();
+        $new                              = $this->getNew();
+        $pathInfoArray                    = $new->sfWebRequest->getPathInfoArray();
         $pathInfoArray['SERVER_PROTOCOL'] = 'HTTP/' . $version;
-        $this->retroducePathInfoArray($pathInfoArray);
+        $new->retroducePathInfoArray($pathInfoArray);
 
-        return $this;
+        return $new;
     }
 
     /**
@@ -165,20 +184,21 @@ class Request
     /**
      * @param string $name
      *
-     * @throws \ReflectionException
-     *
      * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
      *               same instance, due to the nature of the underlying adapted symfony object
+     * @throws \ReflectionException
+     *
      */
     public function withoutHeader($name): self
     {
-        $keyName       = $this->getPathInfoKey($name);
-        $pathInfoArray = $this->sfWebRequest->getPathInfoArray();
+        $new           = $this->getNew();
+        $keyName       = $new->getPathInfoKey($name);
+        $pathInfoArray = $new->sfWebRequest->getPathInfoArray();
         unset($pathInfoArray[$keyName]);
-        $this->retroducePathInfoArray($pathInfoArray);
-        unset($this->headerNames[$this->normalizeHeaderName($name)]);
+        $new->retroducePathInfoArray($pathInfoArray);
+        unset($new->headerNames[$new->normalizeHeaderName($name)]);
 
-        return $this;
+        return $new;
     }
 
     public function getMethod(): string
@@ -199,10 +219,11 @@ class Request
      */
     public function withMethod($method): self
     {
-        $this->method = $method;
-        $this->sfWebRequest->setMethod($method);
+        $new         = $this->getNew();
+        $new->method = $method;
+        $new->sfWebRequest->setMethod($method);
 
-        return $this;
+        return $new;
     }
 
     /**
@@ -280,9 +301,11 @@ class Request
      */
     public function withoutAttribute($name): self
     {
-        unset($this->attributes[$name]);
+        $new = $this->getNew();
 
-        return $this;
+        unset($new->attributes[$name]);
+
+        return $new;
     }
 
     /**
@@ -368,5 +391,14 @@ class Request
         }
 
         return 'HTTP';
+    }
+
+    protected function getNew(): self
+    {
+        if (!$this->isImmutable) {
+            return $this;
+        }
+
+        return clone $this;
     }
 }
