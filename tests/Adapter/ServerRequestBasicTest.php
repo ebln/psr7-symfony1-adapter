@@ -27,10 +27,12 @@ class ServerRequestBasicTest extends TestCase
      */
     public function testGetCookieParams(): void
     {
-        $cookies = ['cookie_1' => 'asdf', 'cookie_2' => 'qwerty'];
-        $_COOKIE = $cookies;
-        $request = $this->createRequest();
+        $superCookies = $_COOKIE;
+        $cookies      = ['cookie_1' => 'asdf', 'cookie_2' => 'qwerty'];
+        $_COOKIE      = $cookies;
+        $request      = $this->createRequest();
         $this->assertSame($cookies, $request->getCookieParams(), 'Rather a quirk: returns $_COOKIE');
+        $_COOKIE = $superCookies;
     }
 
     /**
