@@ -163,16 +163,6 @@ class Request implements ServerRequestInterface
     /**
      * @param string $name
      */
-    public function getHeaderLine($name): string
-    {
-        $value = $this->sfWebRequest->getHttpHeader($name, $this->getPathInfoPrefix($name));
-
-        return $value ?? '';
-    }
-
-    /**
-     * @param string $name
-     */
     public function hasHeader($name): bool
     {
         return null !== $this->sfWebRequest->getHttpHeader($name, $this->getPathInfoPrefix($name));
@@ -192,6 +182,16 @@ class Request implements ServerRequestInterface
 
     /**
      * @param string $name
+     */
+    public function getHeaderLine($name): string
+    {
+        $value = $this->sfWebRequest->getHttpHeader($name, $this->getPathInfoPrefix($name));
+
+        return $value ?? '';
+    }
+
+    /**
+     * @param string $name
      *
      * @throws \ReflectionException
      */
@@ -205,6 +205,34 @@ class Request implements ServerRequestInterface
         unset($new->headerNames[$new->normalizeHeaderName($name)]);
 
         return $new;
+    }
+
+    public function withBody(StreamInterface $body): self
+    {
+        throw new \LogicException('Altering content is not supported by sfRequest.');
+    }
+
+    public function getRequestTarget(): string
+    {
+        $target = $this->uri->getPath();
+        if ('' === $target) {
+            $target = '/';
+        }
+        if ('' !== $this->uri->getQuery()) {
+            $target .= '?' . $this->uri->getQuery();
+        }
+
+        return $target;
+    }
+
+    /**
+     * TODO!
+     *
+     * {@inheritdoc}
+     */
+    public function withRequestTarget($requestTarget)
+    {
+        return $this->getNew();
     }
 
     public function getMethod(): string
@@ -229,6 +257,19 @@ class Request implements ServerRequestInterface
         return $new;
     }
 
+    public function getUri(): UriInterface
+    {
+        return $this->uri;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function withUri(UriInterface $uri, $preserveHost = false)
+    {
+        return $this->getNew();
+    }
+
     /**
      * wrapper for symfony's getPathInfoArray()
      *
@@ -247,9 +288,47 @@ class Request implements ServerRequestInterface
         return $this->cookieParams ?? $_COOKIE; // as getCookie() in sfWebRequest is nothing but a lookup
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function withCookieParams(array $cookies)
+    {
+        $new               = $this->getNew(true);
+        $new->cookieParams = $cookies;
+
+        return $new;
+    }
+
     public function getQueryParams(): array
     {
         return $this->queryParams ?? $this->sfWebRequest->getGetParameters();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function withQueryParams(array $query): self
+    {
+        $new              = $this->getNew(true);
+        $new->queryParams = $query;
+
+        return $new;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUploadedFiles()
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function withUploadedFiles(array $uploadedFiles): self
+    {
+        return $this->getNew();
     }
 
     /**
@@ -258,6 +337,21 @@ class Request implements ServerRequestInterface
     public function getParsedBody()
     {
         return false === $this->parsedBody ? $this->sfWebRequest->getPostParameters() : $this->parsedBody;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function withParsedBody($data): self
+    {
+        if (!is_array($data) && !is_object($data) && null !== $data) {
+            throw new \InvalidArgumentException('Value for parsed body must be null, array or object!');
+        }
+
+        $new             = $this->getNew();
+        $new->parsedBody = $data;
+
+        return $new;
     }
 
     /**
@@ -299,101 +393,6 @@ class Request implements ServerRequestInterface
         $new = $this->getNew();
 
         unset($new->attributes[$name]);
-
-        return $new;
-    }
-
-    /**
-     * @return $this In conflict with PSR-7's immutability paradigm, this method doesn't return a clone but the instance
-     */
-    public function withBody(StreamInterface $body): self
-    {
-        throw new \LogicException('Altering content is not supported by sfRequest.');
-    }
-
-    public function getUri(): UriInterface
-    {
-        return $this->uri;
-    }
-
-    public function getRequestTarget(): string
-    {
-        $target = $this->uri->getPath();
-        if ('' === $target) {
-            $target = '/';
-        }
-        if ('' !== $this->uri->getQuery()) {
-            $target .= '?' . $this->uri->getQuery();
-        }
-
-        return $target;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withRequestTarget($requestTarget)
-    {
-        return $this->getNew();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withUri(UriInterface $uri, $preserveHost = false)
-    {
-        return $this->getNew();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withCookieParams(array $cookies)
-    {
-        $new               = $this->getNew(true);
-        $new->cookieParams = $cookies;
-
-        return $new;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withQueryParams(array $query): self
-    {
-        $new              = $this->getNew(true);
-        $new->queryParams = $query;
-
-        return $new;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getUploadedFiles()
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withUploadedFiles(array $uploadedFiles): self
-    {
-        return $this->getNew();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withParsedBody($data): self
-    {
-        if (!is_array($data) && !is_object($data) && null !== $data) {
-            throw new \InvalidArgumentException('Value for parsed body must be null, array or object!');
-        }
-
-        $new             = $this->getNew();
-        $new->parsedBody = $data;
 
         return $new;
     }
