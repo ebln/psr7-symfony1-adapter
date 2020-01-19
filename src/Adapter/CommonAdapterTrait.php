@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace brnc\Symfony1\Message\Adapter;
 
 use brnc\Symfony1\Message\Exception\InvalidTypeException;
+use Webmozart\Assert\Assert;
 use function GuzzleHttp\Psr7\stream_for;
 use Psr\Http\Message\StreamInterface;
 
@@ -24,10 +25,10 @@ trait CommonAdapterTrait
     protected $body;
 
     /**
-     * @param string|mixed          $name
-     * @param string|string[]|mixed $value
+     * @param string          $name
+     * @param string|string[] $value
      *
-     * @return self
+     * @return static
      */
     public function withAddedHeader($name, $value)
     {
@@ -52,10 +53,10 @@ trait CommonAdapterTrait
     /**
      * N.b. in the Response this is *not* applying the extra call to fixContentType() by setHttpHeader()
      *
-     * @param string|mixed          $name
-     * @param string|string[]|mixed $value
+     * @param string          $name
+     * @param string|string[] $value
      *
-     * @return self
+     * @return static
      */
     public function withHeader($name, $value)
     {
@@ -103,19 +104,17 @@ trait CommonAdapterTrait
      */
     protected function implodeHeaders($value): string
     {
-        $isArray = is_array($value);
-        if (!is_string($value) && !$isArray) { // perhaps-do: improve validation
-            InvalidTypeException::throwStringOrArrayOfStringsExpected($value);
-        }
-        if ($isArray && empty($value)) {
-            InvalidTypeException::throwNotEmptyExpected();
+        if (!is_string($value)) {
+            Assert::allStringNotEmpty($value);
+            Assert::notEmpty($value);
+            // perhaps rethrow to InvalidTypeException
         }
 
-        return $isArray ? implode(',', $value) : $value;
+        return is_array($value) ? implode(',', $value) : $value;
     }
 
     /**
-     * @param string|mixed $name
+     * @param string $name
      */
     protected function normalizeHeaderName($name): string
     {

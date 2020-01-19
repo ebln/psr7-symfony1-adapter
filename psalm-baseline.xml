@@ -9,7 +9,7 @@
       <code>$this-&gt;sfWebRequest-&gt;getPostParameters()</code>
       <code>array&lt;string, string&gt;</code>
     </MixedReturnTypeCoercion>
-    <PropertyNotSetInConstructor occurrences="3">
+    <PropertyNotSetInConstructor occurrences="4">
       <code>$sfWebRequest</code>
       <code>$uri</code>
       <code>$method</code>

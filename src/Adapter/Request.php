@@ -49,19 +49,19 @@ class Request implements ServerRequestInterface
     /** @var UriInterface */
     protected $uri;
 
-    /** @var null|array|false|object → false indicated non-initialization in order to fallback to sfRequest, while null overrides sfRequest */
+    /** @var null|array<string, mixed>|false|object → false indicated non-initialization in order to fallback to sfRequest, while null overrides sfRequest */
     protected $parsedBody;
 
-    /** @var null|array */
+    /** @var null|array<string, string> */
     protected $cookieParams = [];
 
     /** @var bool */
     protected $isImmutable = true;
 
-    /** @var null|array */
+    /** @var null|array<string, string|array> */
     protected $queryParams;
 
-    /** @var null|UploadedFileInterface[]|array */
+    /** @var UploadedFileInterface[] */
     protected $uploadedFiles;
 
     /** @var null|string */
@@ -319,6 +319,8 @@ class Request implements ServerRequestInterface
 
     /**
      * perhaps-do: check SG-header-congruency
+     *
+     * @return array<string, string>
      */
     public function getCookieParams(): array
     {
@@ -326,9 +328,11 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param array<string, string> $cookies
+     *
+     * @return static
      */
-    public function withCookieParams(array $cookies)
+    public function withCookieParams(array $cookies): self
     {
         $new               = $this->getNew(true);
         $new->cookieParams = $cookies;
@@ -336,13 +340,18 @@ class Request implements ServerRequestInterface
         return $new;
     }
 
+    /**
+     * @return array<string, string|array>
+     */
     public function getQueryParams(): array
     {
         return $this->queryParams ?? $this->sfWebRequest->getGetParameters();
     }
 
     /**
-     * {@inheritdoc}
+     * @param array<string, string|array> $query
+     *
+     * @return static
      */
     public function withQueryParams(array $query): self
     {
@@ -353,11 +362,14 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return UploadedFileInterface[]
+     *
+     * @psalm-return list<UploadedFileInterface>
      */
-    public function getUploadedFiles()
+    public function getUploadedFiles(): array
     {
         if (null === $this->uploadedFiles) {
+            $this->uploadedFiles = [];
             /** @psalm-var array{tmp_name:string,size:int,error:int,name:string,type:string} $file */
             foreach ($this->sfWebRequest->getFiles() as $file) {
                 $this->addUploadedFile($file);
@@ -368,7 +380,10 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param UploadedFileInterface[] $uploadedFiles
+     *
+     * @throws LogicException
+     * @return static
      */
     public function withUploadedFiles(array $uploadedFiles): self
     {
@@ -379,16 +394,19 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @return null|array|object
+     * @return null|array<string, mixed>|object
      */
     public function getParsedBody()
     {
-        return false === $this->parsedBody ? $this->sfWebRequest->getPostParameters() : $this->parsedBody;
+        if (false === $this->parsedBody) {
+            $this->parsedBody = $this->sfWebRequest->getPostParameters();
+        }
+
+        return $this->parsedBody;
     }
 
     /**
-     * {@inheritdoc}
-     * @param null|array|object|mixed $data
+     * @param null|array<string, mixed>|object|mixed $data
      */
     public function withParsedBody($data): self
     {
@@ -523,6 +541,12 @@ class Request implements ServerRequestInterface
         );
     }
 
+    /**
+     * @param bool $failOnMutation
+     *
+     * @throws LogicException
+     * @return static
+     */
     protected function getNew(bool $failOnMutation = false): self
     {
         if (!$this->isImmutable) {

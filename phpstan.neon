@@ -4,15 +4,15 @@ parameters:
         - src
         - tests
     ignoreErrors:
-#        -
-#            message: "#^Unsafe usage of new static\\(\\)\\.$#"
-#            count: 0
-#            path: src/Adapter/*.php
+        -
+            message: "#^Unsafe usage of new static\\(\\)\\.$#"
+            count: 2
+            path: src/Adapter/*.php
         -
             message: "#Method brnc\\\\Tests\\\\[^ ]+ has parameter [^ ]+ with no value type specified in iterable type array#"
-            count: 36
+            count: 38
             path: tests/*.php
         -
             message: "#^Method brnc\\\\Tests\\\\[^ ]+ return type has no value type specified in iterable type array\\.$#"
-            count: 6
+            count: 7
             path: tests/*.php
