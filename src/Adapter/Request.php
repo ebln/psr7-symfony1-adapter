@@ -90,10 +90,10 @@ class Request
     /**
      * @param string $version
      *
-     * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
-     *               same instance, due to the nature of the underlying adapted symfony object
      * @throws \ReflectionException
      *
+     * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
+     *               same instance, due to the nature of the underlying adapted symfony object
      */
     public function withProtocolVersion($version): self
     {
@@ -165,10 +165,10 @@ class Request
     /**
      * @param string $name
      *
-     * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
-     *               same instance, due to the nature of the underlying adapted symfony object
      * @throws \ReflectionException
      *
+     * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
+     *               same instance, due to the nature of the underlying adapted symfony object
      */
     public function withoutHeader($name): self
     {
@@ -262,7 +262,6 @@ class Request
 
     /**
      * @param string     $name
-     *
      * @param null|mixed $value
      *
      * @return $this In conflict with PSR-7's immutability paradigm, this method doesn't return a clone but the instance
