@@ -42,7 +42,7 @@
         "test": [
             "psalm --find-unused-psalm-suppress",
             "phpstan analyse",
-            "phpmd src,tests ansi codesize,design,naming",
+            "echo || phpmd src,tests ansi codesize,design,naming",
             "echo || @php-cs-fixer",
             "@phpunit"
         ]

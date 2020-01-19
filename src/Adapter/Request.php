@@ -47,13 +47,16 @@ class Request implements ServerRequestInterface
     protected $uri;
 
     /** @var null|array|false|object → false indicated non-initialization in order to fallback to sfRequest, while null overrides sfRequest */
-    protected $parsedBody = false;
+    protected $parsedBody;
 
     /** @var array */
     protected $cookieParams = [];
 
     /** @var bool */
     protected $isImmutable = true;
+
+    /** @var array */
+    protected $queryParams;
 
     /**
      * @var string shadow to honour: »[…]method names are case-sensitive and thus implementations SHOULD NOT modify the given string.«
@@ -99,7 +102,9 @@ class Request implements ServerRequestInterface
 
         // default to non-immutable PSR-7 violating behavior when creating from \sfWebRequest
         if (!array_key_exists(self::OPTION_IMMUTABLE_VIOLATION, $options) || false !== $options[self::OPTION_IMMUTABLE_VIOLATION]) {
-            $new->isImmutable = false;
+            $new->isImmutable  = false;
+            $new->parsedBody   = false;
+            $new->cookieParams = null;
         }
 
         $new->uri = new Uri($sfWebRequest->getUri());
@@ -251,12 +256,9 @@ class Request implements ServerRequestInterface
         return $this->cookieParams ?? $_COOKIE; // as getCookie() in sfWebRequest is nothing but a lookup
     }
 
-    /**
-     * @return array<string, string>
-     */
     public function getQueryParams(): array
     {
-        return $this->sfWebRequest->getGetParameters();
+        return $this->queryParams ?? $this->sfWebRequest->getGetParameters();
     }
 
     /**
@@ -361,7 +363,7 @@ class Request implements ServerRequestInterface
      */
     public function withCookieParams(array $cookies)
     {
-        $new               = $this->getNew();
+        $new               = $this->getNew(true);
         $new->cookieParams = $cookies;
 
         return $new;
@@ -372,7 +374,10 @@ class Request implements ServerRequestInterface
      */
     public function withQueryParams(array $query): self
     {
-        return $this->getNew();
+        $new              = $this->getNew(true);
+        $new->queryParams = $query;
+
+        return $new;
     }
 
     /**
@@ -397,7 +402,7 @@ class Request implements ServerRequestInterface
     public function withParsedBody($data): self
     {
         if (!is_array($data) && !is_object($data) && null !== $data) {
-            throw new \InvalidArgumentException('TBD!');
+            throw new \InvalidArgumentException('Value for parsed body must be null, array or object!');
         }
 
         $new             = $this->getNew();
@@ -465,9 +470,13 @@ class Request implements ServerRequestInterface
         return 'HTTP';
     }
 
-    protected function getNew(): self
+    protected function getNew(bool $failOnMutation = false): self
     {
         if (!$this->isImmutable) {
+            if ($failOnMutation) {
+                throw new \LogicException('This property cannot be overwritten with Symfony compatibility.');
+            }
+
             return $this;
         }
 
