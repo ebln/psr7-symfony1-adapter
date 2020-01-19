@@ -67,7 +67,7 @@ trait CommonAdapterTrait
 
     public function getBody(): StreamInterface
     {
-        return $this->body ?: stream_for();
+        return $this->body ?? stream_for();
     }
 
     /**
