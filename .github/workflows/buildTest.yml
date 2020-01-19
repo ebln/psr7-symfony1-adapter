@@ -12,7 +12,7 @@ jobs:
     - name: Validate composer.json and composer.lock
       run: composer validate
     - name: Require php-cs-fixer
-      run: composer require friendsofphp/php-cs-fixer --dev
+      run: composer require friendsofphp/php-cs-fixer --dev --prefer-dist --no-progress --no-suggest
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
 #    - name: Run test suite
