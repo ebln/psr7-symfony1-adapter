@@ -37,16 +37,17 @@ trait CommonAdapterTrait
             return $this->withHeader($name, $value);
         }
 
-        $headers = $this->getHeader($name);
+        $new     = $this->getNew(false);
+        $headers = $new->getHeader($name);
         if (is_array($value)) {
             $headers = array_merge($headers, $value);
         } else {
             $headers[] = $value;
         }
 
-        $this->setHeader($name, $headers);
+        $new->setHeader($name, $headers);
 
-        return $this;
+        return $new;
     }
 
     /**
@@ -54,16 +55,15 @@ trait CommonAdapterTrait
      *
      * @param string          $name
      * @param string|string[] $value
-     *
-     * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
-     *               same instance, due to the nature of the underlying adapted symfony object
      */
     public function withHeader($name, $value): self
     {
-        $this->headerNames[$this->normalizeHeaderName($name)] = $name;
-        $this->setHeader($name, $value);
+        /** @var CommonAdapterTrait $new */
+        $new                                                = $this->getNew(false);
+        $new->headerNames[$new->normalizeHeaderName($name)] = $name;
+        $new->setHeader($name, $value);
 
-        return $this;
+        return $new;
     }
 
     public function getBody(): StreamInterface
@@ -102,11 +102,15 @@ trait CommonAdapterTrait
      */
     protected function implodeHeaders($value): string
     {
-        if (!is_string($value) && !is_array($value)) { // perhaps-do: improve validation
+        $isArray = is_array($value);
+        if (!is_string($value) && !$isArray) { // perhaps-do: improve validation
             InvalidTypeException::throwStringOrArrayOfStringsExpected($value);
         }
+        if ($isArray && empty($value)) {
+            InvalidTypeException::throwNotEmptyExpected();
+        }
 
-        return is_array($value) ? implode(',', $value) : $value;
+        return $isArray ? implode(',', $value) : $value;
     }
 
     /**
@@ -123,6 +127,9 @@ trait CommonAdapterTrait
     {
         if (!is_string($name)) { // perhaps-do: improve validation according to https://tools.ietf.org/html/rfc7230#section-3.2
             InvalidTypeException::throwStringExpected($name);
+        }
+        if ('' === $name) {
+            InvalidTypeException::throwNotEmptyExpected();
         }
     }
 }

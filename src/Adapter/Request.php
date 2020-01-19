@@ -64,6 +64,9 @@ class Request implements ServerRequestInterface
     /** @var UploadedFileInterface[] */
     protected $uploadedFiles;
 
+    /** @var string */
+    protected $requestTarget;
+
     /**
      * @var string shadow to honour: »[…]method names are case-sensitive and thus implementations SHOULD NOT modify the given string.«
      */
@@ -75,11 +78,13 @@ class Request implements ServerRequestInterface
 
     public function __clone()
     {
-        $this->uri                 = clone $this->uri;
-        $this->body                = $this->body ? clone $this->body : $this->body;
-        $this->sfWebRequest        = clone $this->sfWebRequest;
-        $this->reflexPathInfoArray = null;
-        $this->parsedBody          = is_object($this->parsedBody) ? clone $this->parsedBody : $this->parsedBody;
+        $this->uri        = clone $this->uri;
+        $this->body       = $this->body ? clone $this->body : $this->body;
+        $this->parsedBody = is_object($this->parsedBody) ? clone $this->parsedBody : $this->parsedBody;
+
+        // // either clone or preserve the underlying symfony request…
+        // $this->sfWebRequest        = clone $this->sfWebRequest;
+        // $this->reflexPathInfoArray = null;
     }
 
     /**
@@ -223,6 +228,10 @@ class Request implements ServerRequestInterface
 
     public function getRequestTarget(): string
     {
+        if ($this->requestTarget) {
+            return $this->requestTarget;
+        }
+
         $target = $this->uri->getPath();
         if ('' === $target) {
             $target = '/';
@@ -235,13 +244,14 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * TODO!
-     *
      * {@inheritdoc}
      */
-    public function withRequestTarget($requestTarget)
+    public function withRequestTarget($requestTarget): self
     {
-        return $this->getNew();
+        $new                = $this->getNew(true);
+        $new->requestTarget = $requestTarget;
+
+        return $new;
     }
 
     public function getMethod(): string
@@ -280,7 +290,17 @@ class Request implements ServerRequestInterface
      */
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
-        return $this->getNew();
+        $new      = $this->getNew(!$preserveHost); // as the rewrite to HTTP_HOST et al. will not be done
+        $new->uri = $uri;
+
+        if ((!$preserveHost || !$this->hasHeader('Host')) && ('' !== $uri->getHost())) {
+            $headerName = $this->normalizeHeaderName('host');
+            $headerName = $this->headerNames[$headerName] ?? $headerName;
+
+            $new->setHeader($headerName, $uri->getHost() . ($uri->getPort() ? (':' . $uri->getPort()) : ''));
+        }
+
+        return $new;
     }
 
     /**
