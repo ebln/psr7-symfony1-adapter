@@ -36,6 +36,9 @@ class sfWebRequest
     /** @var string|null */
     private $uri;
 
+    /** @var array[] */
+    private $files;
+
     /**
      * dummy constructor to preserve the original signature → please initialise with prepare() afterwards!
      *
@@ -49,16 +52,6 @@ class sfWebRequest
         $this->options = $options;
     }
 
-    /**
-     * @param string      $method
-     * @param array       $server
-     * @param array       $get
-     * @param array       $post
-     * @param array       $cookie
-     * @param array       $requestParameters
-     * @param string|null $content
-     * @param string|null $uri
-     */
     public function prepare(
         string $method,
         array $server = [],
@@ -67,8 +60,9 @@ class sfWebRequest
         array $cookie = [],
         array $requestParameters = [],
         ?string $content = null,
-        ?string $uri = null
-    ) {
+        ?string $uri = null,
+        ?array $files = []
+    ): void {
         $this->method            = $method;
         $this->pathInfoArray     = $server;
         $this->getParameters     = $get;
@@ -77,6 +71,7 @@ class sfWebRequest
         $this->requestParameters = $requestParameters;
         $this->content           = $content;
         $this->uri               = $uri;
+        $this->files             = $files;
     }
 
     /**
@@ -175,5 +170,14 @@ class sfWebRequest
     public function getUri(): string
     {
         return $this->uri ?? 'http://localhost:80/';
+    }
+
+    public function getFiles($key = null): array
+    {
+        if (null !== $key) {
+            throw new LogicException('Only subminimal implementation.');
+        }
+
+        return $this->files;
     }
 }

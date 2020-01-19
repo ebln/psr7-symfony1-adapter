@@ -7,6 +7,8 @@ namespace brnc\Symfony1\Message\Adapter;
 
 use GuzzleHttp\Psr7\CachingStream;
 use GuzzleHttp\Psr7\LazyOpenStream;
+use GuzzleHttp\Psr7\UploadedFile;
+use Psr\Http\Message\UploadedFileInterface;
 use function GuzzleHttp\Psr7\stream_for;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\ServerRequestInterface;
@@ -19,7 +21,6 @@ use ReflectionObject;
  *      Cookie handling
  *          Cookie Abstraction
  *              including Header transcription
- *      Proper Interface?
  */
 class Request implements ServerRequestInterface
 {
@@ -57,6 +58,9 @@ class Request implements ServerRequestInterface
 
     /** @var array */
     protected $queryParams;
+
+    /** @var UploadedFileInterface[] */
+    protected $uploadedFiles;
 
     /**
      * @var string shadow to honour: »[…]method names are case-sensitive and thus implementations SHOULD NOT modify the given string.«
@@ -320,7 +324,19 @@ class Request implements ServerRequestInterface
      */
     public function getUploadedFiles()
     {
-        return [];
+        if (!$this->uploadedFiles) {
+            foreach ($this->sfWebRequest->getFiles() as $file) {
+                $this->uploadedFiles[] = new UploadedFile(
+                    $file['tmp_name'],
+                    (int)$file['size'],
+                    (int)$file['error'],
+                    $file['name'],
+                    $file['type']
+                );
+            }
+        }
+
+        return $this->uploadedFiles;
     }
 
     /**
@@ -328,7 +344,10 @@ class Request implements ServerRequestInterface
      */
     public function withUploadedFiles(array $uploadedFiles): self
     {
-        return $this->getNew();
+        $new                = $this->getNew(false);
+        $new->uploadedFiles = $uploadedFiles;
+
+        return $new;
     }
 
     /**
@@ -348,7 +367,7 @@ class Request implements ServerRequestInterface
             throw new \InvalidArgumentException('Value for parsed body must be null, array or object!');
         }
 
-        $new             = $this->getNew();
+        $new             = $this->getNew(false);
         $new->parsedBody = $data;
 
         return $new;
