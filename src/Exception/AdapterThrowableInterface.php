@@ -6,5 +6,4 @@ namespace brnc\Symfony1\Message\Exception;
 
 interface AdapterThrowableInterface extends \Throwable
 {
-
 }

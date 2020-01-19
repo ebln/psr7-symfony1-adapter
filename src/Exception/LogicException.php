@@ -6,7 +6,7 @@ namespace brnc\Symfony1\Message\Exception;
 
 class LogicException extends \LogicException implements AdapterThrowableInterface
 {
-    public static function throwAdaptingSymfony()
+    public static function throwAdaptingSymfony(): void
     {
         throw new self('This property cannot be altered as the underlying Symfony object does not support this.');
     }
