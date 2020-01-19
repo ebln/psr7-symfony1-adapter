@@ -57,6 +57,15 @@ class Request
     {
     }
 
+    public function __clone()
+    {
+        $this->uri                 = clone $this->uri;
+        $this->body                = $this->body ? clone $this->body : $this->body;
+        $this->sfWebRequest        = clone $this->sfWebRequest;
+        $this->reflexPathInfoArray = null;
+        //$this->parsedBody          = is_object($this->parsedBody) ? clone $this->parsedBody : $this->parsedBody;
+    }
+
     /**
      * @param array<string, bool> $options
      *
@@ -91,15 +100,6 @@ class Request
         return $new;
     }
 
-    public function __clone()
-    {
-        $this->uri                 = clone $this->uri;
-        $this->body                = $this->body ? clone $this->body : $this->body;
-        $this->sfWebRequest        = clone $this->sfWebRequest;
-        $this->reflexPathInfoArray = null;
-        //$this->parsedBody          = is_object($this->parsedBody) ? clone $this->parsedBody : $this->parsedBody;
-    }
-
     public function getProtocolVersion(): string
     {
         return $this->getVersionFromArray($this->sfWebRequest->getPathInfoArray(), 'SERVER_PROTOCOL');
@@ -108,10 +108,10 @@ class Request
     /**
      * @param string $version
      *
-     * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
-     *               same instance, due to the nature of the underlying adapted symfony object
      * @throws \ReflectionException
      *
+     * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
+     *               same instance, due to the nature of the underlying adapted symfony object
      */
     public function withProtocolVersion($version): self
     {
@@ -184,10 +184,10 @@ class Request
     /**
      * @param string $name
      *
-     * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
-     *               same instance, due to the nature of the underlying adapted symfony object
      * @throws \ReflectionException
      *
+     * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
+     *               same instance, due to the nature of the underlying adapted symfony object
      */
     public function withoutHeader($name): self
     {
