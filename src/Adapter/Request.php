@@ -7,6 +7,7 @@ namespace brnc\Symfony1\Message\Adapter;
 
 use GuzzleHttp\Psr7\CachingStream;
 use GuzzleHttp\Psr7\LazyOpenStream;
+use Psr\Http\Message\ServerRequestInterface;
 use function GuzzleHttp\Psr7\stream_for;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\StreamInterface;
@@ -20,7 +21,7 @@ use ReflectionObject;
  *              including Header transcription
  *      Proper Interface?
  */
-class Request
+class Request implements ServerRequestInterface
 {
     use CommonAdapterTrait;
 
@@ -45,6 +46,12 @@ class Request
     /** @var UriInterface */
     protected $uri;
 
+    /** @var null|array|object|false → false indicated non-initialization in order to fallback to sfRequest, while null overrides sfRequest */
+    protected $parsedBody = false;
+
+    /** @var array */
+    protected $cookieParams = [];
+
     /** @var bool */
     protected $isImmutable = true;
 
@@ -63,7 +70,7 @@ class Request
         $this->body                = $this->body ? clone $this->body : $this->body;
         $this->sfWebRequest        = clone $this->sfWebRequest;
         $this->reflexPathInfoArray = null;
-        //$this->parsedBody          = is_object($this->parsedBody) ? clone $this->parsedBody : $this->parsedBody;
+        $this->parsedBody          = is_object($this->parsedBody) ? clone $this->parsedBody : $this->parsedBody;
     }
 
     /**
@@ -239,11 +246,11 @@ class Request
     /**
      * TODO: check SG-header-congruency
      *
-     * @return array<string, string>
+     * @return array
      */
     public function getCookieParams(): array
     {
-        return $_COOKIE; // as getCookie() is nothing but a lookup
+        return $this->cookieParams ?? $_COOKIE; // as getCookie() in sfWebRequest is nothing but a lookup
     }
 
     /**
@@ -255,11 +262,11 @@ class Request
     }
 
     /**
-     * @return array<string, string>
+     * @return null|array|object
      */
-    public function getParsedBody(): array
+    public function getParsedBody()
     {
-        return $this->sfWebRequest->getPostParameters();
+        return false === $this->parsedBody ? $this->sfWebRequest->getPostParameters() : $this->parsedBody;
     }
 
     /**
@@ -289,9 +296,10 @@ class Request
      */
     public function withAttribute($name, $value): self
     {
-        $this->attributes[$name] = $value;
+        $new                    = $this->getNew();
+        $new->attributes[$name] = $value;
 
-        return $this;
+        return $new;
     }
 
     /**
@@ -332,6 +340,80 @@ class Request
         }
 
         return $target;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withRequestTarget($requestTarget)
+    {
+        $new = $this->getNew();
+
+        return $new;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withUri(UriInterface $uri, $preserveHost = false)
+    {
+        $new = $this->getNew();
+
+        return $new;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withCookieParams(array $cookies)
+    {
+        $new               = $this->getNew();
+        $new->cookieParams = $cookies;
+
+        return $new;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withQueryParams(array $query): self
+    {
+        $new = $this->getNew();
+
+        return $new;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUploadedFiles()
+    {
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withUploadedFiles(array $uploadedFiles): self
+    {
+        $new = $this->getNew();
+
+        return $new;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withParsedBody($data): self
+    {
+        if (!is_array($data) && !is_object($data) && null !== $data) {
+            throw new \InvalidArgumentException('TBD!');
+        }
+
+        $new             = $this->getNew();
+        $new->parsedBody = $data;
+
+        return $new;
     }
 
     /**
