@@ -60,7 +60,7 @@ class sfWebRequest
      * @param string|null $uri
      */
     public function prepare(
-        $method,
+        string $method,
         array $server = [],
         array $get = [],
         array $post = [],
@@ -98,7 +98,7 @@ class sfWebRequest
     }
 
     /**
-     * @return array
+     * @return array<string, string>
      */
     public function getPathInfoArray()
     {
@@ -170,9 +170,9 @@ class sfWebRequest
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getUri(): ?string
+    public function getUri(): string
     {
         return $this->uri ?? 'http://localhost:80/';
     }

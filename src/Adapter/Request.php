@@ -25,9 +25,9 @@ class Request
     use CommonAdapterTrait;
 
     /** @see https://www.php.net/manual/en/wrappers.php.php#wrappers.php.input for reuseablity of php://input */
-    public CONST OPTION_BODY_USE_STREAM       = 'Use php://input directly';
-    public CONST OPTION_EXPOSE_SF_WEB_REQUEST = 'Populate attribute with sfWebRequest';
-    public CONST ATTRIBUTE_SF_WEB_REQUEST     = 'sfWebRequest';
+    public const OPTION_BODY_USE_STREAM       = 'Use php://input directly';
+    public const OPTION_EXPOSE_SF_WEB_REQUEST = 'Populate attribute with sfWebRequest';
+    public const ATTRIBUTE_SF_WEB_REQUEST     = 'sfWebRequest';
 
     /** @var bool[] */
     protected static $contentHeaders = ['CONTENT_LENGTH' => true, 'CONTENT_MD5' => true, 'CONTENT_TYPE' => true];
@@ -35,10 +35,10 @@ class Request
     /** @var \sfWebRequest */
     protected $sfWebRequest;
 
-    /** @var \ReflectionProperty */
-    protected $reflexivePropertyPathInfoArray;
+    /** @var null|\ReflectionProperty */
+    protected $reflexPathInfoArray;
 
-    /** @var mixed[] */
+    /** @var array<string, mixed> */
     protected $attributes = [];
 
     /** @var UriInterface */
@@ -54,8 +54,7 @@ class Request
     }
 
     /**
-     * @param \sfWebRequest $sfWebRequest
-     * @param string[]      $options
+     * @param array<string, bool> $options
      *
      * @return Request
      */
@@ -83,9 +82,6 @@ class Request
         return $new;
     }
 
-    /**
-     * @return string
-     */
     public function getProtocolVersion(): string
     {
         return $this->getVersionFromArray($this->sfWebRequest->getPathInfoArray(), 'SERVER_PROTOCOL');
@@ -94,9 +90,10 @@ class Request
     /**
      * @param string $version
      *
+     * @throws \ReflectionException
+     *
      * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
      *               same instance, due to the nature of the underlying adapted symfony object
-     * @throws \ReflectionException
      */
     public function withProtocolVersion($version): self
     {
@@ -115,7 +112,7 @@ class Request
         $headers = [];
         foreach ($this->sfWebRequest->getPathInfoArray() as $key => $value) {
             $useKey = null;
-            if (strpos($key, 'HTTP_') === 0) {
+            if (0 === strpos($key, 'HTTP_')) {
                 $useKey = substr($key, 5);
             } elseif (isset(self::$contentHeaders[$key])) {
                 $useKey = $key;
@@ -123,7 +120,7 @@ class Request
 
             if (null !== $useKey) {
                 $headerName = $this->normalizeHeaderName($useKey);
-                /** @noinspection NullCoalescingOperatorCanBeUsedInspection */
+                /* @noinspection NullCoalescingOperatorCanBeUsedInspection */
                 if (isset($this->headerNames[$headerName])) {
                     $headerName = $this->headerNames[$headerName]; // return shadowed header name
                 }
@@ -137,8 +134,6 @@ class Request
 
     /**
      * @param string $name
-     *
-     * @return string
      */
     public function getHeaderLine($name): string
     {
@@ -149,8 +144,6 @@ class Request
 
     /**
      * @param string $name
-     *
-     * @return bool
      */
     public function hasHeader($name): bool
     {
@@ -166,15 +159,16 @@ class Request
     {
         $value = $this->sfWebRequest->getHttpHeader($name, $this->getPathInfoPrefix($name));
 
-        return $value === null ? [] : $this->explodeHeaderLine($value);
+        return null === $value ? [] : $this->explodeHeaderLine($value);
     }
 
     /**
      * @param string $name
      *
+     * @throws \ReflectionException
+     *
      * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
      *               same instance, due to the nature of the underlying adapted symfony object
-     * @throws \ReflectionException
      */
     public function withoutHeader($name): self
     {
@@ -187,18 +181,14 @@ class Request
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getMethod(): ?string
+    public function getMethod(): string
     {
         $method = $this->sfWebRequest->getMethod();
-        if ($this->method && $method === strtoupper($this->method)) {
-            return $this->method;   // return shadowed capitalisation
+        if (!$this->method || $method !== strtoupper($this->method)) {
+            $this->method = $method;   // overwrite capitalisation despite the »SHOULD NOT« in the PSR-7 definition
         }
-        $this->method = null;       // unset shadowed value
 
-        return $method;             // return value from real object as default
+        return $this->method;
     }
 
     /**
@@ -218,7 +208,7 @@ class Request
     /**
      * wrapper for symfony's getPathInfoArray()
      *
-     * @return array symfony's getPathInfoArray()
+     * @return array<string, string> symfony's getPathInfoArray()
      */
     public function getServerParams(): array
     {
@@ -228,7 +218,7 @@ class Request
     /**
      * TODO: check SG-header-congruency
      *
-     * @return array
+     * @return array<string, string>
      */
     public function getCookieParams(): array
     {
@@ -236,7 +226,7 @@ class Request
     }
 
     /**
-     * @return array
+     * @return array<string, string>
      */
     public function getQueryParams(): array
     {
@@ -244,7 +234,7 @@ class Request
     }
 
     /**
-     * @return array
+     * @return array<string, string>
      */
     public function getParsedBody(): array
     {
@@ -260,10 +250,10 @@ class Request
     }
 
     /**
-     * @param string $name
-     * @param null   $default
+     * @param string     $name
+     * @param null|mixed $default
      *
-     * @return mixed
+     * @return null|mixed
      */
     public function getAttribute($name, $default = null)
     {
@@ -271,9 +261,8 @@ class Request
     }
 
     /**
-     * @param string $name
-     *
-     * @param mixed  $value
+     * @param string     $name
+     * @param null|mixed $value
      *
      * @return $this In conflict with PSR-7's immutability paradigm, this method doesn't return a clone but the instance
      */
@@ -297,24 +286,18 @@ class Request
     }
 
     /**
-     * @param StreamInterface $body
+     * @return $this In conflict with PSR-7's immutability paradigm, this method doesn't return a clone but the instance
      */
-    public function withBody(StreamInterface $body)
+    public function withBody(StreamInterface $body): self
     {
         throw new \LogicException('Altering content is not supported by sfRequest.');
     }
 
-    /**
-     * @return UriInterface
-     */
     public function getUri(): UriInterface
     {
         return $this->uri;
     }
 
-    /**
-     * @return string
-     */
     public function getRequestTarget(): string
     {
         $target = $this->uri->getPath();
@@ -331,25 +314,24 @@ class Request
     /**
      * sets symfony request's pathInfoArray property using reflection
      *
-     * @param array $pathInfo
+     * @param array<string, string> $pathInfo
      *
      * @throws \ReflectionException
      */
     protected function retroducePathInfoArray(array $pathInfo): void
     {
-        if (null === $this->reflexivePropertyPathInfoArray) {
-            $reflexiveWebRequest                  = new ReflectionObject($this->sfWebRequest);
-            $this->reflexivePropertyPathInfoArray = $reflexiveWebRequest->getProperty('pathInfoArray');
-            $this->reflexivePropertyPathInfoArray->setAccessible(true);
+        if (null === $this->reflexPathInfoArray) {
+            $reflexiveWebRequest       = new ReflectionObject($this->sfWebRequest);
+            $this->reflexPathInfoArray = $reflexiveWebRequest->getProperty('pathInfoArray');
+            $this->reflexPathInfoArray->setAccessible(true);
         }
 
-        $this->reflexivePropertyPathInfoArray->setValue($this->sfWebRequest, $pathInfo);
+        $this->reflexPathInfoArray->setValue($this->sfWebRequest, $pathInfo);
     }
 
     /**
      * injects a header into symfony's pathInfoArray via setPathInfoArray()'s reflection
      *
-     * @param string          $name
      * @param string|string[] $value
      *
      * @throws \ReflectionException
@@ -364,10 +346,6 @@ class Request
 
     /**
      * get the array key resp. to pathInfoArray from the header field name
-     *
-     * @param string $name
-     *
-     * @return string
      */
     protected function getPathInfoKey(string $name): string
     {
@@ -381,10 +359,6 @@ class Request
 
     /**
      * in order to also obtain content headers via getHttpHeader()
-     *
-     * @param string $name
-     *
-     * @return string|null
      */
     protected function getPathInfoPrefix(string $name): ?string
     {

@@ -39,7 +39,7 @@ class ServerRequestBasicTest extends TestCase
     public function testGetQueryParams(): void
     {
         $query   = ['q' => 'foo+bar', 'test' => 'true'];
-        $request = $this->createRequest(null, [], $query);
+        $request = $this->createRequest('GET', [], $query);
 
         $this->assertSame($query, $request->getQueryParams());
     }
@@ -50,7 +50,7 @@ class ServerRequestBasicTest extends TestCase
     public function testGetParsedBody(): void
     {
         $post    = ['user' => 'foo', 'pass' => 'bar'];
-        $request = $this->createRequest(null, [], [], $post);
+        $request = $this->createRequest('POST', [], [], $post);
 
         $this->assertSame($post, $request->getParsedBody());
     }
@@ -101,18 +101,18 @@ class ServerRequestBasicTest extends TestCase
     }
 
     /**
-     * @param string|null $method
-     * @param array       $server
-     * @param array       $get
-     * @param array       $post
-     * @param array       $cookie
-     * @param array       $requestParameters
-     * @param array       $options
+     * @param string $method
+     * @param array  $server
+     * @param array  $get
+     * @param array  $post
+     * @param array  $cookie
+     * @param array  $requestParameters
+     * @param array  $options
      *
      * @return Request
      */
     private function createRequest(
-        ?string $method = null,
+        string $method = '',
         array $server = [],
         array $get = [],
         array $post = [],

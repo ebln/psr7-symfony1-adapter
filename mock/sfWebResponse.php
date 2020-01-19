@@ -104,7 +104,7 @@ class sfWebResponse
      * @param string $name
      * @param string $default
      *
-     * @return string
+     * @return string|null
      */
     public function getHttpHeader($name, $default = null)
     {
@@ -114,9 +114,9 @@ class sfWebResponse
     }
 
     /**
-     * @param string $name
-     * @param string $value
-     * @param bool   $replace
+     * @param string      $name
+     * @param null|string $value
+     * @param bool        $replace
      */
     public function setHttpHeader($name, $value, $replace = true)
     {

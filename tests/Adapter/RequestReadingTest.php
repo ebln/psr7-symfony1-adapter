@@ -97,7 +97,7 @@ class RequestReadingTest extends TestCase
         $sfWebRequest = new \sfWebRequest();
         $sfWebRequest->prepare($request['method'], $request['server']);
         $readingRequestMock = Request::fromSfWebRequest($sfWebRequest);
-        $this->assertSame($expectedHeaders, $readingRequestMock->getHeaders($headerName));
+        $this->assertSame($expectedHeaders, $readingRequestMock->getHeaders());
     }
 
     public function provideHeaderTestData(): array

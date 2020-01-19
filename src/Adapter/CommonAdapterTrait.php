@@ -19,7 +19,7 @@ trait CommonAdapterTrait
      */
     protected $headerNames = [];
 
-    /** @var StreamInterface|null */
+    /** @var null|StreamInterface */
     protected $body;
 
     /**
@@ -65,9 +65,6 @@ trait CommonAdapterTrait
         return $this;
     }
 
-    /**
-     * @return StreamInterface
-     */
     public function getBody(): StreamInterface
     {
         return $this->body ?: stream_for();
@@ -76,10 +73,7 @@ trait CommonAdapterTrait
     /**
      * Parses the protocol version from an internal symfony array
      *
-     * @param array  $array
-     * @param string $key
-     *
-     * @return string
+     * @param array<string, string> $array
      */
     protected function getVersionFromArray(array $array, string $key): string
     {
@@ -88,17 +82,15 @@ trait CommonAdapterTrait
     }
 
     /**
-     * Explodes a HTTP header's value to address PSR-7 arrayfied sub-value approach
-     *
-     * @param string $line
+     * Explodes a HTTP header's value to address PSR-7 arrayified sub-value approach
      *
      * @return string[]
      */
     protected function explodeHeaderLine(string $line): array
     {
         return array_map(
-            static function ($v) {
-                return trim($v, " \t"); // https://tools.ietf.org/html/rfc7230#section-3.2.4
+            static function ($element) {
+                return trim($element, " \t"); // https://tools.ietf.org/html/rfc7230#section-3.2.4
             },
             explode(',', $line)
         );
@@ -106,8 +98,6 @@ trait CommonAdapterTrait
 
     /**
      * @param string|string[] $value
-     *
-     * @return string
      */
     protected function implodeHeaders($value): string
     {
@@ -116,10 +106,6 @@ trait CommonAdapterTrait
 
     /**
      * TODO add header name validation! (would be only valid for shadow)
-     *
-     * @param string $name
-     *
-     * @return string
      */
     protected function normalizeHeaderName(string $name): string
     {

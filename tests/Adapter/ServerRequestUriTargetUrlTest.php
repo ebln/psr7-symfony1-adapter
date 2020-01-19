@@ -43,24 +43,24 @@ class ServerRequestUriTargetUrlTest extends TestCase
     /**
      * TODO cover and activate!
      */
-    public function ItFailsWithUri(): void
+    public function todoItFailsWithUri(): void
     {
         $request = $this->createRequest();
         $uriMock = $this->createMock(UriInterface::class);
         $this->expectException(\LogicException::class);
-        $request->withUri($uriMock);
+        // $request->withUri($uriMock);
     }
 
     /**
      *
      * @param string|null $uri
-     * @param string|null $method
+     * @param string      $method
      *
      * @return Request
      */
     private function createRequest(
         ?string $uri = null,
-        ?string $method = 'GET'
+        string $method = 'GET'
     ): Request {
         $symfonyRequestMock = new \sfWebRequest();
         $symfonyRequestMock->prepare($method, [], [], [], [], [], null, $uri);

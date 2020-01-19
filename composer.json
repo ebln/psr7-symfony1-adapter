@@ -24,7 +24,10 @@
     "require-dev": {
         "php": "^7.2",
         "roave/security-advisories": "dev-master",
-        "phpunit/phpunit": "^8"
+        "phpunit/phpunit": "^8",
+        "phpstan/phpstan": "^0.12.5",
+        "vimeo/psalm": "^3.8",
+        "phpmd/phpmd": "^2.8"
     },
     "autoload-dev": {
         "psr-4": {
@@ -33,8 +36,13 @@
         "files": ["mock/sfWebRequest.php", "mock/sfWebResponse.php"]
     },
     "scripts": {
-        "phpunit": "phpunit --coverage-html coverage --coverage-text",
+        "phpunit": "phpunit --coverage-html coverage --coverage-text --colors=auto",
+        "php-cs-fixer": "php-cs-fixer fix -v --config=.php_cs.dist --using-cache=no --dry-run",
         "test": [
+            "psalm --find-unused-psalm-suppress",
+            "phpstan analyse",
+            "phpmd src,tests ansi codesize,design,naming",
+            "@php-cs-fixer",
             "@phpunit"
         ]
     }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="3.8.3@389af1bfc739bfdff3f9e3dc7bd6499aee51a831">
+  <file src="src/Adapter/Request.php">
+    <MixedReturnTypeCoercion occurrences="6">
+      <code>$_COOKIE</code>
+      <code>array&lt;string, string&gt;</code>
+      <code>$this-&gt;sfWebRequest-&gt;getGetParameters()</code>
+      <code>array&lt;string, string&gt;</code>
+      <code>$this-&gt;sfWebRequest-&gt;getPostParameters()</code>
+      <code>array&lt;string, string&gt;</code>
+    </MixedReturnTypeCoercion>
+    <PropertyNotSetInConstructor occurrences="3">
+      <code>$sfWebRequest</code>
+      <code>$uri</code>
+      <code>$method</code>
+    </PropertyNotSetInConstructor>
+  </file>
+  <file src="src/Adapter/Response.php">
+    <MixedArgumentTypeCoercion occurrences="3">
+      <code>$this-&gt;sfWebResponse-&gt;getOptions()</code>
+      <code>$options</code>
+      <code>$key</code>
+    </MixedArgumentTypeCoercion>
+    <PropertyNotSetInConstructor occurrences="1">
+      <code>$sfWebResponse</code>
+    </PropertyNotSetInConstructor>
+  </file>
+</files>
+
