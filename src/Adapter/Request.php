@@ -36,7 +36,7 @@ class Request
     protected $sfWebRequest;
 
     /** @var null|\ReflectionProperty */
-    protected $reflexivePropertyPathInfoArray;
+    protected $reflexPathInfoArray;
 
     /** @var mixed[] */
     protected $attributes = [];
@@ -338,13 +338,13 @@ class Request
      */
     protected function retroducePathInfoArray(array $pathInfo): void
     {
-        if (null === $this->reflexivePropertyPathInfoArray) {
-            $reflexiveWebRequest                  = new ReflectionObject($this->sfWebRequest);
-            $this->reflexivePropertyPathInfoArray = $reflexiveWebRequest->getProperty('pathInfoArray');
-            $this->reflexivePropertyPathInfoArray->setAccessible(true);
+        if (null === $this->reflexPathInfoArray) {
+            $reflexiveWebRequest       = new ReflectionObject($this->sfWebRequest);
+            $this->reflexPathInfoArray = $reflexiveWebRequest->getProperty('pathInfoArray');
+            $this->reflexPathInfoArray->setAccessible(true);
         }
 
-        $this->reflexivePropertyPathInfoArray->setValue($this->sfWebRequest, $pathInfo);
+        $this->reflexPathInfoArray->setValue($this->sfWebRequest, $pathInfo);
     }
 
     /**

@@ -26,7 +26,7 @@ class Response
     public const  OPTION_SEND_BODY_ON_204 = 'Will disable automatic setHeaderOnly() if 204 is set as status code.';
     private const STATUS_NO_CONTENT       = 204;
 
-    /** @var string[] */
+    /** @var array<int,string> */
     protected static $defaultReasonPhrases = [
         308 => 'Permanent Redirect', // defined in RFC-7538
     ];
@@ -35,10 +35,10 @@ class Response
     protected $sfWebResponse;
 
     /** @var null|\ReflectionProperty */
-    protected $reflexivePropertyOptions;
+    protected $reflexOptions;
 
     /** @var null|\ReflectionProperty */
-    protected $reflexivePropertyHeaders;
+    protected $reflexHeaders;
 
     /** @var bool if setHeaderOnly()-automagic is used on withStatus() calls */
     protected $setHeaderOnly = true;
@@ -181,8 +181,8 @@ class Response
             }
         }
 
-        $defaultedReasonPhrase = $this->useDefaultReasonPhrase($code, $reasonPhrase);
-        $this->sfWebResponse->setStatusCode($code, $defaultedReasonPhrase);
+        $defaultReasonPhrase = $this->useDefaultReasonPhrase($code, $reasonPhrase);
+        $this->sfWebResponse->setStatusCode($code, $defaultReasonPhrase);
 
         return $this;
     }
@@ -204,13 +204,13 @@ class Response
      */
     protected function retroduceOptions(array $options): void
     {
-        if (null === $this->reflexivePropertyOptions) {
-            $reflexiveWebResponse           = new ReflectionObject($this->sfWebResponse);
-            $this->reflexivePropertyOptions = $reflexiveWebResponse->getProperty('options');
-            $this->reflexivePropertyOptions->setAccessible(true);
+        if (null === $this->reflexOptions) {
+            $reflexiveWebResponse = new ReflectionObject($this->sfWebResponse);
+            $this->reflexOptions  = $reflexiveWebResponse->getProperty('options');
+            $this->reflexOptions->setAccessible(true);
         }
 
-        $this->reflexivePropertyOptions->setValue($this->sfWebResponse, $options);
+        $this->reflexOptions->setValue($this->sfWebResponse, $options);
     }
 
     /**
@@ -248,12 +248,12 @@ class Response
      */
     protected function retroduceHeaders(array $headers): void
     {
-        if (null === $this->reflexivePropertyHeaders) {
-            $reflexiveWebResponse           = new ReflectionObject($this->sfWebResponse);
-            $this->reflexivePropertyHeaders = $reflexiveWebResponse->getProperty('headers');
-            $this->reflexivePropertyHeaders->setAccessible(true);
+        if (null === $this->reflexHeaders) {
+            $reflexiveWebResponse = new ReflectionObject($this->sfWebResponse);
+            $this->reflexHeaders  = $reflexiveWebResponse->getProperty('headers');
+            $this->reflexHeaders->setAccessible(true);
         }
-        $this->reflexivePropertyHeaders->setValue($this->sfWebResponse, $headers);
+        $this->reflexHeaders->setValue($this->sfWebResponse, $headers);
     }
 
     /**

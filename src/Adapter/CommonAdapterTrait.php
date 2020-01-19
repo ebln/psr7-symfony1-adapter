@@ -76,8 +76,8 @@ trait CommonAdapterTrait
     /**
      * Parses the protocol version from an internal symfony array
      *
-     * @param array<string, string>  $array
-     * @param string $key
+     * @param array<string, string> $array
+     * @param string                $key
      *
      * @return string
      */
@@ -97,8 +97,8 @@ trait CommonAdapterTrait
     protected function explodeHeaderLine(string $line): array
     {
         return array_map(
-            static function ($v) {
-                return trim($v, " \t"); // https://tools.ietf.org/html/rfc7230#section-3.2.4
+            static function ($element) {
+                return trim($element, " \t"); // https://tools.ietf.org/html/rfc7230#section-3.2.4
             },
             explode(',', $line)
         );
