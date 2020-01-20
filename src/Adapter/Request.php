@@ -6,6 +6,7 @@ namespace brnc\Symfony1\Message\Adapter;
 
 use brnc\Symfony1\Message\Exception\InvalidTypeException;
 use brnc\Symfony1\Message\Exception\LogicException;
+use brnc\Symfony1\Message\Utillity\Assert;
 use GuzzleHttp\Psr7\CachingStream;
 use GuzzleHttp\Psr7\LazyOpenStream;
 use function GuzzleHttp\Psr7\stream_for;
@@ -34,42 +35,42 @@ class Request implements ServerRequestInterface
     public const ATTRIBUTE_SF_WEB_REQUEST     = 'sfWebRequest';
 
     /** @var bool[] */
-    protected static $contentHeaders = ['CONTENT_LENGTH' => true, 'CONTENT_MD5' => true, 'CONTENT_TYPE' => true];
+    private static $contentHeaders = ['CONTENT_LENGTH' => true, 'CONTENT_MD5' => true, 'CONTENT_TYPE' => true];
 
     /** @var \sfWebRequest */
-    protected $sfWebRequest;
+    private $sfWebRequest;
 
     /** @var null|\ReflectionProperty */
-    protected $reflexPathInfoArray;
+    private $reflexPathInfoArray;
 
     /** @var array<string, mixed> */
-    protected $attributes = [];
+    private $attributes = [];
 
     /** @var UriInterface */
-    protected $uri;
+    private $uri;
 
     /** @var null|array<string, mixed>|false|object → false indicated non-initialization in order to fallback to sfRequest, while null overrides sfRequest */
-    protected $parsedBody;
+    private $parsedBody;
 
     /** @var null|array<string, string> */
-    protected $cookieParams = [];
+    private $cookieParams = [];
 
     /** @var bool */
-    protected $isImmutable = true;
+    private $isImmutable = true;
 
     /** @var null|array<string, array|string> */
-    protected $queryParams;
+    private $queryParams;
 
     /** @var UploadedFileInterface[] */
-    protected $uploadedFiles;
+    private $uploadedFiles;
 
     /** @var null|string */
-    protected $requestTarget;
+    private $requestTarget;
 
     /**
      * @var string shadow to honour: »[…]method names are case-sensitive and thus implementations SHOULD NOT modify the given string.«
      */
-    protected $method;
+    private $method;
 
     private function __construct()
     {
@@ -89,6 +90,7 @@ class Request implements ServerRequestInterface
     /**
      * @param array<string, bool> $options
      *
+     * @throws \InvalidArgumentException
      * @return Request
      */
     public static function fromSfWebRequest(\sfWebRequest $sfWebRequest, array $options = []): self
@@ -173,19 +175,26 @@ class Request implements ServerRequestInterface
 
     /**
      * @param string $name
+     *
+     * @throws \InvalidArgumentException
+     * @return bool
      */
     public function hasHeader($name): bool
     {
+        Assert::stringNotEmpty($name);
+
         return null !== $this->sfWebRequest->getHttpHeader($name, $this->getPathInfoPrefix($name));
     }
 
     /**
      * @param string $name
      *
+     * @throws \InvalidArgumentException
      * @return string[]
      */
     public function getHeader($name): array
     {
+        Assert::stringNotEmpty($name);
         $value = $this->sfWebRequest->getHttpHeader($name, $this->getPathInfoPrefix($name));
 
         return null === $value ? [] : $this->explodeHeaderLine($value);
@@ -193,9 +202,13 @@ class Request implements ServerRequestInterface
 
     /**
      * @param string $name
+     *
+     * @throws \InvalidArgumentException
+     * @return string
      */
     public function getHeaderLine($name): string
     {
+        Assert::stringNotEmpty($name);
         $value = $this->sfWebRequest->getHttpHeader($name, $this->getPathInfoPrefix($name));
 
         return $value ?? '';
@@ -204,10 +217,13 @@ class Request implements ServerRequestInterface
     /**
      * @param string $name
      *
+     * @throws \InvalidArgumentException
      * @throws \ReflectionException
+     * @return Request
      */
     public function withoutHeader($name): self
     {
+        Assert::stringNotEmpty($name);
         // can be altered even though underlying sfWebRequest does not support this
         $new           = $this->getThisOrClone();
         $keyName       = $new->getPathInfoKey($name);
@@ -219,6 +235,12 @@ class Request implements ServerRequestInterface
         return $new;
     }
 
+    /**
+     * @param StreamInterface $body
+     *
+     * @throws LogicException
+     * @return static
+     */
     public function withBody(StreamInterface $body): self
     {
         $new       = $this->getCloneOrDie(); // TODO allow
@@ -270,6 +292,9 @@ class Request implements ServerRequestInterface
 
     /**
      * @param mixed|string $method
+     *
+     * @throws InvalidTypeException
+     * @return Request
      */
     public function withMethod($method): self
     {
@@ -290,9 +315,15 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param UriInterface $uri
+     * @param bool         $preserveHost
+     *
+     * @throws LogicException
+     * @throws \InvalidArgumentException
+     * @throws \ReflectionException
+     * @return static
      */
-    public function withUri(UriInterface $uri, $preserveHost = false)
+    public function withUri(UriInterface $uri, $preserveHost = false): self
     {
         $new      = $preserveHost ? $this->getThisOrClone() : $this->getCloneOrDie(); // as the rewrite to HTTP_HOST et al. will not be done
         $new->uri = $uri;
@@ -331,6 +362,7 @@ class Request implements ServerRequestInterface
     /**
      * @param array<string, string> $cookies
      *
+     * @throws LogicException
      * @return static
      */
     public function withCookieParams(array $cookies): self
@@ -352,6 +384,7 @@ class Request implements ServerRequestInterface
     /**
      * @param array<string, array|string> $query
      *
+     * @throws LogicException
      * @return static
      */
     public function withQueryParams(array $query): self
@@ -363,6 +396,7 @@ class Request implements ServerRequestInterface
     }
 
     /**
+     * @throws \LogicException
      * @return UploadedFileInterface[]
      */
     public function getUploadedFiles(): array
@@ -406,6 +440,9 @@ class Request implements ServerRequestInterface
 
     /**
      * @param null|array<string, mixed>|mixed|object $data
+     *
+     * @throws InvalidTypeException
+     * @return Request
      */
     public function withParsedBody($data): self
     {
@@ -469,7 +506,7 @@ class Request implements ServerRequestInterface
      *
      * @throws \ReflectionException
      */
-    protected function retroducePathInfoArray(array $pathInfo): void
+    private function retroducePathInfoArray(array $pathInfo): void
     {
         if (null === $this->reflexPathInfoArray) {
             $reflexiveWebRequest       = new ReflectionObject($this->sfWebRequest);
@@ -483,11 +520,13 @@ class Request implements ServerRequestInterface
     /**
      * injects a header into symfony's pathInfoArray via setPathInfoArray()'s reflection
      *
+     * @param string          $name
      * @param string|string[] $value
      *
+     * @throws \InvalidArgumentException
      * @throws \ReflectionException
      */
-    protected function setHeader(string $name, $value): void
+    private function setHeader(string $name, $value): void
     {
         $keyName                 = $this->getPathInfoKey($name);
         $pathInfoArray           = $this->sfWebRequest->getPathInfoArray();
@@ -498,7 +537,7 @@ class Request implements ServerRequestInterface
     /**
      * get the array key resp. to pathInfoArray from the header field name
      */
-    protected function getPathInfoKey(string $name): string
+    private function getPathInfoKey(string $name): string
     {
         $keyName = strtoupper(str_replace('-', '_', $name));
         if (!isset(self::$contentHeaders[$keyName])) {
@@ -513,9 +552,8 @@ class Request implements ServerRequestInterface
      *
      * @param string $name
      */
-    protected function getPathInfoPrefix($name): ?string
+    private function getPathInfoPrefix($name): ?string
     {
-        $this->validateHeaderName($name);
         $keyName = strtoupper(str_replace('-', '_', $name));
         if (isset(self::$contentHeaders[$keyName])) {
             return null;
@@ -529,7 +567,7 @@ class Request implements ServerRequestInterface
      *
      * @psalm-param array{tmp_name:string,size:int,error:int,name:string,type: string} $file
      */
-    protected function addUploadedFile(array $file): void
+    private function addUploadedFile(array $file): void
     {
         $this->uploadedFiles[] = new UploadedFile(
             $file['tmp_name'],
@@ -545,7 +583,7 @@ class Request implements ServerRequestInterface
      *
      * @return static
      */
-    protected function getCloneOrDie(): self
+    private function getCloneOrDie(): self
     {
         if (!$this->isImmutable) {
             LogicException::throwAdaptingSymfony();
@@ -557,7 +595,7 @@ class Request implements ServerRequestInterface
     /**
      * @return static
      */
-    protected function getThisOrClone(): self
+    private function getThisOrClone(): self
     {
         if ($this->isImmutable) {
             return clone $this;

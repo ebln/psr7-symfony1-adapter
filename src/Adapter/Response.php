@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace brnc\Symfony1\Message\Adapter;
 
+use brnc\Symfony1\Message\Utillity\Assert;
 use ReflectionObject;
 
 /**
@@ -27,21 +28,21 @@ class Response
     private const STATUS_NO_CONTENT       = 204;
 
     /** @var array<int,string> */
-    protected static $defaultReasonPhrases = [
+    private static $defaultReasonPhrases = [
         308 => 'Permanent Redirect', // defined in RFC-7538
     ];
 
     /** @var \sfWebResponse */
-    protected $sfWebResponse;
+    private $sfWebResponse;
 
     /** @var null|\ReflectionProperty */
-    protected $reflexOptions;
+    private $reflexOptions;
 
     /** @var null|\ReflectionProperty */
-    protected $reflexHeaders;
+    private $reflexHeaders;
 
-    /** @var bool if setHeaderOnly()-automagic is used on withStatus() calls */
-    protected $setHeaderOnly = true;
+    /** @var bool if setHeaderOnly() auto-magic is used on withStatus() calls */
+    private $setHeaderOnly = true;
 
     private function __construct()
     {
@@ -134,11 +135,13 @@ class Response
     /**
      * @param string $name
      *
+     * @throws \InvalidArgumentException
      * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
      *               same instance, due to the nature of the underlying adapted symfony object
      */
     public function withoutHeader($name): self
     {
+        Assert::stringNotEmpty($name);
         unset($this->headerNames[$this->normalizeHeaderName($name)]);
         /* @noinspection ArgumentEqualsDefaultValueInspection */
         $this->sfWebResponse->setHttpHeader($name, null, true);
@@ -189,7 +192,7 @@ class Response
      *
      * @throws \ReflectionException
      */
-    protected function retroduceOptions(array $options): void
+    private function retroduceOptions(array $options): void
     {
         if (null === $this->reflexOptions) {
             $reflexiveWebResponse = new ReflectionObject($this->sfWebResponse);
@@ -206,7 +209,7 @@ class Response
      *
      * @throws \ReflectionException
      */
-    protected function setHeader($name, $value): void
+    private function setHeader($name, $value): void
     {
         $symfonyKey           = $this->normalizeSymfonyHeaderName($name);
         $headers              = $this->sfWebResponse->getHttpHeaders();
@@ -219,7 +222,7 @@ class Response
      *
      * @param string $name
      */
-    protected function normalizeSymfonyHeaderName($name): string
+    private function normalizeSymfonyHeaderName($name): string
     {
         return strtr(ucwords(strtr(strtolower($name), ['_' => ' ', '-' => ' '])), [' ' => '-']);
     }
@@ -231,7 +234,7 @@ class Response
      *
      * @throws \ReflectionException
      */
-    protected function retroduceHeaders(array $headers): void
+    private function retroduceHeaders(array $headers): void
     {
         if (null === $this->reflexHeaders) {
             $reflexiveWebResponse = new ReflectionObject($this->sfWebResponse);
@@ -241,7 +244,7 @@ class Response
         $this->reflexHeaders->setValue($this->sfWebResponse, $headers);
     }
 
-    protected function useDefaultReasonPhrase(int $code, string $reasonPhrase): ?string
+    private function useDefaultReasonPhrase(int $code, string $reasonPhrase): ?string
     {
         if (!empty($reasonPhrase)) {
             return $reasonPhrase;
@@ -254,7 +257,7 @@ class Response
     /**
      * @return static
      */
-    protected function getThisOrClone(): self
+    private function getThisOrClone(): self
     {
         return $this; // TODO implement
     }
