@@ -60,8 +60,8 @@ trait CommonAdapterTrait
      */
     public function withHeader($name, $value)
     {
-        /** var @CommonAdapterTrait $new */
         $new                                                = $this->getThisOrClone();
+        /* @var CommonAdapterTrait $new */
         $new->headerNames[$new->normalizeHeaderName($name)] = $name;
         $new->setHeader($name, $value);
 
@@ -85,7 +85,7 @@ trait CommonAdapterTrait
     }
 
     /**
-     * Explodes a HTTP header's value to address PSR-7 arrayified sub-value approach
+     * Explodes a HTTP header's value to address PSR-7 array-fied sub-value approach
      *
      * @return string[]
      */

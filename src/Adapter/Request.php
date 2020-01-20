@@ -159,7 +159,7 @@ class Request implements ServerRequestInterface
 
             if (null !== $useKey) {
                 $headerName = $this->normalizeHeaderName($useKey);
-                /** @noinspection NullCoalescingOperatorCanBeUsedInspection */
+                /* @noinspection NullCoalescingOperatorCanBeUsedInspection */
                 if (isset($this->headerNames[$headerName])) {
                     $headerName = $this->headerNames[$headerName]; // return shadowed header name
                 }
@@ -542,6 +542,7 @@ class Request implements ServerRequestInterface
 
     /**
      * @throws LogicException
+     *
      * @return static
      */
     protected function getCloneOrDie(): self
@@ -564,5 +565,4 @@ class Request implements ServerRequestInterface
 
         return $this;
     }
-
 }
