@@ -33,6 +33,7 @@ $config = PhpCsFixer\Config::create()
             'phpdoc_summary'                         => null,
             'multiline_whitespace_before_semicolons' => null,
             'cast_spaces'                            => ['space' => 'none'],
+            'comment_to_phpdoc'                      => false,
         ]
     )
     ->setFinder($finder);
