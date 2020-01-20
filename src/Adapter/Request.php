@@ -291,7 +291,7 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @param mixed|string $method
+     * @param string $method
      *
      * @throws InvalidTypeException
      *
@@ -299,10 +299,7 @@ class Request implements ServerRequestInterface
      */
     public function withMethod($method): self
     {
-        if (!is_string($method)) {
-            InvalidTypeException::throwStringExpected($method);
-        }
-        /** @var string $method */
+        Assert::string($method);
         $new         = $this->getThisOrClone();
         $new->method = $method;
         $new->sfWebRequest->setMethod($method);
@@ -451,10 +448,9 @@ class Request implements ServerRequestInterface
      */
     public function withParsedBody($data): self
     {
-        if (!is_array($data) && !is_object($data) && null !== $data) {
-            InvalidTypeException::throwStringOrArrayOrNullExpected($data);
+        if (!is_object($data)) {
+            Assert::nullOrIsArray($data);
         }
-
         // CAVEAT: can be altered here though the underlying sfWebRequest will not be modified!
         $new             = $this->getThisOrClone();
         $new->parsedBody = $data;
