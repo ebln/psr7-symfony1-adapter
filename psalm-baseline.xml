@@ -23,6 +23,9 @@
       <code>$uploadedFiles</code>
       <code>$method</code>
     </PropertyNotSetInConstructor>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>string</code>
+    </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/Adapter/Response.php">
     <MixedArgumentTypeCoercion occurrences="3">
