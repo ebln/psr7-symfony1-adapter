@@ -76,15 +76,16 @@ class Request implements ServerRequestInterface
     {
     }
 
+    /**
+     * maybe you also want to
+     *  clone $this->sfWebRequest
+     *  and unset $this->reflexPathInfoArray
+     */
     public function __clone()
     {
         $this->uri        = clone $this->uri;
         $this->body       = $this->body ? clone $this->body : $this->body;
         $this->parsedBody = is_object($this->parsedBody) ? clone $this->parsedBody : $this->parsedBody;
-
-        // // either clone or preserve the underlying symfony request…
-        // $this->sfWebRequest        = clone $this->sfWebRequest;
-        // $this->reflexPathInfoArray = null;
     }
 
     /**
