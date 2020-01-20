@@ -159,6 +159,7 @@ class Request implements ServerRequestInterface
 
             if (null !== $useKey) {
                 $headerName = $this->normalizeHeaderName($useKey);
+                /** @noinspection NullCoalescingOperatorCanBeUsedInspection */
                 if (isset($this->headerNames[$headerName])) {
                     $headerName = $this->headerNames[$headerName]; // return shadowed header name
                 }
@@ -363,8 +364,6 @@ class Request implements ServerRequestInterface
 
     /**
      * @return UploadedFileInterface[]
-     *
-     * @psalm-return list<UploadedFileInterface>
      */
     public function getUploadedFiles(): array
     {
@@ -381,8 +380,6 @@ class Request implements ServerRequestInterface
 
     /**
      * @param UploadedFileInterface[] $uploadedFiles
-     *
-     * @throws LogicException
      *
      * @return static
      */

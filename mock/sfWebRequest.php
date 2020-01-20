@@ -125,7 +125,7 @@ class sfWebRequest
     }
 
     /**
-     * @return array
+     * @return array<string, array|string>
      */
     public function getGetParameters()
     {
@@ -133,7 +133,7 @@ class sfWebRequest
     }
 
     /**
-     * @return array
+     * @return array<string, mixed>
      */
     public function getPostParameters()
     {
