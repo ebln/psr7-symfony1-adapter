@@ -1,4 +1,6 @@
-<?php /** @noinspection ReturnTypeCanBeDeclaredInspection */
+<?php
+
+/** @noinspection ReturnTypeCanBeDeclaredInspection */
 
 declare(strict_types=1);
 
@@ -29,6 +31,7 @@ trait CommonAdapterTrait
      *
      * @throws \InvalidArgumentException
      * @throws \ReflectionException
+     *
      * @return static
      */
     public function withAddedHeader($name, $value)
@@ -59,6 +62,7 @@ trait CommonAdapterTrait
      *
      * @throws \InvalidArgumentException
      * @throws \ReflectionException
+     *
      * @return static
      */
     public function withHeader($name, $value)
@@ -74,7 +78,6 @@ trait CommonAdapterTrait
 
     /**
      * @throws \InvalidArgumentException
-     * @return StreamInterface
      */
     public function getBody(): StreamInterface
     {
@@ -111,7 +114,6 @@ trait CommonAdapterTrait
      * @param string|string[] $value
      *
      * @throws \InvalidArgumentException
-     * @return string
      */
     private function implodeHeaders($value): string
     {

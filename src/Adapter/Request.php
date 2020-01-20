@@ -91,6 +91,7 @@ class Request implements ServerRequestInterface
      * @param array<string, bool> $options
      *
      * @throws \InvalidArgumentException
+     *
      * @return Request
      */
     public static function fromSfWebRequest(\sfWebRequest $sfWebRequest, array $options = []): self
@@ -177,7 +178,6 @@ class Request implements ServerRequestInterface
      * @param string $name
      *
      * @throws \InvalidArgumentException
-     * @return bool
      */
     public function hasHeader($name): bool
     {
@@ -190,6 +190,7 @@ class Request implements ServerRequestInterface
      * @param string $name
      *
      * @throws \InvalidArgumentException
+     *
      * @return string[]
      */
     public function getHeader($name): array
@@ -204,7 +205,6 @@ class Request implements ServerRequestInterface
      * @param string $name
      *
      * @throws \InvalidArgumentException
-     * @return string
      */
     public function getHeaderLine($name): string
     {
@@ -219,6 +219,7 @@ class Request implements ServerRequestInterface
      *
      * @throws \InvalidArgumentException
      * @throws \ReflectionException
+     *
      * @return Request
      */
     public function withoutHeader($name): self
@@ -236,9 +237,8 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @param StreamInterface $body
-     *
      * @throws LogicException
+     *
      * @return static
      */
     public function withBody(StreamInterface $body): self
@@ -294,6 +294,7 @@ class Request implements ServerRequestInterface
      * @param mixed|string $method
      *
      * @throws InvalidTypeException
+     *
      * @return Request
      */
     public function withMethod($method): self
@@ -315,12 +316,12 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @param UriInterface $uri
-     * @param bool         $preserveHost
+     * @param bool $preserveHost
      *
      * @throws LogicException
      * @throws \InvalidArgumentException
      * @throws \ReflectionException
+     *
      * @return static
      */
     public function withUri(UriInterface $uri, $preserveHost = false): self
@@ -363,6 +364,7 @@ class Request implements ServerRequestInterface
      * @param array<string, string> $cookies
      *
      * @throws LogicException
+     *
      * @return static
      */
     public function withCookieParams(array $cookies): self
@@ -385,6 +387,7 @@ class Request implements ServerRequestInterface
      * @param array<string, array|string> $query
      *
      * @throws LogicException
+     *
      * @return static
      */
     public function withQueryParams(array $query): self
@@ -397,6 +400,7 @@ class Request implements ServerRequestInterface
 
     /**
      * @throws \LogicException
+     *
      * @return UploadedFileInterface[]
      */
     public function getUploadedFiles(): array
@@ -442,6 +446,7 @@ class Request implements ServerRequestInterface
      * @param null|array<string, mixed>|mixed|object $data
      *
      * @throws InvalidTypeException
+     *
      * @return Request
      */
     public function withParsedBody($data): self
@@ -520,7 +525,6 @@ class Request implements ServerRequestInterface
     /**
      * injects a header into symfony's pathInfoArray via setPathInfoArray()'s reflection
      *
-     * @param string          $name
      * @param string|string[] $value
      *
      * @throws \InvalidArgumentException
