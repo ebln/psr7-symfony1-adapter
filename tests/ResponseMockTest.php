@@ -86,11 +86,11 @@ class ResponseMockTest extends TestCase
     }
 
     /**
-     * @param int         $code
-     * @param string|null $reasonPhrase
-     * @param string[]    $headers
-     * @param array       $cookies
-     * @param array       $options
+     * @param int                      $code
+     * @param string|null              $reasonPhrase
+     * @param string[]                 $headers
+     * @param array                    $cookies
+     * @param array<string|int, mixed> $options
      *
      * @return array
      */
