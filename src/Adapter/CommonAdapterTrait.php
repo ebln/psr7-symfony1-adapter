@@ -37,7 +37,7 @@ trait CommonAdapterTrait
             return $this->withHeader($name, $value);
         }
 
-        $new     = $this->getNew(false);
+        $new     = $this->getThisOrClone();
         $headers = $new->getHeader($name);
         if (is_array($value)) {
             $headers = array_merge($headers, $value);
@@ -61,7 +61,7 @@ trait CommonAdapterTrait
     public function withHeader($name, $value)
     {
         /** var @CommonAdapterTrait $new */
-        $new                                                = $this->getNew(false);
+        $new                                                = $this->getThisOrClone();
         $new->headerNames[$new->normalizeHeaderName($name)] = $name;
         $new->setHeader($name, $value);
 

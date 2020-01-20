@@ -1,6 +1,5 @@
 <?php
 
-/** @noinspection PhpFullyQualifiedNameUsageInspection */
 declare(strict_types=1);
 
 namespace brnc\Symfony1\Message\Adapter;
@@ -135,7 +134,8 @@ class Request implements ServerRequestInterface
      */
     public function withProtocolVersion($version): self
     {
-        $new                              = $this->getNew();
+        // can be altered even though underlying sfWebRequest does not support this
+        $new                              = $this->getThisOrClone();
         $pathInfoArray                    = $new->sfWebRequest->getPathInfoArray();
         $pathInfoArray['SERVER_PROTOCOL'] = 'HTTP/' . $version;
         $new->retroducePathInfoArray($pathInfoArray);
@@ -159,7 +159,6 @@ class Request implements ServerRequestInterface
 
             if (null !== $useKey) {
                 $headerName = $this->normalizeHeaderName($useKey);
-                /* @noinspection NullCoalescingOperatorCanBeUsedInspection */
                 if (isset($this->headerNames[$headerName])) {
                     $headerName = $this->headerNames[$headerName]; // return shadowed header name
                 }
@@ -208,7 +207,8 @@ class Request implements ServerRequestInterface
      */
     public function withoutHeader($name): self
     {
-        $new           = $this->getNew();
+        // can be altered even though underlying sfWebRequest does not support this
+        $new           = $this->getThisOrClone();
         $keyName       = $new->getPathInfoKey($name);
         $pathInfoArray = $new->sfWebRequest->getPathInfoArray();
         unset($pathInfoArray[$keyName]);
@@ -220,7 +220,7 @@ class Request implements ServerRequestInterface
 
     public function withBody(StreamInterface $body): self
     {
-        $new       = $this->getNew(true);
+        $new       = $this->getCloneOrDie(); // TODO allow
         $new->body = $body;
 
         return $new;
@@ -248,7 +248,7 @@ class Request implements ServerRequestInterface
      */
     public function withRequestTarget($requestTarget): self
     {
-        $new                = $this->getNew(true);
+        $new                = $this->getThisOrClone();
         $new->requestTarget = $requestTarget;
 
         return $new;
@@ -276,7 +276,7 @@ class Request implements ServerRequestInterface
             InvalidTypeException::throwStringExpected($method);
         }
         /** @var string $method */
-        $new         = $this->getNew();
+        $new         = $this->getThisOrClone();
         $new->method = $method;
         $new->sfWebRequest->setMethod($method);
 
@@ -293,9 +293,10 @@ class Request implements ServerRequestInterface
      */
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
-        $new      = $this->getNew(!$preserveHost); // as the rewrite to HTTP_HOST et al. will not be done
+        $new      = $preserveHost ? $this->getThisOrClone() : $this->getCloneOrDie(); // as the rewrite to HTTP_HOST et al. will not be done
         $new->uri = $uri;
 
+        // TODO redo this & add Host to top logic to setHeader()
         if ((!$preserveHost || !$this->hasHeader('Host')) && ('' !== $uri->getHost())) {
             $headerName = $this->normalizeHeaderName('host');
             $headerName = $this->headerNames[$headerName] ?? $headerName;
@@ -333,7 +334,7 @@ class Request implements ServerRequestInterface
      */
     public function withCookieParams(array $cookies): self
     {
-        $new               = $this->getNew(true);
+        $new               = $this->getCloneOrDie();
         $new->cookieParams = $cookies;
 
         return $new;
@@ -354,7 +355,7 @@ class Request implements ServerRequestInterface
      */
     public function withQueryParams(array $query): self
     {
-        $new              = $this->getNew(true);
+        $new              = $this->getCloneOrDie();
         $new->queryParams = $query;
 
         return $new;
@@ -387,7 +388,8 @@ class Request implements ServerRequestInterface
      */
     public function withUploadedFiles(array $uploadedFiles): self
     {
-        $new                = $this->getNew(false);
+        // CAVEAT: can be altered here though the underlying sfWebRequest will not be modified!
+        $new                = $this->getThisOrClone();
         $new->uploadedFiles = $uploadedFiles;
 
         return $new;
@@ -414,7 +416,8 @@ class Request implements ServerRequestInterface
             InvalidTypeException::throwStringOrArrayOrNullExpected($data);
         }
 
-        $new             = $this->getNew(false);
+        // CAVEAT: can be altered here though the underlying sfWebRequest will not be modified!
+        $new             = $this->getThisOrClone();
         $new->parsedBody = $data;
 
         return $new;
@@ -445,7 +448,7 @@ class Request implements ServerRequestInterface
      */
     public function withAttribute($name, $value): self
     {
-        $new                    = $this->getNew();
+        $new                    = $this->getThisOrClone();
         $new->attributes[$name] = $value;
 
         return $new;
@@ -456,8 +459,7 @@ class Request implements ServerRequestInterface
      */
     public function withoutAttribute($name): self
     {
-        $new = $this->getNew();
-
+        $new = $this->getThisOrClone();
         unset($new->attributes[$name]);
 
         return $new;
@@ -543,19 +545,27 @@ class Request implements ServerRequestInterface
 
     /**
      * @throws LogicException
-     *
      * @return static
      */
-    protected function getNew(bool $failOnMutation = false): self
+    protected function getCloneOrDie(): self
     {
         if (!$this->isImmutable) {
-            if ($failOnMutation) {
-                LogicException::throwAdaptingSymfony();
-            }
-
-            return $this;
+            LogicException::throwAdaptingSymfony();
         }
 
         return clone $this;
     }
+
+    /**
+     * @return static
+     */
+    protected function getThisOrClone(): self
+    {
+        if ($this->isImmutable) {
+            return clone $this;
+        }
+
+        return $this;
+    }
+
 }

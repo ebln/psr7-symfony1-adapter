@@ -251,8 +251,11 @@ class Response
         return static::$defaultReasonPhrases[$code] ?? null;
     }
 
-    protected function getNew(bool $failOnMutation = false): self
+    /**
+     * @return static
+     */
+    protected function getThisOrClone(): self
     {
-        return $this; // TODO!
+        return $this; // TODO implement
     }
 }
