@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace brnc\Tests\Symfony1\Message;
 
 use brnc\Symfony1\Message\Adapter\Response;
@@ -8,8 +10,11 @@ use PHPUnit\Framework\TestCase;
 /**
  * tests only edge-cases for setHttpHeader of mocked sfWebResponse
  * which has not been implicitly covered by Adapter tests
+ *
+ * @internal
+ * @coversNothing
  */
-class ResponseMockTest extends TestCase
+final class ResponseMockTest extends TestCase
 {
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
@@ -86,13 +91,11 @@ class ResponseMockTest extends TestCase
     }
 
     /**
-     * @param int         $code
-     * @param string|null $reasonPhrase
-     * @param string[]    $headers
-     * @param array       $cookies
-     * @param array       $options
-     *
-     * @return array
+     * @param int                      $code
+     * @param null|string              $reasonPhrase
+     * @param string[]                 $headers
+     * @param array                    $cookies
+     * @param array<int|string, mixed> $options
      */
     private function createResponse(
         $code = 200,

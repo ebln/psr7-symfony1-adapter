@@ -16,7 +16,8 @@
     },
     "require": {
         "php": "^7.2",
-        "guzzlehttp/psr7": "^1.6"
+        "guzzlehttp/psr7": "^1.6",
+        "webmozart/assert": "^1.6"
     },
     "archive": {
         "exclude": ["vendor/*", "tests/", "mock/", ".*", "phpunit.xml.dist", "coverage/"]
@@ -25,9 +26,11 @@
         "php": "^7.2",
         "roave/security-advisories": "dev-master",
         "phpunit/phpunit": "^8",
-        "phpstan/phpstan": "^0.12.5",
+        "phpstan/phpstan": "0.12.6",
         "vimeo/psalm": "^3.8",
-        "phpmd/phpmd": "^2.8"
+        "phpmd/phpmd": "^2.8",
+        "php-http/psr7-integration-tests": "dev-master",
+        "phpstan/phpstan-webmozart-assert": "^0.12.2"
     },
     "autoload-dev": {
         "psr-4": {
@@ -41,7 +44,7 @@
         "test": [
             "psalm --find-unused-psalm-suppress",
             "phpstan analyse",
-            "phpmd src,tests ansi codesize,design,naming",
+            "phpmd src,tests ansi naming #,codesize,design",
             "@php-cs-fixer",
             "@phpunit"
         ]

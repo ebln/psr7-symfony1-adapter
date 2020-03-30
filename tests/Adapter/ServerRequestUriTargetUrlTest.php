@@ -40,15 +40,13 @@ class ServerRequestUriTargetUrlTest extends TestCase
         $this->assertSame('/foo/bar?q=baz&a=42', $requestTarget);
     }
 
-    /**
-     * TODO cover and activate!
-     */
-    public function todoItFailsWithUri(): void
+    public function testItFailsWithUri(): void
     {
         $request = $this->createRequest();
         $uriMock = $this->createMock(UriInterface::class);
         $this->expectException(\LogicException::class);
-        // $request->withUri($uriMock);
+        // when using sfWebRequest Adaption, when cannot change the URI or Host
+        $request->withUri($uriMock);
     }
 
     /**

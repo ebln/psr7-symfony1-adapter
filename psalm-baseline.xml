@@ -1,19 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="3.8.3@389af1bfc739bfdff3f9e3dc7bd6499aee51a831">
   <file src="src/Adapter/Request.php">
-    <MixedReturnTypeCoercion occurrences="6">
-      <code>$_COOKIE</code>
-      <code>array&lt;string, string&gt;</code>
-      <code>$this-&gt;sfWebRequest-&gt;getGetParameters()</code>
-      <code>array&lt;string, string&gt;</code>
-      <code>$this-&gt;sfWebRequest-&gt;getPostParameters()</code>
+    <DocblockTypeContradiction occurrences="1">
+      <code>null === $this-&gt;uploadedFiles</code>
+    </DocblockTypeContradiction>
+    <MixedAssignment occurrences="2">
+      <code>$new-&gt;requestTarget</code>
+      <code>$new-&gt;parsedBody</code>
+    </MixedAssignment>
+    <MixedReturnTypeCoercion occurrences="2">
+      <code>$this-&gt;cookieParams ?? $_COOKIE</code>
       <code>array&lt;string, string&gt;</code>
     </MixedReturnTypeCoercion>
-    <PropertyNotSetInConstructor occurrences="3">
+    <MoreSpecificImplementedParamType occurrences="3">
+      <code>$cookies</code>
+      <code>$query</code>
+      <code>$uploadedFiles</code>
+    </MoreSpecificImplementedParamType>
+    <PropertyNotSetInConstructor occurrences="4">
       <code>$sfWebRequest</code>
       <code>$uri</code>
+      <code>$uploadedFiles</code>
       <code>$method</code>
     </PropertyNotSetInConstructor>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>string</code>
+    </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/Adapter/Response.php">
     <MixedArgumentTypeCoercion occurrences="3">
@@ -26,4 +38,3 @@
     </PropertyNotSetInConstructor>
   </file>
 </files>
-
