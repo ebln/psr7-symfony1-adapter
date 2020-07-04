@@ -9,6 +9,7 @@ use brnc\Symfony1\Message\Utillity\Assert;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use ReflectionObject;
+use sfEventDispatcher;
 
 /**
  * TODO
@@ -17,10 +18,6 @@ use ReflectionObject;
  *          Cookie Abstraction
  *              including Header transcription
  *          how to sync to sfResponse? What happens if header and setRawCookie of sfResponse collide?
- *      withBody and how to sync writes to the stream with the underlying sfWebResponse
- *         via Refl.eventDispatcher && response.filter_content ?
- *         vs. clone Stream on withBody and write to sfResponse
- *      Wrapper for Setters using sfEvent ~Dispatcher ?
  */
 class Response implements ResponseInterface
 {
@@ -74,6 +71,14 @@ class Response implements ResponseInterface
         }
 
         return $new;
+    }
+
+    /**
+     * @deprecated Avoid this at all costs! It only serves as a last resort!
+     */
+    public function getSfWebResponse(): \sfWebResponse
+    {
+        return $this->sfWebResponse;
     }
 
     public function getProtocolVersion(): string
@@ -205,15 +210,43 @@ class Response implements ResponseInterface
     }
 
     /**
+     * @deprecated lasted stream is used for underlying sfWebResponse's content
+     *
      * @return static
      */
     public function withBody(StreamInterface $body): self
     {
         $new       = $this->getThisOrClone();
         $new->body = $body;
-
-        // TODO how to sync writes to the stream with the underlying sfWebResponse?
         $this->sfWebResponse->setContent((string)$body);
+        /*
+        // access protected properties faster than with reflection
+        // @see https://ocramius.github.io/blog/accessing-private-php-class-members-without-reflection/
+        $dispatcherRetriever = \Closure::bind(
+            function & (\sfWebResponse $sfWebResponse): ?sfEventDispatcher {
+                return $sfWebResponse->dispatcher;
+            },
+            null,
+            $this->sfWebResponse
+        );
+        $dispatcher          = $dispatcherRetriever($this->sfWebResponse);
+        */
+        // otherwise use reflection
+        $reflexiveWebResponse = new ReflectionObject($this->sfWebResponse);
+        $dispatcherRetriever  = $reflexiveWebResponse->getProperty('dispatcher');
+        $dispatcherRetriever->setAccessible(true);
+        /** @var null|sfEventDispatcher $dispatcher */
+        $dispatcher = $dispatcherRetriever->getValue($this->sfWebResponse);
+
+        // use response.filter_content to force update latest set Body to underlying object
+        if (is_object($dispatcher) && method_exists($dispatcher, 'connect')) {
+            $dispatcher->connect(
+                'response.filter_content',
+                function (\sfEvent $event, string $value) use ($body) {
+                    return (string)$body;
+                }
+            );
+        }
 
         return $new;
     }

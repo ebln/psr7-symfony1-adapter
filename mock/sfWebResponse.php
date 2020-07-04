@@ -232,10 +232,18 @@ class sfWebResponse
         return $this->content;
     }
 
+    /**
+     * @deprecated Only for testing! Original methods echos instead of returning
+     *
+     * @return null|string
+     */
     public function sendContent()
     {
-        $event   = $this->dispatcher->filter(new sfEvent($this, 'response.filter_content'), $this->getContent());
-        $content = $event->getReturnValue();
-        echo $content;
+        if (null === $this->dispatcher) {
+            return null;
+        }
+        $event = $this->dispatcher->filter(new sfEvent($this, 'response.filter_content'), $this->getContent());
+
+        return $event->getReturnValue();
     }
 }
