@@ -132,6 +132,8 @@ class Request implements ServerRequestInterface
     }
 
     /**
+     * @deprecated Will modify sfWebRequest even though it has no intrinsic support for this
+     *
      * @param string $version
      *
      * @throws \ReflectionException
@@ -216,6 +218,8 @@ class Request implements ServerRequestInterface
     }
 
     /**
+     * @deprecated Will modify sfWebRequest even though it has no intrinsic support for this
+     *
      * @param string $name
      *
      * @throws \InvalidArgumentException
@@ -238,6 +242,8 @@ class Request implements ServerRequestInterface
     }
 
     /**
+     * @deprecated Will not alter sfWebRequest! Will crash on Symfony compatibility mode!
+     *
      * @throws LogicException
      *
      * @return static
@@ -314,6 +320,8 @@ class Request implements ServerRequestInterface
     }
 
     /**
+     * @deprecated TODO
+     *
      * @param bool $preserveHost
      *
      * @throws LogicException
