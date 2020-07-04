@@ -14,7 +14,7 @@ class ResponseTest extends ResponseIntegrationTest
         $symfonyResponseMock = new \sfWebResponse();
         $symfonyResponseMock->prepare();
 
-        $response = Response::fromSfWebResponse($symfonyResponseMock, [Response::OPTION_SEND_BODY_ON_204 => false]);
+        $response = Response::fromSfWebResponse($symfonyResponseMock, [Response::OPTION_IMMUTABLE_VIOLATION => false]);
 
         return $response;
     }

@@ -27,8 +27,9 @@ class Response implements ResponseInterface
 {
     use CommonAdapterTrait;
 
-    public const  OPTION_SEND_BODY_ON_204 = 'Will disable automatic setHeaderOnly() if 204 is set as status code.';
-    private const STATUS_NO_CONTENT       = 204;
+    public const  OPTION_SEND_BODY_ON_204    = 'Will disable automatic setHeaderOnly() if 204 is set as status code.';
+    public const  OPTION_IMMUTABLE_VIOLATION = 'Return mutated self';   // Violates PSR-7's immutability, as this is an adapter acting on the underlying sfWebRequest
+    private const STATUS_NO_CONTENT          = 204;
 
     /** @var array<int,string> */
     private static $defaultReasonPhrases = [
@@ -47,6 +48,9 @@ class Response implements ResponseInterface
     /** @var bool if setHeaderOnly() auto-magic is used on withStatus() calls */
     private $setHeaderOnly = true;
 
+    /** @var bool */
+    private $isImmutable = true;
+
     private function __construct()
     {
     }
@@ -63,6 +67,11 @@ class Response implements ResponseInterface
 
         if (isset($options[self::OPTION_SEND_BODY_ON_204])) {
             $new->setHeaderOnly = false;
+        }
+
+        // defaulting to mutating PSR-7-violating behavior when creating from \sfWebResponse
+        if (!array_key_exists(self::OPTION_IMMUTABLE_VIOLATION, $options) || false !== $options[self::OPTION_IMMUTABLE_VIOLATION]) {
+            $new->isImmutable = false;
         }
 
         return $new;
@@ -276,8 +285,7 @@ class Response implements ResponseInterface
      */
     private function getThisOrClone(): self
     {
-        // TODO implement
-        if (true /* $this->isImmutable */) {
+        if ($this->isImmutable) {
             return clone $this;
         }
 
