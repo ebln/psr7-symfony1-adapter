@@ -29,10 +29,8 @@ class Request implements ServerRequestInterface
     use CommonAdapterTrait;
 
     /** @see https://www.php.net/manual/en/wrappers.php.php#wrappers.php.input for reuseablity of php://input */
-    public const OPTION_BODY_USE_STREAM       = 'Use php://input directly';
-    public const OPTION_EXPOSE_SF_WEB_REQUEST = 'Populate attribute with sfWebRequest';
-    public const OPTION_IMMUTABLE_VIOLATION   = 'Violate PSR-7 as this is an adapter acting on the underlying sfWebRequest';
-    public const ATTRIBUTE_SF_WEB_REQUEST     = 'sfWebRequest';
+    public const OPTION_BODY_USE_STREAM     = 'Use php://input directly'; // Uses a stream on php://input instead of creating one over sfWebRequest::getContent()
+    public const OPTION_IMMUTABLE_VIOLATION = 'Return mutated self';      // Violates PSR-7's immutability, as this is an adapter acting on the underlying sfWebRequest
 
     /** @var bool[] */
     private static $contentHeaders = ['CONTENT_LENGTH' => true, 'CONTENT_MD5' => true, 'CONTENT_TYPE' => true];
@@ -105,16 +103,12 @@ class Request implements ServerRequestInterface
         } else {
             $content = $sfWebRequest->getContent();
             if (false !== $content) {
-                // lazy init, as getBody() defaults properly
+                // lazy init, as getBody() defaults properly to an empty body using stream_for()
                 $new->body = stream_for($content);
             }
         }
 
-        if (isset($options[self::OPTION_EXPOSE_SF_WEB_REQUEST])) {
-            $new->attributes[self::ATTRIBUTE_SF_WEB_REQUEST] = $sfWebRequest;
-        }
-
-        // default to non-immutable PSR-7 violating behavior when creating from \sfWebRequest
+        // defaulting to mutating PSR-7-violating behavior when creating from \sfWebRequest
         if (!array_key_exists(self::OPTION_IMMUTABLE_VIOLATION, $options) || false !== $options[self::OPTION_IMMUTABLE_VIOLATION]) {
             $new->isImmutable  = false;
             $new->parsedBody   = false;
@@ -124,6 +118,14 @@ class Request implements ServerRequestInterface
         $new->uri = new Uri($sfWebRequest->getUri());
 
         return $new;
+    }
+
+    /**
+     * @deprecated Avoid this at all costs! It only serves as a last resort!
+     */
+    public function getSfWebRequest(): \sfWebRequest
+    {
+        return $this->sfWebRequest;
     }
 
     public function getProtocolVersion(): string
