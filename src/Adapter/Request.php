@@ -244,7 +244,7 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @deprecated Will not alter sfWebRequest! Will crash on Symfony compatibility mode!
+     * @deprecated Warning: Will not alter sfWebRequest! Won't throw exception in Symfony compatibility mode, to support modifications via middlewares
      *
      * @throws LogicException
      *
@@ -252,7 +252,7 @@ class Request implements ServerRequestInterface
      */
     public function withBody(StreamInterface $body): self
     {
-        $new       = $this->getCloneOrDie(); // TODO allow
+        $new       = $this->getThisOrClone();
         $new->body = $body;
 
         return $new;
