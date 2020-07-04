@@ -20,6 +20,7 @@ use ReflectionObject;
 
 /**
  * TODO
+ *      Iterate on withUri
  *      Cookie handling
  *          Cookie Abstraction
  *              including Header transcription
@@ -322,7 +323,7 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @deprecated TODO
+     * @deprecated Will not alter sfWebRequest! Will crash on Symfony compatibility mode if `$preserveHost === true`!
      *
      * @param bool $preserveHost
      *
@@ -369,6 +370,8 @@ class Request implements ServerRequestInterface
     }
 
     /**
+     * @deprecated Will not alter sfWebRequest! Will crash on Symfony compatibility mode!
+     *
      * @param array<string, string> $cookies
      *
      * @throws LogicException
@@ -392,6 +395,8 @@ class Request implements ServerRequestInterface
     }
 
     /**
+     * @deprecated Will not alter sfWebRequest! Will crash on Symfony compatibility mode!
+     *
      * @param array<string, array|string> $query
      *
      * @throws LogicException
