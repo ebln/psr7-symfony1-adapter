@@ -247,8 +247,6 @@ class Request implements ServerRequestInterface
     /**
      * @deprecated Warning: Will not alter sfWebRequest! Won't throw exception in Symfony compatibility mode, to support modifications via middlewares
      *
-     * @throws LogicException
-     *
      * @return static
      */
     public function withBody(StreamInterface $body): self
