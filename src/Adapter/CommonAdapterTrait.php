@@ -36,6 +36,8 @@ trait CommonAdapterTrait
      */
     public function withAddedHeader($name, $value)
     {
+        Assert::stringNotEmpty($name);
+
         if (!$this->hasHeader($name)) {
             // to preserve the original header name
             return $this->withHeader($name, $value);

@@ -20,7 +20,6 @@ use ReflectionObject;
  *      withBody and how to sync writes to the stream with the underlying sfWebResponse
  *         via Refl.eventDispatcher && response.filter_content ?
  *         vs. clone Stream on withBody and write to sfResponse
- *      Proper Interface?
  *      Wrapper for Setters using sfEvent ~Dispatcher ?
  */
 class Response implements ResponseInterface
@@ -87,16 +86,18 @@ class Response implements ResponseInterface
      *
      * @throws \ReflectionException
      *
-     * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
-     *               same instance, due to the nature of the underlying adapted symfony object
+     * @return static
+     *
+     * @deprecated Changes are directly applied to the adapted sfWebResponse, thus the returned object will return same value as the "immutable" original instance
      */
     public function withProtocolVersion($version): self
     {
         $options                  = $this->sfWebResponse->getOptions();
         $options['http_protocol'] = 'HTTP/' . $version;
         $this->retroduceOptions($options);
+        $this->reflexOptions = null;    // just to satisfy \Http\Psr7Test\MessageTrait::testProtocolVersion
 
-        return $this;
+        return $this->getThisOrClone();
     }
 
     /**
@@ -171,11 +172,16 @@ class Response implements ResponseInterface
      * @param int    $code
      * @param string $reasonPhrase
      *
-     * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
-     *               same instance, due to the nature of the underlying adapted symfony object
+     * @return static
+     *
+     * @deprecated Changes are directly applied to the adapted sfWebResponse, thus the returned object will return same value as the "immutable" original instance
      */
     public function withStatus($code, $reasonPhrase = ''): self
     {
+        Assert::integer($code);
+        Assert::greaterThanEq($code, 100);
+        Assert::lessThanEq($code, 500);
+
         if ($this->setHeaderOnly) {
             $setNoContent = self::STATUS_NO_CONTENT === $code;
             // only change if there's a transition from or to 204
@@ -190,7 +196,7 @@ class Response implements ResponseInterface
         $defaultReasonPhrase = $this->useDefaultReasonPhrase($code, $reasonPhrase);
         $this->sfWebResponse->setStatusCode($code, $defaultReasonPhrase);
 
-        return $this;
+        return $this->getThisOrClone();
     }
 
     public function getReasonPhrase(): string
@@ -206,6 +212,7 @@ class Response implements ResponseInterface
         $new       = $this->getThisOrClone();
         $new->body = $body;
 
+        // TODO how to sync writes to the stream with the underlying sfWebResponse?
         $this->sfWebResponse->setContent((string)$body);
 
         return $new;

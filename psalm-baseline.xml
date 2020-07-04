@@ -36,5 +36,8 @@
     <PropertyNotSetInConstructor occurrences="1">
       <code>$sfWebResponse</code>
     </PropertyNotSetInConstructor>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>integer</code>
+    </RedundantConditionGivenDocblockType>
   </file>
 </files>
