@@ -13,13 +13,13 @@ class ServerRequestBasicTest extends TestCase
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function testStaticConstructionWithAttribute(): void
+    public function testGetSfWebRequest(): void
     {
         $symfonyRequestMock = new \sfWebRequest();
         $symfonyRequestMock->prepare('GET');
-        $request = Request::fromSfWebRequest($symfonyRequestMock, [Request::OPTION_EXPOSE_SF_WEB_REQUEST => true]);
-        $this->assertSame($symfonyRequestMock, $request->getAttribute(Request::ATTRIBUTE_SF_WEB_REQUEST));
-        $this->assertSame(spl_object_hash($symfonyRequestMock), spl_object_hash($request->getAttribute(Request::ATTRIBUTE_SF_WEB_REQUEST)));
+        $request = Request::fromSfWebRequest($symfonyRequestMock, []);
+        $this->assertSame($symfonyRequestMock, $request->getSfWebRequest());
+        $this->assertSame(spl_object_hash($symfonyRequestMock), spl_object_hash($request->getSfWebRequest()));
     }
 
     /**
