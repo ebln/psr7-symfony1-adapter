@@ -27,6 +27,9 @@ class sfWebResponse
     /** @var bool */
     private $headerOnly = false;
 
+    /** @var string */
+    private $content = '';
+
     /**
      * @param mixed $dispatcher
      * @param array $options
@@ -43,12 +46,13 @@ class sfWebResponse
      * @param array       $cookies
      * @param bool        $headerOnly
      */
-    public function prepare($code = 200, $reasonPhrase = null, $headers = [], $cookies = [], $headerOnly = false)
+    public function prepare($code = 200, $reasonPhrase = null, $headers = [], $cookies = [], $headerOnly = false, $content = '')
     {
         $this->setStatusCode($code, $reasonPhrase);
         $this->headers    = $headers;
         $this->cookies    = $cookies;
         $this->headerOnly = $headerOnly;
+        $this->content    = $content;
     }
 
     /** @return int */
@@ -206,5 +210,21 @@ class sfWebResponse
     public function isHeaderOnly()
     {
         return $this->headerOnly;
+    }
+
+    /**
+     * @param string $content
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContent()
+    {
+        return $this->content;
     }
 }

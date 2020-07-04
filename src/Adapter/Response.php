@@ -6,6 +6,8 @@ declare(strict_types=1);
 namespace brnc\Symfony1\Message\Adapter;
 
 use brnc\Symfony1\Message\Utillity\Assert;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 use ReflectionObject;
 
 /**
@@ -21,9 +23,10 @@ use ReflectionObject;
  *      Proper Interface?
  *      Wrapper for Setters using sfEvent ~Dispatcher ?
  */
-class Response
+class Response implements ResponseInterface
 {
     use CommonAdapterTrait;
+
     public const  OPTION_SEND_BODY_ON_204 = 'Will disable automatic setHeaderOnly() if 204 is set as status code.';
     private const STATUS_NO_CONTENT       = 204;
 
@@ -187,6 +190,19 @@ class Response
     }
 
     /**
+     * @return static
+     */
+    public function withBody(StreamInterface $body): self
+    {
+        $new       = $this->getThisOrClone();
+        $new->body = $body;
+
+        $this->sfWebResponse->setContent((string)$body);
+
+        return $new;
+    }
+
+    /**
      * sets symfony response's options property using reflection
      *
      * @param array<string, string> $options
@@ -260,6 +276,11 @@ class Response
      */
     private function getThisOrClone(): self
     {
-        return $this; // TODO implement
+        // TODO implement
+        if (true /* $this->isImmutable */) {
+            return clone $this;
+        }
+
+        return $this;
     }
 }
