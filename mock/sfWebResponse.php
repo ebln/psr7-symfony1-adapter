@@ -30,13 +30,17 @@ class sfWebResponse
     /** @var string */
     private $content = '';
 
+    /** @var null|sfEventDispatcher */
+    protected $dispatcher;
+
     /**
-     * @param mixed $dispatcher
-     * @param array $options
+     * @param null|sfEventDispatcher $dispatcher
+     * @param array                  $options
      */
     public function __construct($dispatcher = null, $options = [])
     {
-        $this->options = $options;
+        $this->options    = $options;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -226,5 +230,12 @@ class sfWebResponse
     public function getContent()
     {
         return $this->content;
+    }
+
+    public function sendContent()
+    {
+        $event   = $this->dispatcher->filter(new sfEvent($this, 'response.filter_content'), $this->getContent());
+        $content = $event->getReturnValue();
+        echo $content;
     }
 }
