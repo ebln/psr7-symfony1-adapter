@@ -14,7 +14,6 @@ use GuzzleHttp\Psr7\UploadedFile;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
-use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\UriInterface;
 use ReflectionObject;
 
@@ -48,31 +47,34 @@ class Request implements ServerRequestInterface
     /** @var UriInterface */
     private $uri;
 
-    /** @var null|array<string, mixed>|false|object → false indicated non-initialization in order to fallback to sfRequest, while null overrides sfRequest */
+    /** @var null|array<array-key, mixed>|false|object → false indicated non-initialization in order to fallback to sfRequest, while null overrides sfRequest */
     private $parsedBody;
 
-    /** @var null|array<string, string> */
+    /** @var null|array<array-key, mixed>|string[] */
     private $cookieParams = [];
 
     /** @var bool */
     private $isImmutable = true;
 
-    /** @var null|array<string, array|string> */
+    /** @var null|array<array-key, mixed> */
     private $queryParams;
 
-    /** @var UploadedFileInterface[] */
-    private $uploadedFiles;
+    /** @var array<array-key, mixed>|\Psr\Http\Message\UploadedFileInterface[] */
+    private $uploadedFiles = [];
 
-    /** @var null|string */
+    /** @var bool */
+    private $initialisedUploads = false;
+
+    /** @var null|mixed|string */
     private $requestTarget;
 
-    /**
-     * @var string shadow to honour: »[…]method names are case-sensitive and thus implementations SHOULD NOT modify the given string.«
-     */
+    /** @var null|string shadow to honour: »[…]method names are case-sensitive and thus implementations SHOULD NOT modify the given string.« */
     private $method;
 
-    private function __construct()
+    private function __construct(\sfWebRequest $sfWebRequest)
     {
+        $this->sfWebRequest = $sfWebRequest;
+        $this->uri          = new Uri($sfWebRequest->getUri());
     }
 
     /**
@@ -96,9 +98,7 @@ class Request implements ServerRequestInterface
      */
     public static function fromSfWebRequest(\sfWebRequest $sfWebRequest, array $options = []): self
     {
-        $new               = new static();
-        $new->sfWebRequest = $sfWebRequest;
-
+        $new = new static($sfWebRequest);
         if (isset($options[self::OPTION_BODY_USE_STREAM])) {
             $new->body = new CachingStream(new LazyOpenStream('php://input', 'r+'));
         } else {
@@ -116,8 +116,6 @@ class Request implements ServerRequestInterface
             $new->cookieParams = null;
         }
 
-        $new->uri = new Uri($sfWebRequest->getUri());
-
         return $new;
     }
 
@@ -131,15 +129,18 @@ class Request implements ServerRequestInterface
 
     public function getProtocolVersion(): string
     {
-        return $this->getVersionFromArray($this->sfWebRequest->getPathInfoArray(), 'SERVER_PROTOCOL');
+        $pathInfo = $this->sfWebRequest->getPathInfoArray();
+
+        return (isset($pathInfo['SERVER_PROTOCOL'])
+            && preg_match('/^HTTP\/(\d\.\d)$/i', $pathInfo['SERVER_PROTOCOL'], $versionMatch)) ? $versionMatch[1] : '';
     }
 
     /**
-     * @deprecated Will modify sfWebRequest even though it has no intrinsic support for this
-     *
      * @param string $version
      *
      * @throws \ReflectionException
+     *
+     * @deprecated Will modify sfWebRequest even though it has no intrinsic support for this
      */
     public function withProtocolVersion($version): self
     {
@@ -221,14 +222,14 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @deprecated Will modify sfWebRequest even though it has no intrinsic support for this
-     *
      * @param string $name
      *
      * @throws \InvalidArgumentException
      * @throws \ReflectionException
      *
      * @return Request
+     *
+     * @deprecated Will modify sfWebRequest even though it has no intrinsic support for this
      */
     public function withoutHeader($name): self
     {
@@ -247,8 +248,6 @@ class Request implements ServerRequestInterface
     /**
      * @deprecated Warning: Will not alter sfWebRequest! Won't throw exception in Symfony compatibility mode, to support modifications via middlewares
      *
-     * @throws LogicException
-     *
      * @return static
      */
     public function withBody(StreamInterface $body): self
@@ -262,7 +261,7 @@ class Request implements ServerRequestInterface
     public function getRequestTarget(): string
     {
         if ($this->requestTarget) {
-            return $this->requestTarget;
+            return (string)$this->requestTarget;
         }
 
         $target = $this->uri->getPath();
@@ -302,6 +301,7 @@ class Request implements ServerRequestInterface
 
     /**
      * @param string $method
+     * @psalm-suppress RedundantConditionGivenDocblockType
      *
      * @throws InvalidTypeException
      *
@@ -323,8 +323,6 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @deprecated Will not alter sfWebRequest! Will crash on Symfony compatibility mode if `$preserveHost === true`!
-     *
      * @param bool $preserveHost
      *
      * @throws LogicException
@@ -332,6 +330,8 @@ class Request implements ServerRequestInterface
      * @throws \ReflectionException
      *
      * @return static
+     *
+     * @deprecated Will not alter sfWebRequest! Will crash on Symfony compatibility mode if `$preserveHost === true`!
      */
     public function withUri(UriInterface $uri, $preserveHost = false): self
     {
@@ -362,7 +362,7 @@ class Request implements ServerRequestInterface
     /**
      * perhaps-do: check SG-header-congruency
      *
-     * @return array<string, string>
+     * @return array<array-key, mixed>|string[]
      */
     public function getCookieParams(): array
     {
@@ -370,13 +370,13 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @deprecated Will not alter sfWebRequest! Will crash on Symfony compatibility mode!
-     *
-     * @param array<string, string> $cookies
+     * @param array<array-key, mixed>|string[] $cookies
      *
      * @throws LogicException
      *
      * @return static
+     *
+     * @deprecated Will not alter sfWebRequest! Will crash on Symfony compatibility mode!
      */
     public function withCookieParams(array $cookies): self
     {
@@ -387,7 +387,7 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @return array<string, array|string>
+     * @return array<array-key, array<array-key, mixed>|mixed|string>
      */
     public function getQueryParams(): array
     {
@@ -395,13 +395,13 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @deprecated Will not alter sfWebRequest! Will crash on Symfony compatibility mode!
-     *
-     * @param array<string, array|string> $query
+     * @param array<array-key, mixed> $query
      *
      * @throws LogicException
      *
      * @return static
+     *
+     * @deprecated Will not alter sfWebRequest! Will crash on Symfony compatibility mode!
      */
     public function withQueryParams(array $query): self
     {
@@ -414,12 +414,11 @@ class Request implements ServerRequestInterface
     /**
      * @throws \LogicException
      *
-     * @return UploadedFileInterface[]
+     * @return array<array-key, mixed>|\Psr\Http\Message\UploadedFileInterface[]
      */
     public function getUploadedFiles(): array
     {
-        if (null === $this->uploadedFiles) {
-            $this->uploadedFiles = [];
+        if (!$this->initialisedUploads) {
             /** @psalm-var array{tmp_name:string,size:int,error:int,name:string,type:string} $file */
             foreach ($this->sfWebRequest->getFiles() as $file) {
                 $this->addUploadedFile($file);
@@ -430,7 +429,7 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @param UploadedFileInterface[] $uploadedFiles
+     * @param array<array-key, mixed>|\Psr\Http\Message\UploadedFileInterface[] $uploadedFiles
      *
      * @return static
      */
@@ -444,7 +443,7 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @return null|array<string, mixed>|object
+     * @return null|array<array-key, mixed>|object
      */
     public function getParsedBody()
     {
@@ -456,7 +455,7 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @param null|array<string, mixed>|mixed|object $data
+     * @param null|array<array-key, mixed>|object $data
      *
      * @throws InvalidTypeException
      *

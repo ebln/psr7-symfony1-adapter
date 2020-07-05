@@ -6,6 +6,9 @@ declare(strict_types=1);
 namespace brnc\Symfony1\Message\Adapter;
 
 use brnc\Symfony1\Message\Utillity\Assert;
+use function GuzzleHttp\Psr7\stream_for;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 use ReflectionObject;
 
 /**
@@ -15,17 +18,16 @@ use ReflectionObject;
  *          Cookie Abstraction
  *              including Header transcription
  *          how to sync to sfResponse? What happens if header and setRawCookie of sfResponse collide?
- *      withBody and how to sync writes to the stream with the underlying sfWebResponse
- *         via Refl.eventDispatcher && response.filter_content ?
- *         vs. clone Stream on withBody and write to sfResponse
- *      Proper Interface?
- *      Wrapper for Setters using sfEvent ~Dispatcher ?
  */
-class Response
+class Response implements ResponseInterface
 {
     use CommonAdapterTrait;
-    public const  OPTION_SEND_BODY_ON_204 = 'Will disable automatic setHeaderOnly() if 204 is set as status code.';
-    private const STATUS_NO_CONTENT       = 204;
+
+    public const  OPTION_SEND_BODY_ON_204    = 'Will disable automatic setHeaderOnly() if 204 is set as status code.';
+    public const  OPTION_IMMUTABLE_VIOLATION = 'Return mutated self';   // Violates PSR-7's immutability, as this is an adapter acting on the underlying sfWebRequest
+    private const STATUS_NO_CONTENT          = 204;
+    private const SFR_HTTP_PROTOCOL_OPTION   = 'http_protocol';
+    private const SFR_STREAM_HOOK_OPTION     = '__brncBodyStreamHook';
 
     /** @var array<int,string> */
     private static $defaultReasonPhrases = [
@@ -44,8 +46,12 @@ class Response
     /** @var bool if setHeaderOnly() auto-magic is used on withStatus() calls */
     private $setHeaderOnly = true;
 
-    private function __construct()
+    /** @var bool */
+    private $isImmutable = true;
+
+    private function __construct(\sfWebResponse $sfWebResponse)
     {
+        $this->sfWebResponse = $sfWebResponse;
     }
 
     /**
@@ -55,19 +61,34 @@ class Response
      */
     public static function fromSfWebResponse(\sfWebResponse $sfWebResponse, array $options = []): self
     {
-        $new                = new static();
-        $new->sfWebResponse = $sfWebResponse;
+        $new = new static($sfWebResponse);
 
         if (isset($options[self::OPTION_SEND_BODY_ON_204])) {
             $new->setHeaderOnly = false;
         }
 
+        // defaulting to mutating PSR-7-violating behavior when creating from \sfWebResponse
+        if (!array_key_exists(self::OPTION_IMMUTABLE_VIOLATION, $options) || false !== $options[self::OPTION_IMMUTABLE_VIOLATION]) {
+            $new->isImmutable = false;
+        }
+
         return $new;
+    }
+
+    /**
+     * @deprecated Avoid this at all costs! It only serves as a last resort!
+     */
+    public function getSfWebResponse(): \sfWebResponse
+    {
+        return $this->sfWebResponse;
     }
 
     public function getProtocolVersion(): string
     {
-        return $this->getVersionFromArray($this->sfWebResponse->getOptions(), 'http_protocol');
+        $options = $this->sfWebResponse->getOptions();
+
+        return (isset($options[self::SFR_HTTP_PROTOCOL_OPTION])
+            && preg_match('/^HTTP\/(\d\.\d)$/i', $options[self::SFR_HTTP_PROTOCOL_OPTION], $versionMatch)) ? $versionMatch[1] : '';
     }
 
     /**
@@ -75,16 +96,18 @@ class Response
      *
      * @throws \ReflectionException
      *
-     * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
-     *               same instance, due to the nature of the underlying adapted symfony object
+     * @return static
+     *
+     * @deprecated Changes are directly applied to the adapted sfWebResponse, thus the returned object will return same value as the "immutable" original instance
      */
     public function withProtocolVersion($version): self
     {
-        $options                  = $this->sfWebResponse->getOptions();
-        $options['http_protocol'] = 'HTTP/' . $version;
+        $options                                 = $this->sfWebResponse->getOptions();
+        $options[self::SFR_HTTP_PROTOCOL_OPTION] = 'HTTP/' . $version;
         $this->retroduceOptions($options);
+        $this->reflexOptions = null;    // just to satisfy \Http\Psr7Test\MessageTrait::testProtocolVersion
 
-        return $this;
+        return $this->getThisOrClone();
     }
 
     /**
@@ -159,11 +182,18 @@ class Response
      * @param int    $code
      * @param string $reasonPhrase
      *
-     * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
-     *               same instance, due to the nature of the underlying adapted symfony object
+     * @psalm-suppress RedundantConditionGivenDocblockType
+     *
+     * @return static
+     *
+     * @deprecated     Changes are directly applied to the adapted sfWebResponse, thus the returned object will return same value as the "immutable" original instance
      */
     public function withStatus($code, $reasonPhrase = ''): self
     {
+        Assert::integer($code);
+        Assert::greaterThanEq($code, 100);
+        Assert::lessThanEq($code, 500);
+
         if ($this->setHeaderOnly) {
             $setNoContent = self::STATUS_NO_CONTENT === $code;
             // only change if there's a transition from or to 204
@@ -178,7 +208,7 @@ class Response
         $defaultReasonPhrase = $this->useDefaultReasonPhrase($code, $reasonPhrase);
         $this->sfWebResponse->setStatusCode($code, $defaultReasonPhrase);
 
-        return $this;
+        return $this->getThisOrClone();
     }
 
     public function getReasonPhrase(): string
@@ -187,9 +217,65 @@ class Response
     }
 
     /**
+     * @throws \InvalidArgumentException
+     */
+    public function getBody(): StreamInterface
+    {
+        if (!$this->body || !$this->body->isReadable()) {
+            // Refresh from adapted sfWebRequest if stream is missing or stale
+            $this->body = stream_for($this->sfWebResponse->getContent());
+        }
+
+        return $this->body;
+    }
+
+    /**
+     * Unless preSend() was called the latest stream is used for underlying sfWebResponse's content
+     *
+     * @return static
+     */
+    public function withBody(StreamInterface $body): self
+    {
+        $new       = $this->getThisOrClone();
+        $new->body = $body;
+        $this->sfWebResponse->setContent((string)$body);
+
+        $hook = $this->getBodyStreamHook();
+        $hook->addBodyFromResponse($new);
+
+        return $new;
+    }
+
+    /**
+     * When using the immutability-mode (as PST-7 commands) while the adapted sfWebResponse is fixed;
+     * If this method was called last this instanced body will be returned when sfWebResponse->send()
+     * or sfWebResponse->sendContent() were called on the adapted sfWebResponse
+     *
+     * If preSend() is not used, the latest attached and readable stream will be used as content
+     */
+    public function preSend(): void
+    {
+        $hook = $this->getBodyStreamHook();
+        $hook->addBodyFromResponse($this);
+        $hook->distinguishResponse($this);
+    }
+
+    private function getBodyStreamHook(): BodyStreamHook
+    {
+        $options = $this->sfWebResponse->getOptions();
+        if (!isset($options[self::SFR_STREAM_HOOK_OPTION])) {
+            $options[self::SFR_STREAM_HOOK_OPTION] = new BodyStreamHook($this->sfWebResponse);
+            $this->retroduceOptions($options);
+            $this->reflexOptions = null;    // just to satisfy \Http\Psr7Test\MessageTrait::testBody
+        }
+
+        return $options[self::SFR_STREAM_HOOK_OPTION];
+    }
+
+    /**
      * sets symfony response's options property using reflection
      *
-     * @param array<string, string> $options
+     * @param array{http_protocol: string ,__brncBodyStreamHook: null|\brnc\Symfony1\Message\Adapter\BodyStreamHook} $options
      *
      * @throws \ReflectionException
      */
@@ -260,6 +346,10 @@ class Response
      */
     private function getThisOrClone(): self
     {
-        return $this; // TODO implement
+        if ($this->isImmutable) {
+            return clone $this;
+        }
+
+        return $this;
     }
 }

@@ -36,7 +36,7 @@
         "psr-4": {
             "brnc\\Tests\\Symfony1\\Message\\": "tests/"
         },
-        "files": ["mock/sfWebRequest.php", "mock/sfWebResponse.php"]
+        "files": ["mock/sfWebRequest.php", "mock/sfWebResponse.php", "mock/sfEventDispatcher.php", "mock/sfEvent.php"]
     },
     "scripts": {
         "phpunit": "phpunit --coverage-html coverage --coverage-text --colors=auto",

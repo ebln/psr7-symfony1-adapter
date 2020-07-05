@@ -27,13 +27,20 @@ class sfWebResponse
     /** @var bool */
     private $headerOnly = false;
 
+    /** @var string */
+    private $content = '';
+
+    /** @var null|sfEventDispatcher */
+    protected $dispatcher;
+
     /**
-     * @param mixed $dispatcher
-     * @param array $options
+     * @param null|sfEventDispatcher $dispatcher
+     * @param array                  $options
      */
     public function __construct($dispatcher = null, $options = [])
     {
-        $this->options = $options;
+        $this->options    = $options;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -43,12 +50,13 @@ class sfWebResponse
      * @param array       $cookies
      * @param bool        $headerOnly
      */
-    public function prepare($code = 200, $reasonPhrase = null, $headers = [], $cookies = [], $headerOnly = false)
+    public function prepare($code = 200, $reasonPhrase = null, $headers = [], $cookies = [], $headerOnly = false, $content = '')
     {
         $this->setStatusCode($code, $reasonPhrase);
         $this->headers    = $headers;
         $this->cookies    = $cookies;
         $this->headerOnly = $headerOnly;
+        $this->content    = $content;
     }
 
     /** @return int */
@@ -84,7 +92,7 @@ class sfWebResponse
         }
     }
 
-    /** @return string[] */
+    /** @return array<string, string> */
     public function getHttpHeaders()
     {
         return $this->headers;
@@ -139,7 +147,7 @@ class sfWebResponse
     }
 
     /**
-     * @return array
+     * @return array{http_protocol: string ,__brncBodyStreamHook: null|brnc\Symfony1\Message\Adapter\BodyStreamHook}
      */
     public function getOptions()
     {
@@ -206,5 +214,36 @@ class sfWebResponse
     public function isHeaderOnly()
     {
         return $this->headerOnly;
+    }
+
+    /**
+     * @param string $content
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * @deprecated Only for testing! Original methods echos instead of returning
+     *
+     * @return null|string
+     */
+    public function sendContent()
+    {
+        if (null === $this->dispatcher) {
+            return null;
+        }
+        $event = $this->dispatcher->filter(new sfEvent($this, 'response.filter_content'), $this->getContent());
+
+        return $event->getReturnValue();
     }
 }

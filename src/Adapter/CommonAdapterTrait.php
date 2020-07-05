@@ -36,6 +36,8 @@ trait CommonAdapterTrait
      */
     public function withAddedHeader($name, $value)
     {
+        Assert::stringNotEmpty($name);
+
         if (!$this->hasHeader($name)) {
             // to preserve the original header name
             return $this->withHeader($name, $value);
@@ -82,17 +84,6 @@ trait CommonAdapterTrait
     public function getBody(): StreamInterface
     {
         return $this->body ?? stream_for();
-    }
-
-    /**
-     * Parses the protocol version from an internal symfony array
-     *
-     * @param array<string, string> $array
-     */
-    private function getVersionFromArray(array $array, string $key): string
-    {
-        return (isset($array[$key])
-            && preg_match('/^HTTP\/(\d\.\d)$/i', $array[$key], $versionMatch)) ? $versionMatch[1] : '';
     }
 
     /**
