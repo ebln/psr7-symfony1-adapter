@@ -13,22 +13,45 @@ class BodyStreamHook
     private $bodyStreams = [];
     /** @var bool */
     private $isConnected = false;
+    /** @var null|string Holds a object identifier to the Response which content shall be used when sfWebResponse->send() is called */
+    private $distinguishedId;
 
     public function __construct(\sfWebResponse $sfWebResponse)
     {
         $this->connect($sfWebResponse);
     }
 
-    public function addStream(StreamInterface $stream): void
+    /**
+     * picks the specified Response's BodyStream to be send when sfWebResponse->send() or ->sendContent() is called
+     */
+    public function distinguishResponse(Response $response): void
     {
-        $this->bodyStreams[] = $stream;
+        $distinguishedId = $this->getObjectIdentifier($response);
+        // unlink all other streams if one Response was marked as distinguished
+        $this->bodyStreams = array_filter(
+            $this->bodyStreams,
+            static function (string $responseId) use ($distinguishedId) {
+                /* @var string $distinguishedId */
+                return $distinguishedId === $responseId;
+            },
+            ARRAY_FILTER_USE_KEY
+        );
+
+        $this->distinguishedId = $distinguishedId;
+    }
+
+    public function addBodyFromResponse(Response $response): void
+    {
+        $this->bodyStreams[$this->getObjectIdentifier($response)] = $response->getBody(); // TODO refactor to WeakReference with polyfill
     }
 
     public function processFilterContent(\sfEvent $event, ?string $value): string
     {
-        // $trace = debug_backtrace()[2];
-        // var_dump([$trace['file'] . ' → ' . $trace['line'], array_map(function($s) {return (string)$s;},$this->bodySteams)]);
-
+        // if there is a preferred stream selected always use that one and try no fallbacks
+        if (null !== $this->distinguishedId) {
+            return (string)$this->bodyStreams[$this->distinguishedId];
+        }
+        // …try the most recent readable stream
         /** @var null|StreamInterface $stream */
         foreach (array_reverse($this->bodyStreams, true) as $stream) {
             if (null !== $stream && $stream->isReadable()) {
@@ -36,15 +59,17 @@ class BodyStreamHook
             }
         }
 
+        // …otherwise use the sfWebResponse's original content
         return (string)$value;
+    }
+
+    private function getObjectIdentifier(Response $response): string
+    {
+        return spl_object_hash($response);
     }
 
     private function connect(\sfWebResponse $sfWebResponse): void
     {
-        if ($this->isConnected) {
-            return;
-        }
-
         // Use reflection
         $reflexiveWebResponse = new ReflectionObject($sfWebResponse);
         $dispatcherRetriever  = $reflexiveWebResponse->getProperty('dispatcher');

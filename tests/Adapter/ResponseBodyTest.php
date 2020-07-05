@@ -124,6 +124,25 @@ class ResponseBodyTest extends TestCase
         $this->assertSame('Hello', (string)$responseTwo->getBody(), 'ONLY QUIRK! Preserves content of last withBody(), even when stream was closed.');
     }
 
+    public function testDistinguishedStream(): void
+    {
+        $original    = $this->createResponse(false);
+        $streamOne   = stream_for('foo');
+        $responseOne = $original->withBody($streamOne);
+        $streamOne->write('bar');
+        $streamTwo   = stream_for('Hello');
+        $responseTwo = $responseOne->withBody($streamTwo);
+        $streamTwo->write(' world!');
+        $streamOne->write('baz');
+
+        $responseOne->preSend();
+
+        $this->assertSame('foobarbaz', (string)$responseOne->getBody());
+        $this->assertSame('foobarbaz', $responseOne->getSfWebResponse()->sendContent(), 'Distinguished body wins.');
+        $this->assertSame('Hello world!', (string)$responseTwo->getBody(), 'Non-distinguished stream remains unchanged.');
+        $this->assertSame('foobarbaz', $responseTwo->getSfWebResponse()->sendContent(), 'Distinguished body wins.');
+    }
+
     private function createResponse(
         bool $mutable = false
     ): Response {

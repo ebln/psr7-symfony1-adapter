@@ -241,9 +241,23 @@ class Response implements ResponseInterface
         $this->sfWebResponse->setContent((string)$body);
 
         $hook = $this->getBodyStreamHook();
-        $hook->addStream($body);
+        $hook->addBodyFromResponse($new);
 
         return $new;
+    }
+
+    /**
+     * When using the immutability-mode (as PST-7 commands) while the adapted sfWebResponse is fixed;
+     * If this method was called last this instanced body will be returned when sfWebResponse->send()
+     * or sfWebResponse->sendContent() were called on the adapted sfWebResponse
+     *
+     * If preSend() is not used, the latest attached and readable stream will be used as content
+     */
+    public function preSend(): void
+    {
+        $hook = $this->getBodyStreamHook();
+        $hook->addBodyFromResponse($this);
+        $hook->distinguishResponse($this);
     }
 
     private function getBodyStreamHook(): BodyStreamHook
