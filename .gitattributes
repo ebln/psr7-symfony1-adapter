@@ -8,3 +8,8 @@
 /*.tar              export-ignore
 /mock               export-ignore
 /coverage           export-ignore
+/.github            export-ignore
+/.php_cs.dist       export-ignore
+/psalm-baseline.xml export-ignore
+/psalm.xml          export-ignore
+/phpstan.neon       export-ignore
