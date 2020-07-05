@@ -92,7 +92,7 @@ class sfWebResponse
         }
     }
 
-    /** @return string[] */
+    /** @return array<string, string> */
     public function getHttpHeaders()
     {
         return $this->headers;

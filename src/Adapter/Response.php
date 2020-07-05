@@ -49,8 +49,9 @@ class Response implements ResponseInterface
     /** @var bool */
     private $isImmutable = true;
 
-    private function __construct()
+    private function __construct(\sfWebResponse $sfWebResponse)
     {
+        $this->sfWebResponse = $sfWebResponse;
     }
 
     /**
@@ -60,8 +61,7 @@ class Response implements ResponseInterface
      */
     public static function fromSfWebResponse(\sfWebResponse $sfWebResponse, array $options = []): self
     {
-        $new                = new static();
-        $new->sfWebResponse = $sfWebResponse;
+        $new                = new static($sfWebResponse);
 
         if (isset($options[self::OPTION_SEND_BODY_ON_204])) {
             $new->setHeaderOnly = false;

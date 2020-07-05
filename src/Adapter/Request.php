@@ -48,16 +48,16 @@ class Request implements ServerRequestInterface
     /** @var UriInterface */
     private $uri;
 
-    /** @var null|array<string, mixed>|false|object → false indicated non-initialization in order to fallback to sfRequest, while null overrides sfRequest */
+    /** @var null|array<array-key, mixed>|false|object → false indicated non-initialization in order to fallback to sfRequest, while null overrides sfRequest */
     private $parsedBody;
 
-    /** @var null|array<string, string> */
+    /** @var null|array<array-key, mixed>|string[] */
     private $cookieParams = [];
 
     /** @var bool */
     private $isImmutable = true;
 
-    /** @var null|array<string, array|string> */
+    /** @var null|array<array-key, mixed> */
     private $queryParams;
 
     /** @var UploadedFileInterface[] */
@@ -363,7 +363,7 @@ class Request implements ServerRequestInterface
     /**
      * perhaps-do: check SG-header-congruency
      *
-     * @return array<string, string>
+     * @return array<array-key, mixed>|string[]
      */
     public function getCookieParams(): array
     {
@@ -373,7 +373,7 @@ class Request implements ServerRequestInterface
     /**
      * @deprecated Will not alter sfWebRequest! Will crash on Symfony compatibility mode!
      *
-     * @param array<string, string> $cookies
+     * @param array<array-key, mixed>|string[] $cookies
      *
      * @throws LogicException
      *
@@ -388,7 +388,7 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @return array<string, array|string>
+     * @return array<array-key, array<array-key, mixed>|mixed|string>
      */
     public function getQueryParams(): array
     {
@@ -398,7 +398,7 @@ class Request implements ServerRequestInterface
     /**
      * @deprecated Will not alter sfWebRequest! Will crash on Symfony compatibility mode!
      *
-     * @param array<string, array|string> $query
+     * @param array<array-key, mixed> $query
      *
      * @throws LogicException
      *
@@ -445,7 +445,7 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @return null|array<string, mixed>|object
+     * @return null|array<array-key, mixed>|object
      */
     public function getParsedBody()
     {
@@ -457,7 +457,7 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @param null|array<string, mixed>|mixed|object $data
+     * @param null|array<array-key, mixed>|object $data
      *
      * @throws InvalidTypeException
      *
