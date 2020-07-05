@@ -230,7 +230,7 @@ class Response implements ResponseInterface
     }
 
     /**
-     * @deprecated lasted stream is used for underlying sfWebResponse's content
+     * Unless preSend() was called the latest stream is used for underlying sfWebResponse's content
      *
      * @return static
      */
