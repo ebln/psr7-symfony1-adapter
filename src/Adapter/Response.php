@@ -6,12 +6,10 @@ declare(strict_types=1);
 namespace brnc\Symfony1\Message\Adapter;
 
 use brnc\Symfony1\Message\Utillity\Assert;
+use function GuzzleHttp\Psr7\stream_for;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use ReflectionObject;
-use sfEventDispatcher;
-
-use function GuzzleHttp\Psr7\stream_for;
 
 /**
  * TODO
@@ -28,6 +26,7 @@ class Response implements ResponseInterface
     public const  OPTION_SEND_BODY_ON_204    = 'Will disable automatic setHeaderOnly() if 204 is set as status code.';
     public const  OPTION_IMMUTABLE_VIOLATION = 'Return mutated self';   // Violates PSR-7's immutability, as this is an adapter acting on the underlying sfWebRequest
     private const STATUS_NO_CONTENT          = 204;
+    private const SFR_STREAM_HOOK_OPTION     = '__brncBodyStreamHook';
 
     /** @var array<int,string> */
     private static $defaultReasonPhrases = [
@@ -234,36 +233,23 @@ class Response implements ResponseInterface
         $new       = $this->getThisOrClone();
         $new->body = $body;
         $this->sfWebResponse->setContent((string)$body);
-        /*
-        // access protected properties faster than with reflection
-        // @see https://ocramius.github.io/blog/accessing-private-php-class-members-without-reflection/
-        $dispatcherRetriever = \Closure::bind(
-            function & (\sfWebResponse $sfWebResponse): ?sfEventDispatcher {
-                return $sfWebResponse->dispatcher;
-            },
-            null,
-            $this->sfWebResponse
-        );
-        $dispatcher          = $dispatcherRetriever($this->sfWebResponse);
-        */
-        // otherwise use reflection
-        $reflexiveWebResponse = new ReflectionObject($this->sfWebResponse);
-        $dispatcherRetriever  = $reflexiveWebResponse->getProperty('dispatcher');
-        $dispatcherRetriever->setAccessible(true);
-        /** @var null|sfEventDispatcher $dispatcher */
-        $dispatcher = $dispatcherRetriever->getValue($this->sfWebResponse);
 
-        // use response.filter_content to force update latest set Body to underlying object
-        if (is_object($dispatcher) && method_exists($dispatcher, 'connect')) {
-            $dispatcher->connect(
-                'response.filter_content',
-                function (\sfEvent $event, string $value) use ($body) {
-                    return $body->isReadable() ? (string)$body : $value;
-                }
-            );
-        }
+        $hook = $this->getBodyStreamHook();
+        $hook->addStream($body);
 
         return $new;
+    }
+
+    private function getBodyStreamHook(): BodyStreamHook
+    {
+        $options = $this->sfWebResponse->getOptions();
+        if (!isset($options[self::SFR_STREAM_HOOK_OPTION])) {
+            $options[self::SFR_STREAM_HOOK_OPTION] = new BodyStreamHook($this->sfWebResponse);
+            $this->retroduceOptions($options);
+            $this->reflexOptions = null;    // just to satisfy \Http\Psr7Test\MessageTrait::testBody
+        }
+
+        return $options[self::SFR_STREAM_HOOK_OPTION];
     }
 
     /**
