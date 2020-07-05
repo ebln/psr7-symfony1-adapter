@@ -60,19 +60,22 @@ class Request implements ServerRequestInterface
     /** @var null|array<array-key, mixed> */
     private $queryParams;
 
-    /** @var UploadedFileInterface[] */
-    private $uploadedFiles;
+    /** @var array<array-key, mixed>|UploadedFileInterface[] */
+    private $uploadedFiles = [];
+
+    /** @var bool */
+    private $initialisedUploads = false;
 
     /** @var null|string */
     private $requestTarget;
 
-    /**
-     * @var string shadow to honour: »[…]method names are case-sensitive and thus implementations SHOULD NOT modify the given string.«
-     */
+    /** @var null|string shadow to honour: »[…]method names are case-sensitive and thus implementations SHOULD NOT modify the given string.« */
     private $method;
 
-    private function __construct()
+    private function __construct(\sfWebRequest $sfWebRequest)
     {
+        $this->sfWebRequest = $sfWebRequest;
+        $this->uri          = new Uri($sfWebRequest->getUri());
     }
 
     /**
@@ -96,9 +99,7 @@ class Request implements ServerRequestInterface
      */
     public static function fromSfWebRequest(\sfWebRequest $sfWebRequest, array $options = []): self
     {
-        $new               = new static();
-        $new->sfWebRequest = $sfWebRequest;
-
+        $new = new static($sfWebRequest);
         if (isset($options[self::OPTION_BODY_USE_STREAM])) {
             $new->body = new CachingStream(new LazyOpenStream('php://input', 'r+'));
         } else {
@@ -115,8 +116,6 @@ class Request implements ServerRequestInterface
             $new->parsedBody   = false;
             $new->cookieParams = null;
         }
-
-        $new->uri = new Uri($sfWebRequest->getUri());
 
         return $new;
     }
@@ -138,11 +137,11 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @deprecated Will modify sfWebRequest even though it has no intrinsic support for this
-     *
      * @param string $version
      *
      * @throws \ReflectionException
+     *
+     * @deprecated Will modify sfWebRequest even though it has no intrinsic support for this
      */
     public function withProtocolVersion($version): self
     {
@@ -224,14 +223,14 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @deprecated Will modify sfWebRequest even though it has no intrinsic support for this
-     *
      * @param string $name
      *
      * @throws \InvalidArgumentException
      * @throws \ReflectionException
      *
      * @return Request
+     *
+     * @deprecated Will modify sfWebRequest even though it has no intrinsic support for this
      */
     public function withoutHeader($name): self
     {
@@ -324,8 +323,6 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @deprecated Will not alter sfWebRequest! Will crash on Symfony compatibility mode if `$preserveHost === true`!
-     *
      * @param bool $preserveHost
      *
      * @throws LogicException
@@ -333,6 +330,8 @@ class Request implements ServerRequestInterface
      * @throws \ReflectionException
      *
      * @return static
+     *
+     * @deprecated Will not alter sfWebRequest! Will crash on Symfony compatibility mode if `$preserveHost === true`!
      */
     public function withUri(UriInterface $uri, $preserveHost = false): self
     {
@@ -371,13 +370,13 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @deprecated Will not alter sfWebRequest! Will crash on Symfony compatibility mode!
-     *
      * @param array<array-key, mixed>|string[] $cookies
      *
      * @throws LogicException
      *
      * @return static
+     *
+     * @deprecated Will not alter sfWebRequest! Will crash on Symfony compatibility mode!
      */
     public function withCookieParams(array $cookies): self
     {
@@ -396,13 +395,13 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @deprecated Will not alter sfWebRequest! Will crash on Symfony compatibility mode!
-     *
      * @param array<array-key, mixed> $query
      *
      * @throws LogicException
      *
      * @return static
+     *
+     * @deprecated Will not alter sfWebRequest! Will crash on Symfony compatibility mode!
      */
     public function withQueryParams(array $query): self
     {
@@ -415,12 +414,11 @@ class Request implements ServerRequestInterface
     /**
      * @throws \LogicException
      *
-     * @return UploadedFileInterface[]
+     * @return array<array-key, mixed>|UploadedFileInterface[]
      */
     public function getUploadedFiles(): array
     {
-        if (null === $this->uploadedFiles) {
-            $this->uploadedFiles = [];
+        if (!$this->initialisedUploads) {
             /** @psalm-var array{tmp_name:string,size:int,error:int,name:string,type:string} $file */
             foreach ($this->sfWebRequest->getFiles() as $file) {
                 $this->addUploadedFile($file);
@@ -431,7 +429,7 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @param UploadedFileInterface[] $uploadedFiles
+     * @param array<array-key, mixed>|UploadedFileInterface[] $uploadedFiles
      *
      * @return static
      */
