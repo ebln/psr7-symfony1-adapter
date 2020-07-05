@@ -61,7 +61,7 @@ class Response implements ResponseInterface
      */
     public static function fromSfWebResponse(\sfWebResponse $sfWebResponse, array $options = []): self
     {
-        $new                = new static($sfWebResponse);
+        $new = new static($sfWebResponse);
 
         if (isset($options[self::OPTION_SEND_BODY_ON_204])) {
             $new->setHeaderOnly = false;
@@ -182,9 +182,11 @@ class Response implements ResponseInterface
      * @param int    $code
      * @param string $reasonPhrase
      *
+     * @psalm-suppress RedundantConditionGivenDocblockType
+     *
      * @return static
      *
-     * @deprecated Changes are directly applied to the adapted sfWebResponse, thus the returned object will return same value as the "immutable" original instance
+     * @deprecated     Changes are directly applied to the adapted sfWebResponse, thus the returned object will return same value as the "immutable" original instance
      */
     public function withStatus($code, $reasonPhrase = ''): self
     {

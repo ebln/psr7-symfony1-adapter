@@ -14,7 +14,6 @@ use GuzzleHttp\Psr7\UploadedFile;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
-use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\UriInterface;
 use ReflectionObject;
 
@@ -60,13 +59,13 @@ class Request implements ServerRequestInterface
     /** @var null|array<array-key, mixed> */
     private $queryParams;
 
-    /** @var array<array-key, mixed>|UploadedFileInterface[] */
+    /** @var array<array-key, mixed>|\Psr\Http\Message\UploadedFileInterface[] */
     private $uploadedFiles = [];
 
     /** @var bool */
     private $initialisedUploads = false;
 
-    /** @var null|string */
+    /** @var null|mixed|string */
     private $requestTarget;
 
     /** @var null|string shadow to honour: »[…]method names are case-sensitive and thus implementations SHOULD NOT modify the given string.« */
@@ -262,7 +261,7 @@ class Request implements ServerRequestInterface
     public function getRequestTarget(): string
     {
         if ($this->requestTarget) {
-            return $this->requestTarget;
+            return (string)$this->requestTarget;
         }
 
         $target = $this->uri->getPath();
@@ -302,6 +301,7 @@ class Request implements ServerRequestInterface
 
     /**
      * @param string $method
+     * @psalm-suppress RedundantConditionGivenDocblockType
      *
      * @throws InvalidTypeException
      *
@@ -414,7 +414,7 @@ class Request implements ServerRequestInterface
     /**
      * @throws \LogicException
      *
-     * @return array<array-key, mixed>|UploadedFileInterface[]
+     * @return array<array-key, mixed>|\Psr\Http\Message\UploadedFileInterface[]
      */
     public function getUploadedFiles(): array
     {
@@ -429,7 +429,7 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @param array<array-key, mixed>|UploadedFileInterface[] $uploadedFiles
+     * @param array<array-key, mixed>|\Psr\Http\Message\UploadedFileInterface[] $uploadedFiles
      *
      * @return static
      */
