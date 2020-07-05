@@ -11,6 +11,8 @@ use Psr\Http\Message\StreamInterface;
 use ReflectionObject;
 use sfEventDispatcher;
 
+use function GuzzleHttp\Psr7\stream_for;
+
 /**
  * TODO
  *      Cookie handling
@@ -210,6 +212,19 @@ class Response implements ResponseInterface
     }
 
     /**
+     * @throws \InvalidArgumentException
+     */
+    public function getBody(): StreamInterface
+    {
+        if (!$this->body || !$this->body->isReadable()) {
+            // Refresh from adapted sfWebRequest if stream is missing or stale
+            $this->body = stream_for($this->sfWebResponse->getContent());
+        }
+
+        return $this->body;
+    }
+
+    /**
      * @deprecated lasted stream is used for underlying sfWebResponse's content
      *
      * @return static
@@ -243,7 +258,7 @@ class Response implements ResponseInterface
             $dispatcher->connect(
                 'response.filter_content',
                 function (\sfEvent $event, string $value) use ($body) {
-                    return (string)$body;
+                    return $body->isReadable() ? (string)$body : $value;
                 }
             );
         }

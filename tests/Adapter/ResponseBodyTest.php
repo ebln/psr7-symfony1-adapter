@@ -36,7 +36,7 @@ class ResponseBodyTest extends TestCase
         $this->assertSame(spl_object_hash($response), spl_object_hash($new), 'ONLY QUIRK!');
     }
 
-    public function testChangeStreamAdapter(): void
+    public function testWithBodyReadback(): void
     {
         $response = $this->createResponse(false);
         $this->assertSame('', (string)$response->getBody());
@@ -50,7 +50,7 @@ class ResponseBodyTest extends TestCase
         $this->assertSame('Hello', $response->getSfWebResponse()->sendContent(), 'ONLY QUIRK! → last withBody wins!');
     }
 
-    public function testChangeStreamOnStream(): void
+    public function testStreamWriting(): void
     {
         $original      = $this->createResponse(false);
         $initialStream = stream_for('FOOBAR');
@@ -69,6 +69,59 @@ class ResponseBodyTest extends TestCase
 
         $this->assertSame('Hello world!', (string)$new->getBody());
         $this->assertSame('Hello world!', $new->getSfWebResponse()->sendContent(), 'ONLY QUIRK! → last withBody wins!');
+    }
+
+    public function testMultipleStreamWriting(): void
+    {
+        $original    = $this->createResponse(false);
+        $streamOne   = stream_for('foo');
+        $responseOne = $original->withBody($streamOne);
+        $streamOne->write('bar');
+
+        $this->assertSame('foobar', (string)$responseOne->getBody());
+        $this->assertSame('foobar', $responseOne->getSfWebResponse()->sendContent(), 'ONLY QUIRK! → last withBody wins!');
+
+        $streamTwo   = stream_for('Hello');
+        $responseTwo = $responseOne->withBody($streamTwo);
+        $streamTwo->write(' world!');
+        $streamOne->write('baz');
+
+        $this->assertSame('foobarbaz', (string)$responseOne->getBody());
+        $this->assertSame('Hello world!', $responseOne->getSfWebResponse()->sendContent(), 'ONLY QUIRK! → last withBody wins!');
+
+        $this->assertSame('Hello world!', (string)$responseTwo->getBody());
+        $this->assertSame('Hello world!', $responseTwo->getSfWebResponse()->sendContent(), 'ONLY QUIRK! → last withBody wins!');
+    }
+
+    public function testDeleteStream(): void
+    {
+        $original    = $this->createResponse(false);
+        $streamOne   = stream_for('foo');
+        $responseOne = $original->withBody($streamOne);
+        $streamOne->write('bar');
+        $streamOne->close();
+
+        $this->assertSame('foo', (string)$responseOne->getBody(), 'ONLY QUIRK! Preserves content of last withBody(), even when stream was closed.');
+        $this->assertSame('foo', $responseOne->getSfWebResponse()->sendContent(), 'ONLY QUIRK! Preserves content of last withBody(), even when stream was closed.');
+    }
+
+    public function testDeleteSecondStream(): void
+    {
+        $original    = $this->createResponse(false);
+        $streamOne   = stream_for('foo');
+        $responseOne = $original->withBody($streamOne);
+        $streamOne->write('bar');
+
+        $streamTwo   = stream_for('Hello');
+        $responseTwo = $responseOne->withBody($streamTwo);
+        $streamTwo->write(' world!');
+        $streamTwo->close();
+
+        $this->assertSame('foobar', $responseOne->getSfWebResponse()->sendContent(), 'Fall back to earlier stream, if the later one got closed.');
+        $this->assertSame('foobar', (string)$responseOne->getBody());
+
+        $this->assertSame('foobar', $responseTwo->getSfWebResponse()->sendContent(), 'ONLY QUIRK! → last readable withBody() stream wins!');
+        $this->assertSame('Hello', (string)$responseTwo->getBody(), 'ONLY QUIRK! Preserves content of last withBody(), even when stream was closed.');
     }
 
     private function createResponse(
