@@ -87,17 +87,6 @@ trait CommonAdapterTrait
     }
 
     /**
-     * Parses the protocol version from an internal symfony array
-     *
-     * @param array<string, string> $array
-     */
-    private function getVersionFromArray(array $array, string $key): string
-    {
-        return (isset($array[$key])
-            && preg_match('/^HTTP\/(\d\.\d)$/i', $array[$key], $versionMatch)) ? $versionMatch[1] : '';
-    }
-
-    /**
      * Explodes a HTTP header's value to address PSR-7 array-fied sub-value approach
      *
      * @return string[]

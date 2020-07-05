@@ -26,6 +26,7 @@ class Response implements ResponseInterface
     public const  OPTION_SEND_BODY_ON_204    = 'Will disable automatic setHeaderOnly() if 204 is set as status code.';
     public const  OPTION_IMMUTABLE_VIOLATION = 'Return mutated self';   // Violates PSR-7's immutability, as this is an adapter acting on the underlying sfWebRequest
     private const STATUS_NO_CONTENT          = 204;
+    private const SFR_HTTP_PROTOCOL_OPTION   = 'http_protocol';
     private const SFR_STREAM_HOOK_OPTION     = '__brncBodyStreamHook';
 
     /** @var array<int,string> */
@@ -84,7 +85,10 @@ class Response implements ResponseInterface
 
     public function getProtocolVersion(): string
     {
-        return $this->getVersionFromArray($this->sfWebResponse->getOptions(), 'http_protocol');
+        $options = $this->sfWebResponse->getOptions();
+
+        return (isset($options[self::SFR_HTTP_PROTOCOL_OPTION])
+            && preg_match('/^HTTP\/(\d\.\d)$/i', $options[self::SFR_HTTP_PROTOCOL_OPTION], $versionMatch)) ? $versionMatch[1] : '';
     }
 
     /**
@@ -98,8 +102,8 @@ class Response implements ResponseInterface
      */
     public function withProtocolVersion($version): self
     {
-        $options                  = $this->sfWebResponse->getOptions();
-        $options['http_protocol'] = 'HTTP/' . $version;
+        $options                                 = $this->sfWebResponse->getOptions();
+        $options[self::SFR_HTTP_PROTOCOL_OPTION] = 'HTTP/' . $version;
         $this->retroduceOptions($options);
         $this->reflexOptions = null;    // just to satisfy \Http\Psr7Test\MessageTrait::testProtocolVersion
 
@@ -255,7 +259,7 @@ class Response implements ResponseInterface
     /**
      * sets symfony response's options property using reflection
      *
-     * @param array<string, string> $options
+     * @param array{http_protocol: string ,__brncBodyStreamHook: null|\brnc\Symfony1\Message\Adapter\BodyStreamHook} $options
      *
      * @throws \ReflectionException
      */

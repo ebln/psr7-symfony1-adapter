@@ -147,7 +147,7 @@ class sfWebResponse
     }
 
     /**
-     * @return array
+     * @return array{http_protocol: string ,__brncBodyStreamHook: null|brnc\Symfony1\Message\Adapter\BodyStreamHook}
      */
     public function getOptions()
     {

@@ -131,7 +131,10 @@ class Request implements ServerRequestInterface
 
     public function getProtocolVersion(): string
     {
-        return $this->getVersionFromArray($this->sfWebRequest->getPathInfoArray(), 'SERVER_PROTOCOL');
+        $pathInfo = $this->sfWebRequest->getPathInfoArray();
+
+        return (isset($pathInfo['SERVER_PROTOCOL'])
+            && preg_match('/^HTTP\/(\d\.\d)$/i', $pathInfo['SERVER_PROTOCOL'], $versionMatch)) ? $versionMatch[1] : '';
     }
 
     /**
