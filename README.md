@@ -1,7 +1,7 @@
 Partial PSR-7 Adapters for Symfony 1.5
 ======================================
 
-To enable the use of future-proof PSR-15 middlewares via partial PSR-7 adapers.
+To enable the use of future-proof PSR-15 middlewares via partial PSR-7 adapters.
 
 ## Quickstart
 ```php
@@ -13,17 +13,15 @@ $responseAdapter      = \brnc\Symfony1\Message\Adapter\Response::fromSfWebRespon
 ## ServerRequest
 Please mind the following PSR-7 violation which is enabled by default:
 ### No immutability by default
-As this is just an adapter for `\sfWebRequest` which cannot just be switched with another instance;
+as this is just an adapter for `\sfWebRequest` which cannot easily be replaced with another instance.
 
 This adapter – by default – also returns the very same instance when calling `with*()` methods.
 For the same reason calls to methods which cannot act on and alter the underlying `\sfWebRequest`
 will throw an `\brnc\Symfony1\Message\Exception\LogicException`.
 
-This default behaviour can by changes by creating the `Request` using 
-the `Request::OPTION_IMMUTABLE_VIOLATION` option set to `true`.
-The `Request`-adapter will then always return a close when used
-with `with*()` methods and won't throw exceptions
-which cannot transparently act on the `\sfWebRequest`- object
+This default behaviour can be changed by creating the `Request` using 
+the `Request::OPTION_IMMUTABLE_VIOLATION` option set to `false`.
+The `Request`-adapter will then always return new instances when `with*()`-methods are called and won't throw exceptions on calls which cannot transparently act on the `\sfWebRequest`- object.
 
 
 ```php
