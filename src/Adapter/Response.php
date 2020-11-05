@@ -247,9 +247,16 @@ class Response implements ResponseInterface
     }
 
     /**
-     * When using the immutability-mode (as PST-7 commands) while the adapted sfWebResponse is fixed;
-     * If this method was called last this instanced body will be returned when sfWebResponse->send()
-     * or sfWebResponse->sendContent() were called on the adapted sfWebResponse
+     * Mark the body if this very instance as the to be sent one, when dealing with multiple adaptions for a single sfWebResponse
+     *
+     * When using the immutability-mode (as PSR-7 demands) there is no bijection anymore between
+     *   adapted sfWebResponse and this adapter. You may have several instances due to with* methods.
+     *
+     * The body of the very instance where this method was called the latest will be returned when
+     * sfWebResponse->send() or sfWebResponse->sendContent() were called on the adapted sfWebResponse.
+     *
+     * This is only a feature for the body as this a stream which may be altered separately.
+     * On all other features (headers, method etc.) the latest write wins, as those are directly passed to the underlying sfWebResponse.
      *
      * If preSend() is not used, the latest attached and readable stream will be used as content
      */
