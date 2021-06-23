@@ -15,7 +15,7 @@
         }
     },
     "require": {
-        "guzzlehttp/psr7": "^1.6",
+        "guzzlehttp/psr7": "^1.8.2",
         "php": "^7.2",
         "webmozart/assert": "^1.6"
     },
@@ -25,12 +25,12 @@
     "require-dev": {
         "composer/package-versions-deprecated": "^1.11",
         "php-http/psr7-integration-tests": "^1.1",
-        "phpmd/phpmd": "^2.8",
-        "phpstan/phpstan": "^0.12.54",
-        "phpstan/phpstan-webmozart-assert": "^0.12.2",
+        "phpmd/phpmd": "^2.10.1",
+        "phpstan/phpstan": "^0.12.90",
+        "phpstan/phpstan-webmozart-assert": "^0.12.12",
         "phpunit/phpunit": "^8",
         "roave/security-advisories": "dev-master",
-        "vimeo/psalm": "^3.8"
+        "vimeo/psalm": "^3.18.2"
     },
     "autoload-dev": {
         "psr-4": {

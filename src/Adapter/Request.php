@@ -9,9 +9,9 @@ use brnc\Symfony1\Message\Exception\LogicException;
 use brnc\Symfony1\Message\Utillity\Assert;
 use GuzzleHttp\Psr7\CachingStream;
 use GuzzleHttp\Psr7\LazyOpenStream;
-use function GuzzleHttp\Psr7\stream_for;
 use GuzzleHttp\Psr7\UploadedFile;
 use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
@@ -23,6 +23,8 @@ use ReflectionObject;
  *      Cookie handling
  *          Cookie Abstraction
  *              including Header transcription
+ *
+ * @psalm-consistent-constructor
  */
 class Request implements ServerRequestInterface
 {
@@ -105,7 +107,7 @@ class Request implements ServerRequestInterface
             $content = $sfWebRequest->getContent();
             if (false !== $content) {
                 // lazy init, as getBody() defaults properly to an empty body using stream_for()
-                $new->body = stream_for($content);
+                $new->body = Utils::streamFor($content);
             }
         }
 
@@ -139,6 +141,8 @@ class Request implements ServerRequestInterface
      * @param string $version
      *
      * @throws \ReflectionException
+     *
+     * @return static
      *
      * @deprecated Will modify sfWebRequest even though it has no intrinsic support for this
      */
@@ -227,7 +231,7 @@ class Request implements ServerRequestInterface
      * @throws \InvalidArgumentException
      * @throws \ReflectionException
      *
-     * @return Request
+     * @return static
      *
      * @deprecated Will modify sfWebRequest even though it has no intrinsic support for this
      */
@@ -276,7 +280,7 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return static
      */
     public function withRequestTarget($requestTarget): self
     {
@@ -301,11 +305,12 @@ class Request implements ServerRequestInterface
 
     /**
      * @param string $method
+     *
      * @psalm-suppress RedundantConditionGivenDocblockType
      *
      * @throws InvalidTypeException
      *
-     * @return Request
+     * @return static
      */
     public function withMethod($method): self
     {
@@ -459,7 +464,7 @@ class Request implements ServerRequestInterface
      *
      * @throws InvalidTypeException
      *
-     * @return Request
+     * @return static
      */
     public function withParsedBody($data): self
     {
@@ -495,6 +500,8 @@ class Request implements ServerRequestInterface
     /**
      * @param string     $name
      * @param null|mixed $value
+     *
+     * @return static
      */
     public function withAttribute($name, $value): self
     {
@@ -506,6 +513,8 @@ class Request implements ServerRequestInterface
 
     /**
      * @param string $name
+     *
+     * @return static
      */
     public function withoutAttribute($name): self
     {

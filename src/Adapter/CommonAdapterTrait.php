@@ -7,7 +7,7 @@ declare(strict_types=1);
 namespace brnc\Symfony1\Message\Adapter;
 
 use brnc\Symfony1\Message\Utillity\Assert;
-use function GuzzleHttp\Psr7\stream_for;
+use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\StreamInterface;
 
 /**
@@ -83,7 +83,7 @@ trait CommonAdapterTrait
      */
     public function getBody(): StreamInterface
     {
-        return $this->body ?? stream_for();
+        return $this->body ?? Utils::streamFor();
     }
 
     /**
