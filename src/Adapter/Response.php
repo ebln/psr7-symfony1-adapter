@@ -25,8 +25,8 @@ class Response implements ResponseInterface
 {
     use CommonAdapterTrait;
 
-    public const  OPTION_SEND_BODY_ON_204    = 'Will disable automatic setHeaderOnly() if 204 is set as status code.';
-    public const  OPTION_IMMUTABLE_VIOLATION = 'Return mutated self';   // Violates PSR-7's immutability, as this is an adapter acting on the underlying sfWebRequest
+    public const OPTION_SEND_BODY_ON_204    = 'Will disable automatic setHeaderOnly() if 204 is set as status code.';
+    public const OPTION_IMMUTABLE_VIOLATION = 'Return mutated self';   // Violates PSR-7's immutability, as this is an adapter acting on the underlying sfWebRequest
     private const STATUS_NO_CONTENT          = 204;
     private const SFR_HTTP_PROTOCOL_OPTION   = 'http_protocol';
     private const SFR_STREAM_HOOK_OPTION     = '__brncBodyStreamHook';

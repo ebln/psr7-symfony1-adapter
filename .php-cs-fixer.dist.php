@@ -9,8 +9,8 @@ $finder = PhpCsFixer\Finder::create()
     ->exclude('tests')
     ->in(__DIR__);
 
-$config = PhpCsFixer\Config::create()
-    ->setRiskyAllowed(true)
+$config = new PhpCsFixer\Config();
+$config->setRiskyAllowed(true)
     ->setRules(
         [
             '@PSR2'                                  => true,
@@ -18,7 +18,7 @@ $config = PhpCsFixer\Config::create()
             '@PhpCsFixer'                            => true,
             '@PhpCsFixer:risky'                      => true,
             '@PHPUnit75Migration:risky'              => true,
-            '@PHP73Migration'                        => true,
+            //'@PHP73Migration'                        => true,
             '@PHP71Migration:risky'                  => true,
             'php_unit_dedicate_assert'               => ['target' => '5.6'],
             'array_syntax'                           => ['syntax' => 'short'],
@@ -29,9 +29,9 @@ $config = PhpCsFixer\Config::create()
             'single_line_comment_style'              => [
                 'comment_types' => ['hash'],
             ],
-            'binary_operator_spaces'                 => null,
-            'phpdoc_summary'                         => null,
-            'multiline_whitespace_before_semicolons' => null,
+            'binary_operator_spaces'                 => false,
+            'phpdoc_summary'                         => false,
+            'multiline_whitespace_before_semicolons' => false,
             'cast_spaces'                            => ['space' => 'none'],
             'comment_to_phpdoc'                      => false,
         ]
