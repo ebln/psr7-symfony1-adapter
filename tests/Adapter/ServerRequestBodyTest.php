@@ -44,32 +44,6 @@ class ServerRequestBodyTest extends TestCase
         $this->assertSame(spl_object_hash($streamMock), spl_object_hash($requestWithBody->getBody()));
     }
 
-    public function testUploadedFiles(): void
-    {
-        $request = $this->createRequest(
-            'POST',
-            [],
-            null,
-            null,
-            [
-                'file-one' => [
-                    'name'     => 'that.jpg',
-                    'type'     => 'image/jpeg',
-                    'tmp_name' => '/tmp/php1337',
-                    'error'    => 0,
-                    'size'     => 1337,
-                ],
-            ]
-        );
-
-        $files = $request->getUploadedFiles();
-        $this->assertCount(1, $files);
-        $file = $files[0];
-        $this->assertInstanceOf(UploadedFileInterface::class, $file);
-        $this->assertSame(1337, $file->getSize());
-        $this->assertSame('that.jpg', $file->getClientFilename());
-    }
-
     private function createRequest(
         string $method = '',
         array $adapterOptions = [],

@@ -61,7 +61,7 @@ class Request implements ServerRequestInterface
     /** @var null|array<array-key, mixed> */
     private $queryParams;
 
-    /** @var array<array-key, mixed>|\Psr\Http\Message\UploadedFileInterface[] */
+    /** @var array<array-key, mixed> */
     private $uploadedFiles = [];
 
     /** @var bool */
@@ -419,7 +419,7 @@ class Request implements ServerRequestInterface
     /**
      * @throws \LogicException
      *
-     * @return array<array-key, mixed>|\Psr\Http\Message\UploadedFileInterface[]
+     * @return array<array-key, mixed>
      */
     public function getUploadedFiles(): array
     {
@@ -434,7 +434,7 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @param array<array-key, mixed>|\Psr\Http\Message\UploadedFileInterface[] $uploadedFiles
+     * @param array<array-key, mixed> $uploadedFiles
      *
      * @return static
      */

@@ -94,7 +94,7 @@ final class ResponseMockTest extends TestCase
      * @param int                      $code
      * @param null|string              $reasonPhrase
      * @param string[]                 $headers
-     * @param array                    $cookies
+     * @param array<string, array{name:string, value:string, expire:null|string, path:string, domain: string, secure: bool, httpOnly:bool}> $cookies
      * @param array<int|string, mixed> $options
      */
     private function createResponse(
