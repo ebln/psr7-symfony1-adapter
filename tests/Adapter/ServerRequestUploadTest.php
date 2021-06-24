@@ -28,14 +28,13 @@ class ServerRequestUploadTest extends TestCase
 
         $files = $request->getUploadedFiles();
         $this->assertCount(1, $files);
-        $file = $files[0];
+        $file = $files['file-one'];
         $this->assertInstanceOf(UploadedFileInterface::class, $file);
         $this->assertSame(1337, $file->getSize());
         $this->assertSame('that.jpg', $file->getClientFilename());
     }
 
-    // TODO!
-    public function XestSingleFormUploadedFiles(): void
+    public function testSingleFormUploadedFiles(): void
     {
         $request = $this->createRequest(
             'POST',
@@ -51,20 +50,20 @@ class ServerRequestUploadTest extends TestCase
                         'error'    => 0,
                         'size'     => 1337,
                     ],
-                ]
+                ],
             ]
         );
 
         $files = $request->getUploadedFiles();
         $this->assertCount(1, $files);
-        $file = $files['form1'][0];
+        $file = $files['form1']['file-one'];
         $this->assertInstanceOf(UploadedFileInterface::class, $file);
         $this->assertSame(1337, $file->getSize());
         $this->assertSame('that.jpg', $file->getClientFilename());
     }
 
     /**
-     * @param null|array<array|array<array>>  $files
+     * @param null|array<array|array<array>> $files
      *
      * @throws \InvalidArgumentException
      * @return Request

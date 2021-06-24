@@ -424,10 +424,7 @@ class Request implements ServerRequestInterface
     public function getUploadedFiles(): array
     {
         if (!$this->initialisedUploads) {
-            /** @psalm-var array{tmp_name:string,size:int,error:int,name:string,type:string} $file */
-            foreach ($this->sfWebRequest->getFiles() as $file) {
-                $this->addUploadedFile($file);
-            }
+            $this->addUploadedFiles($this->sfWebRequest->getFiles(), []);
         }
 
         return $this->uploadedFiles;
@@ -587,19 +584,35 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @param array $file expected to provide an element as of $_FILES
-     *
-     * @psalm-param array{tmp_name:string,size:int,error:int,name:string,type: string} $file
+     * @param array<array-key, mixed>     $files
+     * @param array<array-key, array-key> $keys
      */
-    private function addUploadedFile(array $file): void
+    private function addUploadedFiles(array $files, array $keys): void
     {
-        $this->uploadedFiles[] = new UploadedFile(
-            $file['tmp_name'],
-            (int)$file['size'],
-            (int)$file['error'],
-            $file['name'],
-            $file['type']
-        );
+        if (isset($files['tmp_name']) && array_key_exists('size', $files) && array_key_exists('error', $files) && count($keys)) {
+            Assert::string($files['tmp_name']);
+            /** @psalm-var array{tmp_name:string,size:int,error:int,name:null|string,type:null|string} $files */
+            $levels = new UploadedFile(
+                $files['tmp_name'],
+                (int)$files['size'],
+                (int)$files['error'],
+                $files['name'] ?? null,
+                $files['type'] ?? null
+            );
+            foreach (array_reverse($keys) as $key) {
+                $levels = [$key => $levels];
+            }
+            $this->uploadedFiles = array_merge_recursive($this->uploadedFiles, $levels);
+
+            return;
+        }
+
+        foreach ($files as $key => $fileArray) {
+            Assert::isArray($fileArray);
+            $keysCopy   = $keys;
+            $keysCopy[] = $key;
+            $this->addUploadedFiles($fileArray, $keysCopy);
+        }
     }
 
     /**
