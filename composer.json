@@ -17,7 +17,7 @@
     "require": {
         "guzzlehttp/psr7": "~1.6.1",
         "php": "^7.4 || ^8.0",
-        "webmozart/assert": "^1.6"
+        "webmozart/assert": "^1.6 || ^1.8 || ^1.10"
     },
     "archive": {
         "exclude": ["vendor/*", "tests/", "mock/", ".*", "phpunit.xml.dist", "coverage/"]
@@ -30,8 +30,7 @@
         "phpstan/phpstan-webmozart-assert": "^0.12.12",
         "phpunit/phpunit": "^9.5",
         "roave/security-advisories": "dev-master",
-        "vimeo/psalm": "^3.18.2",
-        "symfony/polyfill-mbstring": "v1.20.0"
+        "vimeo/psalm": "^4.8"
     },
     "autoload-dev": {
         "psr-4": {
