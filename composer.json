@@ -30,7 +30,8 @@
         "phpstan/phpstan-webmozart-assert": "^0.12.12",
         "phpunit/phpunit": "^8",
         "roave/security-advisories": "dev-master",
-        "vimeo/psalm": "^3.18.2"
+        "vimeo/psalm": "^3.18.2",
+        "symfony/polyfill-mbstring": "v1.20.0"
     },
     "autoload-dev": {
         "psr-4": {
