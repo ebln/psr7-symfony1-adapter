@@ -40,8 +40,7 @@ trait CommonAdapterTrait
             // to preserve the original header name
             return $this->withHeader($name, $value);
         }
-        $new = $this->getThisOrClone();
-        /* @var CommonAdapterTrait|Request|Response $new */
+        $new     = $this->getThisOrClone();
         $headers = $new->getHeader($name);
         if (is_array($value)) {
             $headers = array_merge($headers, $value);

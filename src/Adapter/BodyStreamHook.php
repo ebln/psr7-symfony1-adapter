@@ -10,7 +10,7 @@ use ReflectionObject;
 class BodyStreamHook
 {
     /** @var StreamInterface[] */
-    private array   $bodyStreams = [];
+    private array   $bodyStreams     = [];
     private ?string $distinguishedId = null; // Holds a object identifier to the Response which content shall be used when sfWebResponse->send() is called
 
     public function __construct(\sfWebResponse $sfWebResponse)
@@ -28,7 +28,6 @@ class BodyStreamHook
         $this->bodyStreams = array_filter(
             $this->bodyStreams,
             static function (string $responseId) use ($distinguishedId) {
-                /* @var string $distinguishedId */
                 return $distinguishedId === $responseId;
             },
             ARRAY_FILTER_USE_KEY
