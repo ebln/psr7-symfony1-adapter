@@ -6,7 +6,7 @@ declare(strict_types=1);
 namespace brnc\Symfony1\Message\Adapter;
 
 use brnc\Symfony1\Message\Utillity\Assert;
-use function GuzzleHttp\Psr7\stream_for;
+use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use ReflectionObject;
@@ -18,13 +18,15 @@ use ReflectionObject;
  *          Cookie Abstraction
  *              including Header transcription
  *          how to sync to sfResponse? What happens if header and setRawCookie of sfResponse collide?
+ *
+ * @psalm-consistent-constructor
  */
 class Response implements ResponseInterface
 {
     use CommonAdapterTrait;
 
-    public const  OPTION_SEND_BODY_ON_204    = 'Will disable automatic setHeaderOnly() if 204 is set as status code.';
-    public const  OPTION_IMMUTABLE_VIOLATION = 'Return mutated self';   // Violates PSR-7's immutability, as this is an adapter acting on the underlying sfWebRequest
+    public const OPTION_SEND_BODY_ON_204    = 'Will disable automatic setHeaderOnly() if 204 is set as status code.';
+    public const OPTION_IMMUTABLE_VIOLATION = 'Return mutated self';   // Violates PSR-7's immutability, as this is an adapter acting on the underlying sfWebRequest
     private const STATUS_NO_CONTENT          = 204;
     private const SFR_HTTP_PROTOCOL_OPTION   = 'http_protocol';
     private const SFR_STREAM_HOOK_OPTION     = '__brncBodyStreamHook';
@@ -223,7 +225,7 @@ class Response implements ResponseInterface
     {
         if (!$this->body || !$this->body->isReadable()) {
             // Refresh from adapted sfWebRequest if stream is missing or stale
-            $this->body = stream_for($this->sfWebResponse->getContent());
+            $this->body = Utils::streamFor($this->sfWebResponse->getContent());
         }
 
         return $this->body;

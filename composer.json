@@ -15,7 +15,7 @@
         }
     },
     "require": {
-        "guzzlehttp/psr7": "^1.6",
+        "guzzlehttp/psr7": "^1.8",
         "php": "^7.2",
         "webmozart/assert": "^1.6"
     },
@@ -25,12 +25,13 @@
     "require-dev": {
         "composer/package-versions-deprecated": "^1.11",
         "php-http/psr7-integration-tests": "^1.1",
-        "phpmd/phpmd": "^2.8",
-        "phpstan/phpstan": "^0.12.54",
-        "phpstan/phpstan-webmozart-assert": "^0.12.2",
+        "phpmd/phpmd": "^2.10.1",
+        "phpstan/phpstan": "^0.12.90",
+        "phpstan/phpstan-webmozart-assert": "^0.12.12",
         "phpunit/phpunit": "^8",
         "roave/security-advisories": "dev-master",
-        "vimeo/psalm": "^3.8"
+        "vimeo/psalm": "^3.18.2",
+        "symfony/polyfill-mbstring": "v1.20.0"
     },
     "autoload-dev": {
         "psr-4": {
@@ -40,7 +41,7 @@
     },
     "scripts": {
         "phpunit": "phpunit --coverage-html coverage --coverage-text --colors=auto",
-        "php-cs-fixer": "php-cs-fixer fix -v --config=.php_cs.dist --using-cache=no --dry-run",
+        "php-cs-fixer": "php-cs-fixer fix -v --config=.php-cs-fixer.dist.php --using-cache=no --dry-run",
         "test": [
             "psalm --find-unused-psalm-suppress",
             "phpstan analyse",

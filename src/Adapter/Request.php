@@ -9,9 +9,9 @@ use brnc\Symfony1\Message\Exception\LogicException;
 use brnc\Symfony1\Message\Utillity\Assert;
 use GuzzleHttp\Psr7\CachingStream;
 use GuzzleHttp\Psr7\LazyOpenStream;
-use function GuzzleHttp\Psr7\stream_for;
 use GuzzleHttp\Psr7\UploadedFile;
 use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
@@ -23,6 +23,8 @@ use ReflectionObject;
  *      Cookie handling
  *          Cookie Abstraction
  *              including Header transcription
+ *
+ * @psalm-consistent-constructor
  */
 class Request implements ServerRequestInterface
 {
@@ -59,7 +61,7 @@ class Request implements ServerRequestInterface
     /** @var null|array<array-key, mixed> */
     private $queryParams;
 
-    /** @var array<array-key, mixed>|\Psr\Http\Message\UploadedFileInterface[] */
+    /** @var array<array-key, mixed> */
     private $uploadedFiles = [];
 
     /** @var bool */
@@ -105,7 +107,7 @@ class Request implements ServerRequestInterface
             $content = $sfWebRequest->getContent();
             if (false !== $content) {
                 // lazy init, as getBody() defaults properly to an empty body using stream_for()
-                $new->body = stream_for($content);
+                $new->body = Utils::streamFor($content);
             }
         }
 
@@ -139,6 +141,8 @@ class Request implements ServerRequestInterface
      * @param string $version
      *
      * @throws \ReflectionException
+     *
+     * @return static
      *
      * @deprecated Will modify sfWebRequest even though it has no intrinsic support for this
      */
@@ -227,7 +231,7 @@ class Request implements ServerRequestInterface
      * @throws \InvalidArgumentException
      * @throws \ReflectionException
      *
-     * @return Request
+     * @return static
      *
      * @deprecated Will modify sfWebRequest even though it has no intrinsic support for this
      */
@@ -276,7 +280,7 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return static
      */
     public function withRequestTarget($requestTarget): self
     {
@@ -301,11 +305,12 @@ class Request implements ServerRequestInterface
 
     /**
      * @param string $method
+     *
      * @psalm-suppress RedundantConditionGivenDocblockType
      *
      * @throws InvalidTypeException
      *
-     * @return Request
+     * @return static
      */
     public function withMethod($method): self
     {
@@ -414,22 +419,19 @@ class Request implements ServerRequestInterface
     /**
      * @throws \LogicException
      *
-     * @return array<array-key, mixed>|\Psr\Http\Message\UploadedFileInterface[]
+     * @return array<array-key, mixed>
      */
     public function getUploadedFiles(): array
     {
         if (!$this->initialisedUploads) {
-            /** @psalm-var array{tmp_name:string,size:int,error:int,name:string,type:string} $file */
-            foreach ($this->sfWebRequest->getFiles() as $file) {
-                $this->addUploadedFile($file);
-            }
+            $this->addUploadedFiles($this->sfWebRequest->getFiles(), []);
         }
 
         return $this->uploadedFiles;
     }
 
     /**
-     * @param array<array-key, mixed>|\Psr\Http\Message\UploadedFileInterface[] $uploadedFiles
+     * @param array<array-key, mixed> $uploadedFiles
      *
      * @return static
      */
@@ -459,7 +461,7 @@ class Request implements ServerRequestInterface
      *
      * @throws InvalidTypeException
      *
-     * @return Request
+     * @return static
      */
     public function withParsedBody($data): self
     {
@@ -495,6 +497,8 @@ class Request implements ServerRequestInterface
     /**
      * @param string     $name
      * @param null|mixed $value
+     *
+     * @return static
      */
     public function withAttribute($name, $value): self
     {
@@ -506,6 +510,8 @@ class Request implements ServerRequestInterface
 
     /**
      * @param string $name
+     *
+     * @return static
      */
     public function withoutAttribute($name): self
     {
@@ -578,19 +584,35 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @param array $file expected to provide an element as of $_FILES
-     *
-     * @psalm-param array{tmp_name:string,size:int,error:int,name:string,type: string} $file
+     * @param array<array-key, mixed>     $files
+     * @param array<array-key, array-key> $keys
      */
-    private function addUploadedFile(array $file): void
+    private function addUploadedFiles(array $files, array $keys): void
     {
-        $this->uploadedFiles[] = new UploadedFile(
-            $file['tmp_name'],
-            (int)$file['size'],
-            (int)$file['error'],
-            $file['name'],
-            $file['type']
-        );
+        if (isset($files['tmp_name']) && array_key_exists('size', $files) && array_key_exists('error', $files) && count($keys)) {
+            Assert::string($files['tmp_name']);
+            /** @psalm-var array{tmp_name:string,size:int,error:int,name:null|string,type:null|string} $files */
+            $levels = new UploadedFile(
+                $files['tmp_name'],
+                (int)$files['size'],
+                (int)$files['error'],
+                $files['name'] ?? null,
+                $files['type'] ?? null
+            );
+            foreach (array_reverse($keys) as $key) {
+                $levels = [$key => $levels];
+            }
+            $this->uploadedFiles = array_merge_recursive($this->uploadedFiles, $levels);
+
+            return;
+        }
+
+        foreach ($files as $key => $fileArray) {
+            Assert::isArray($fileArray);
+            $keysCopy   = $keys;
+            $keysCopy[] = $key;
+            $this->addUploadedFiles($fileArray, $keysCopy);
+        }
     }
 
     /**
