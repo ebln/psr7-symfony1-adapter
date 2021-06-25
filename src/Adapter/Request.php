@@ -44,7 +44,7 @@ class Request implements ServerRequestInterface
     private $reflexPathInfoArray;
 
     /** @var array<string, mixed> */
-    private $attributes = [];
+    private array $attributes = [];
 
     /** @var UriInterface */
     private $uri;
@@ -53,19 +53,17 @@ class Request implements ServerRequestInterface
     private $parsedBody;
 
     /** @var null|array<array-key, mixed>|string[] */
-    private $cookieParams = [];
+    private ?array $cookieParams = [];
 
-    /** @var bool */
-    private $isImmutable = true;
+    private bool $isImmutable = true;
 
     /** @var null|array<array-key, mixed> */
     private $queryParams;
 
     /** @var array<array-key, mixed> */
-    private $uploadedFiles = [];
+    private array $uploadedFiles = [];
 
-    /** @var bool */
-    private $initialisedUploads = false;
+    private bool $initialisedUploads = false;
 
     /** @var null|mixed|string */
     private $requestTarget;
@@ -307,8 +305,6 @@ class Request implements ServerRequestInterface
 
     /**
      * @param string $method
-     *
-     * @psalm-suppress RedundantConditionGivenDocblockType
      *
      * @throws InvalidTypeException
      *
