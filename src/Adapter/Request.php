@@ -280,6 +280,8 @@ class Request implements ServerRequestInterface
     }
 
     /**
+     * @param mixed|string|UriInterface $requestTarget
+     *
      * @return static
      */
     public function withRequestTarget($requestTarget): self

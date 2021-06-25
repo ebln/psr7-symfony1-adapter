@@ -10,11 +10,9 @@ use ReflectionObject;
 class BodyStreamHook
 {
     /** @var StreamInterface[] */
-    private $bodyStreams = [];
-    /** @var bool */
-    private $isConnected = false;
-    /** @var null|string Holds a object identifier to the Response which content shall be used when sfWebResponse->send() is called */
-    private $distinguishedId;
+    private array   $bodyStreams = [];
+    private bool    $isConnected = false;
+    private ?string $distinguishedId = null; // Holds a object identifier to the Response which content shall be used when sfWebResponse->send() is called
 
     public function __construct(\sfWebResponse $sfWebResponse)
     {

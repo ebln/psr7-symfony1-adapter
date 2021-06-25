@@ -177,7 +177,7 @@ class Response implements ResponseInterface
 
     public function getStatusCode(): int
     {
-        return $this->sfWebResponse->getStatusCode();
+        return (int)$this->sfWebResponse->getStatusCode();
     }
 
     /**
