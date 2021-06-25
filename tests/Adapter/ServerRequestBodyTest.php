@@ -5,7 +5,6 @@ namespace brnc\Tests\Symfony1\Message\Adapter;
 use brnc\Symfony1\Message\Adapter\Request;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
-use Psr\Http\Message\UploadedFileInterface;
 
 class ServerRequestBodyTest extends TestCase
 {
