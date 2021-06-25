@@ -11,7 +11,6 @@ class BodyStreamHook
 {
     /** @var StreamInterface[] */
     private array   $bodyStreams = [];
-    private bool    $isConnected = false;
     private ?string $distinguishedId = null; // Holds a object identifier to the Response which content shall be used when sfWebResponse->send() is called
 
     public function __construct(\sfWebResponse $sfWebResponse)
@@ -89,7 +88,6 @@ class BodyStreamHook
         // use response.filter_content to force update latest set Body to underlying object
         if (is_object($dispatcher) && method_exists($dispatcher, 'connect')) {
             $dispatcher->connect('response.filter_content', [$this, 'processFilterContent']);
-            $this->isConnected = true;
         }
     }
 }
