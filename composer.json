@@ -16,7 +16,7 @@
     },
     "require": {
         "guzzlehttp/psr7": "^1.8",
-        "php": "^7.2",
+        "php": "^7.4 || ^8.0",
         "webmozart/assert": "^1.6"
     },
     "archive": {
@@ -28,7 +28,7 @@
         "phpmd/phpmd": "^2.10.1",
         "phpstan/phpstan": "^0.12.90",
         "phpstan/phpstan-webmozart-assert": "^0.12.12",
-        "phpunit/phpunit": "^8",
+        "phpunit/phpunit": "^9.5",
         "roave/security-advisories": "dev-master",
         "vimeo/psalm": "^3.18.2",
         "symfony/polyfill-mbstring": "v1.20.0"
