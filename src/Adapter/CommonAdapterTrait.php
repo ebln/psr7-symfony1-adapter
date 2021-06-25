@@ -69,7 +69,6 @@ trait CommonAdapterTrait
     {
         Assert::stringNotEmpty($name);
         $new = $this->getThisOrClone();
-        /* @var CommonAdapterTrait|Request|Response $new */
         $new->headerNames[$new->normalizeHeaderName($name)] = $name;
         $new->setHeader($name, $value);
 

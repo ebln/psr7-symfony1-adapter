@@ -182,8 +182,6 @@ class Response implements ResponseInterface
      * @param int    $code
      * @param string $reasonPhrase
      *
-     * @psalm-suppress RedundantConditionGivenDocblockType
-     *
      * @return static
      *
      * @deprecated     Changes are directly applied to the adapted sfWebResponse, thus the returned object will return same value as the "immutable" original instance
