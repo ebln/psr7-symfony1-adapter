@@ -35,7 +35,7 @@ class Request implements ServerRequestInterface
     public const OPTION_IMMUTABLE_VIOLATION = 'Return mutated self';      // Violates PSR-7's immutability, as this is an adapter acting on the underlying sfWebRequest
 
     /** @var bool[] */
-    private static $contentHeaders = ['CONTENT_LENGTH' => true, 'CONTENT_MD5' => true, 'CONTENT_TYPE' => true];
+    private static array $contentHeaders = ['CONTENT_LENGTH' => true, 'CONTENT_MD5' => true, 'CONTENT_TYPE' => true];
 
     /** @var \sfWebRequest */
     private $sfWebRequest;
