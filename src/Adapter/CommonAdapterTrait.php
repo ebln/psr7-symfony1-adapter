@@ -20,10 +20,8 @@ trait CommonAdapterTrait
      *
      * shadow to honour: »[…]preserve the exact case in which headers were originally specified.«
      */
-    private $headerNames = [];
-
-    /** @var null|StreamInterface */
-    private $body;
+    private array            $headerNames = [];
+    private ?StreamInterface $body        = null;
 
     /**
      * @param string          $name
@@ -116,10 +114,7 @@ trait CommonAdapterTrait
         return is_array($value) ? implode(',', $value) : $value;
     }
 
-    /**
-     * @param string $name
-     */
-    private function normalizeHeaderName($name): string
+    private function normalizeHeaderName(string $name): string
     {
         return str_replace('_', '-', strtolower($name));
     }
