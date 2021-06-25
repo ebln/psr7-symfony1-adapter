@@ -42,7 +42,7 @@
         "phpunit": "phpunit --coverage-html coverage --coverage-text --colors=auto",
         "php-cs-fixer": "php-cs-fixer fix -v --config=.php-cs-fixer.dist.php --using-cache=no --dry-run",
         "test": [
-            "psalm --find-unused-psalm-suppress",
+            "psalm --find-unused-psalm-suppress --no-cache",
             "phpstan analyse",
             "phpmd src,tests ansi naming #,codesize,design",
             "@php-cs-fixer",
