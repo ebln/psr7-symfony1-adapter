@@ -46,8 +46,7 @@ class Request implements ServerRequestInterface
     /** @var array<string, mixed> */
     private array $attributes = [];
 
-    /** @var UriInterface */
-    private $uri;
+    private UriInterface $uri;
 
     /** @var null|array<array-key, mixed>|false|object → false indicated non-initialization in order to fallback to sfRequest, while null overrides sfRequest */
     private $parsedBody;
