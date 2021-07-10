@@ -9,9 +9,9 @@ use brnc\Symfony1\Message\Exception\LogicException;
 use brnc\Symfony1\Message\Utillity\Assert;
 use GuzzleHttp\Psr7\CachingStream;
 use GuzzleHttp\Psr7\LazyOpenStream;
-use function GuzzleHttp\Psr7\stream_for;
 use GuzzleHttp\Psr7\UploadedFile;
 use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
@@ -104,7 +104,7 @@ class Request implements ServerRequestInterface
             $content = $sfWebRequest->getContent();
             if (false !== $content) {
                 // lazy init, as getBody() defaults properly to an empty body using stream_for()
-                $new->body = stream_for($content);
+                $new->body = Utils::streamFor($content);
             }
         }
 
