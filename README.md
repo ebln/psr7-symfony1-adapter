@@ -50,12 +50,12 @@ $responseAdapter = Response::fromSfWebResponse(
     [Response::OPTION_IMMUTABLE_VIOLATION => false]
 );
 $newInstance     = $responseAdapter->withBody(
-    \GuzzleHttp\Psr7\Utils::streamFor(
+    \GuzzleHttp\Psr7\stream_for(
         '<html><head><title>Hello World!</title></head><body><h1>PSR-7 Adapters!</h1></body></html>'
     )
 );
 $newestInstance  = $newInstance->withBody(
-    \GuzzleHttp\Psr7\Utils::streamFor(
+    \GuzzleHttp\Psr7\stream_for(
         '<html><head><body><h1>dead end</h1></body></html>'
     )
 );

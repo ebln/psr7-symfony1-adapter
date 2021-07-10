@@ -6,7 +6,8 @@ namespace brnc\Tests\Symfony1\Message\Adapter;
 
 use brnc\Symfony1\Message\Adapter\Response;
 use PHPUnit\Framework\TestCase;
-use GuzzleHttp\Psr7\Utils;
+
+use function GuzzleHttp\Psr7\stream_for;
 
 class ResponseBodyTest extends TestCase
 {
@@ -15,7 +16,7 @@ class ResponseBodyTest extends TestCase
     {
         $response = $this->createResponse(false);
 
-        $newStream = Utils::streamFor('Hello');
+        $newStream = stream_for('Hello');
         $new       = $response->withBody($newStream);
         $this->assertNotSame(spl_object_hash($response), spl_object_hash($new));
     }
@@ -30,7 +31,7 @@ class ResponseBodyTest extends TestCase
     {
         $response = $this->createResponse(true);
 
-        $newStream = Utils::streamFor('Hello');
+        $newStream = stream_for('Hello');
         $new       = $response->withBody($newStream);
         $this->assertSame(spl_object_hash($response), spl_object_hash($new), 'ONLY QUIRK!');
     }
@@ -41,7 +42,7 @@ class ResponseBodyTest extends TestCase
         $this->assertSame('', (string)$response->getBody());
         $this->assertSame('', $response->getSfWebResponse()->sendContent());
 
-        $newStream = Utils::streamFor('Hello');
+        $newStream = stream_for('Hello');
         $new       = $response->withBody($newStream);
 
         $this->assertSame('Hello', (string)$new->getBody());
@@ -52,13 +53,13 @@ class ResponseBodyTest extends TestCase
     public function testStreamWriting(): void
     {
         $original      = $this->createResponse(false);
-        $initialStream = Utils::streamFor('FOOBAR');
+        $initialStream = stream_for('FOOBAR');
         $initial       = $original->withBody($initialStream);
 
         $this->assertSame('FOOBAR', (string)$initial->getBody());
         $this->assertSame('FOOBAR', $initial->getSfWebResponse()->sendContent());
 
-        $newStream = Utils::streamFor('Hello');
+        $newStream = stream_for('Hello');
         $new       = $initial->withBody($newStream);
 
         $this->assertSame('Hello', (string)$new->getBody());
@@ -73,14 +74,14 @@ class ResponseBodyTest extends TestCase
     public function testMultipleStreamWriting(): void
     {
         $original    = $this->createResponse(false);
-        $streamOne   = Utils::streamFor('foo');
+        $streamOne   = stream_for('foo');
         $responseOne = $original->withBody($streamOne);
         $streamOne->write('bar');
 
         $this->assertSame('foobar', (string)$responseOne->getBody());
         $this->assertSame('foobar', $responseOne->getSfWebResponse()->sendContent(), 'ONLY QUIRK! → last withBody wins!');
 
-        $streamTwo   = Utils::streamFor('Hello');
+        $streamTwo   = stream_for('Hello');
         $responseTwo = $responseOne->withBody($streamTwo);
         $streamTwo->write(' world!');
         $streamOne->write('baz');
@@ -95,7 +96,7 @@ class ResponseBodyTest extends TestCase
     public function testDeleteStream(): void
     {
         $original    = $this->createResponse(false);
-        $streamOne   = Utils::streamFor('foo');
+        $streamOne   = stream_for('foo');
         $responseOne = $original->withBody($streamOne);
         $streamOne->write('bar');
         $streamOne->close();
@@ -107,11 +108,11 @@ class ResponseBodyTest extends TestCase
     public function testDeleteSecondStream(): void
     {
         $original    = $this->createResponse(false);
-        $streamOne   = Utils::streamFor('foo');
+        $streamOne   = stream_for('foo');
         $responseOne = $original->withBody($streamOne);
         $streamOne->write('bar');
 
-        $streamTwo   = Utils::streamFor('Hello');
+        $streamTwo   = stream_for('Hello');
         $responseTwo = $responseOne->withBody($streamTwo);
         $streamTwo->write(' world!');
         $streamTwo->close();
@@ -126,10 +127,10 @@ class ResponseBodyTest extends TestCase
     public function testDistinguishedStream(): void
     {
         $original    = $this->createResponse(false);
-        $streamOne   = Utils::streamFor('foo');
+        $streamOne   = stream_for('foo');
         $responseOne = $original->withBody($streamOne);
         $streamOne->write('bar');
-        $streamTwo   = Utils::streamFor('Hello');
+        $streamTwo   = stream_for('Hello');
         $responseTwo = $responseOne->withBody($streamTwo);
         $streamTwo->write(' world!');
         $streamOne->write('baz');
