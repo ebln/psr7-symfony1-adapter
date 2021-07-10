@@ -6,7 +6,7 @@ declare(strict_types=1);
 namespace brnc\Symfony1\Message\Adapter;
 
 use brnc\Symfony1\Message\Utillity\Assert;
-use function GuzzleHttp\Psr7\stream_for;
+use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use ReflectionObject;
@@ -221,7 +221,7 @@ class Response implements ResponseInterface
     {
         if (!$this->body || !$this->body->isReadable()) {
             // Refresh from adapted sfWebRequest if stream is missing or stale
-            $this->body = stream_for($this->sfWebResponse->getContent());
+            $this->body = Utils::streamFor($this->sfWebResponse->getContent());
         }
 
         return $this->body;
