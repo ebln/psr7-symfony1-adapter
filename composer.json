@@ -15,7 +15,7 @@
         }
     },
     "require": {
-        "guzzlehttp/psr7": "^1.7",
+        "guzzlehttp/psr7": "^2",
         "php": "^7.4 || ^8.0",
         "webmozart/assert": "^1.6"
     },
@@ -36,7 +36,7 @@
         "psr-4": {
             "brnc\\Tests\\Symfony1\\Message\\": "tests/"
         },
-        "files": ["mock/sfWebRequest.php", "mock/sfWebResponse.php", "mock/sfEventDispatcher.php", "mock/sfEvent.php"]
+        "files": ["mock/sfWebRequest.php", "mock/sfWebResponse.php", "mock/sfEventDispatcher.php", "mock/sfEvent.php", "mock/guzzle-psr7/function_include.php"]
     },
     "scripts": {
         "phpunit": "phpunit --coverage-html coverage --coverage-text --colors=auto",
