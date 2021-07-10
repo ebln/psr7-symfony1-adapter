@@ -103,7 +103,7 @@ class Request implements ServerRequestInterface
         } else {
             $content = $sfWebRequest->getContent();
             if (false !== $content) {
-                // lazy init, as getBody() defaults properly to an empty body using stream_for()
+                // lazy init, as getBody() defaults properly to an empty body using streamFor()
                 $new->body = Utils::streamFor($content);
             }
         }
