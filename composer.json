@@ -15,7 +15,7 @@
         }
     },
     "require": {
-        "guzzlehttp/psr7": "^1.6",
+        "guzzlehttp/psr7": "~1.6.1",
         "php": "^7.2",
         "webmozart/assert": "^1.6"
     },
