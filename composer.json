@@ -17,7 +17,7 @@
     "require": {
         "guzzlehttp/psr7": "~1.6.1",
         "php": "^7.4 || ^8.0",
-        "webmozart/assert": "^1.6 || ^1.8 || ^1.10"
+        "webmozart/assert": "^1.6"
     },
     "archive": {
         "exclude": ["vendor/*", "tests/", "mock/", ".*", "phpunit.xml.dist", "coverage/"]
