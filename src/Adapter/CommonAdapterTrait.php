@@ -20,10 +20,8 @@ trait CommonAdapterTrait
      *
      * shadow to honour: »[…]preserve the exact case in which headers were originally specified.«
      */
-    private $headerNames = [];
-
-    /** @var null|StreamInterface */
-    private $body;
+    private array            $headerNames = [];
+    private ?StreamInterface $body        = null;
 
     /**
      * @param string          $name
@@ -42,8 +40,7 @@ trait CommonAdapterTrait
             // to preserve the original header name
             return $this->withHeader($name, $value);
         }
-        $new = $this->getThisOrClone();
-        /* @var CommonAdapterTrait|Request|Response $new */
+        $new     = $this->getThisOrClone();
         $headers = $new->getHeader($name);
         if (is_array($value)) {
             $headers = array_merge($headers, $value);
@@ -70,8 +67,7 @@ trait CommonAdapterTrait
     public function withHeader($name, $value)
     {
         Assert::stringNotEmpty($name);
-        $new = $this->getThisOrClone();
-        /* @var CommonAdapterTrait|Request|Response $new */
+        $new                                                = $this->getThisOrClone();
         $new->headerNames[$new->normalizeHeaderName($name)] = $name;
         $new->setHeader($name, $value);
 
@@ -116,10 +112,7 @@ trait CommonAdapterTrait
         return is_array($value) ? implode(',', $value) : $value;
     }
 
-    /**
-     * @param string $name
-     */
-    private function normalizeHeaderName($name): string
+    private function normalizeHeaderName(string $name): string
     {
         return str_replace('_', '-', strtolower($name));
     }

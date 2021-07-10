@@ -1,0 +1,11 @@
+version: '3.6'
+services:
+    php:
+        build:
+            context: .
+        volumes:
+            - ./..:/var/www
+        extra_hosts:
+            - "host.docker.internal:${XDEBUG_REMOTE_HOST:-127.0.0.1}"
+        environment:
+            PHP_IDE_CONFIG: "serverName=php-cli-74.local"

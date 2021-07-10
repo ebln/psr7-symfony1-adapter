@@ -59,7 +59,7 @@ class sfWebResponse
         $this->content    = $content;
     }
 
-    /** @return int */
+    /** @return int|string */
     public function getStatusCode()
     {
         return $this->code;

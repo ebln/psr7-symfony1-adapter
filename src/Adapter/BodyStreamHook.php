@@ -10,11 +10,8 @@ use ReflectionObject;
 class BodyStreamHook
 {
     /** @var StreamInterface[] */
-    private $bodyStreams = [];
-    /** @var bool */
-    private $isConnected = false;
-    /** @var null|string Holds a object identifier to the Response which content shall be used when sfWebResponse->send() is called */
-    private $distinguishedId;
+    private array   $bodyStreams     = [];
+    private ?string $distinguishedId = null; // Holds a object identifier to the Response which content shall be used when sfWebResponse->send() is called
 
     public function __construct(\sfWebResponse $sfWebResponse)
     {
@@ -31,7 +28,6 @@ class BodyStreamHook
         $this->bodyStreams = array_filter(
             $this->bodyStreams,
             static function (string $responseId) use ($distinguishedId) {
-                /* @var string $distinguishedId */
                 return $distinguishedId === $responseId;
             },
             ARRAY_FILTER_USE_KEY
@@ -91,7 +87,6 @@ class BodyStreamHook
         // use response.filter_content to force update latest set Body to underlying object
         if (is_object($dispatcher) && method_exists($dispatcher, 'connect')) {
             $dispatcher->connect('response.filter_content', [$this, 'processFilterContent']);
-            $this->isConnected = true;
         }
     }
 }

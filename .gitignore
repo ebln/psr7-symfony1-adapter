@@ -3,7 +3,9 @@
 /build/
 /phpunit.xml
 .php_cs*
+.php-cs-fixer*
 !.php_cs.dist
+!.php-cs-fixer.dist
 /var/*
 !/var/cache
 /var/cache/*

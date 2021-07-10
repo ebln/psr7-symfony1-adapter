@@ -27,12 +27,12 @@ class Response implements ResponseInterface
 
     public const OPTION_SEND_BODY_ON_204    = 'Will disable automatic setHeaderOnly() if 204 is set as status code.';
     public const OPTION_IMMUTABLE_VIOLATION = 'Return mutated self';   // Violates PSR-7's immutability, as this is an adapter acting on the underlying sfWebRequest
-    private const STATUS_NO_CONTENT          = 204;
-    private const SFR_HTTP_PROTOCOL_OPTION   = 'http_protocol';
-    private const SFR_STREAM_HOOK_OPTION     = '__brncBodyStreamHook';
+    private const STATUS_NO_CONTENT         = 204;
+    private const SFR_HTTP_PROTOCOL_OPTION  = 'http_protocol';
+    private const SFR_STREAM_HOOK_OPTION    = '__brncBodyStreamHook';
 
     /** @var array<int,string> */
-    private static $defaultReasonPhrases = [
+    private static array $defaultReasonPhrases = [
         308 => 'Permanent Redirect', // defined in RFC-7538
     ];
 
@@ -45,11 +45,9 @@ class Response implements ResponseInterface
     /** @var null|\ReflectionProperty */
     private $reflexHeaders;
 
-    /** @var bool if setHeaderOnly() auto-magic is used on withStatus() calls */
-    private $setHeaderOnly = true;
+    private bool $setHeaderOnly = true; // if setHeaderOnly() auto-magic is used on withStatus() calls
 
-    /** @var bool */
-    private $isImmutable = true;
+    private bool $isImmutable = true;
 
     private function __construct(\sfWebResponse $sfWebResponse)
     {
@@ -177,14 +175,12 @@ class Response implements ResponseInterface
 
     public function getStatusCode(): int
     {
-        return $this->sfWebResponse->getStatusCode();
+        return (int)$this->sfWebResponse->getStatusCode();
     }
 
     /**
      * @param int    $code
      * @param string $reasonPhrase
-     *
-     * @psalm-suppress RedundantConditionGivenDocblockType
      *
      * @return static
      *

@@ -7,7 +7,7 @@ use brnc\Symfony1\Message\Adapter\Request;
 use PHPUnit\Framework\TestCase;
 
 /**
- * artifactial test
+ * artificial test
  */
 class RequestReadingTest extends TestCase
 {

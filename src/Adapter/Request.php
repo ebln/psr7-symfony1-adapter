@@ -35,7 +35,7 @@ class Request implements ServerRequestInterface
     public const OPTION_IMMUTABLE_VIOLATION = 'Return mutated self';      // Violates PSR-7's immutability, as this is an adapter acting on the underlying sfWebRequest
 
     /** @var bool[] */
-    private static $contentHeaders = ['CONTENT_LENGTH' => true, 'CONTENT_MD5' => true, 'CONTENT_TYPE' => true];
+    private static array $contentHeaders = ['CONTENT_LENGTH' => true, 'CONTENT_MD5' => true, 'CONTENT_TYPE' => true];
 
     /** @var \sfWebRequest */
     private $sfWebRequest;
@@ -44,28 +44,25 @@ class Request implements ServerRequestInterface
     private $reflexPathInfoArray;
 
     /** @var array<string, mixed> */
-    private $attributes = [];
+    private array $attributes = [];
 
-    /** @var UriInterface */
-    private $uri;
+    private UriInterface $uri;
 
     /** @var null|array<array-key, mixed>|false|object → false indicated non-initialization in order to fallback to sfRequest, while null overrides sfRequest */
     private $parsedBody;
 
     /** @var null|array<array-key, mixed>|string[] */
-    private $cookieParams = [];
+    private ?array $cookieParams = [];
 
-    /** @var bool */
-    private $isImmutable = true;
+    private bool $isImmutable = true;
 
     /** @var null|array<array-key, mixed> */
     private $queryParams;
 
     /** @var array<array-key, mixed> */
-    private $uploadedFiles = [];
+    private array $uploadedFiles = [];
 
-    /** @var bool */
-    private $initialisedUploads = false;
+    private bool $initialisedUploads = false;
 
     /** @var null|mixed|string */
     private $requestTarget;
@@ -280,6 +277,8 @@ class Request implements ServerRequestInterface
     }
 
     /**
+     * @param mixed|string|UriInterface $requestTarget
+     *
      * @return static
      */
     public function withRequestTarget($requestTarget): self
@@ -305,8 +304,6 @@ class Request implements ServerRequestInterface
 
     /**
      * @param string $method
-     *
-     * @psalm-suppress RedundantConditionGivenDocblockType
      *
      * @throws InvalidTypeException
      *
