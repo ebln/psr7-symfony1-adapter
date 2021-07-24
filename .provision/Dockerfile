@@ -13,7 +13,6 @@ RUN apt-get update \
     && sed -i -e '/alias l\|export\|eval/s/#//' /root/.bashrc \
     && mkdir --parents /var/www/src /var/www/tests \
     && chown 1000:1000 /var/www/src /var/www/tests \
-    && sed -i -e '/xdebug.remote_autostart/s/1/0/' /usr/local/etc/php/conf.d/30-xdebug.ini \
     && true
 
 USER app
