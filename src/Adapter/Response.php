@@ -190,7 +190,7 @@ class Response implements ResponseInterface
     {
         Assert::integer($code);
         Assert::greaterThanEq($code, 100);
-        Assert::lessThanEq($code, 500);
+        Assert::lessThanEq($code, 599);
 
         if ($this->setHeaderOnly) {
             $setNoContent = self::STATUS_NO_CONTENT === $code;
