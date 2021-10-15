@@ -84,6 +84,22 @@ $response        = $entryPoint->handler($response);
 // if you are in the context of a Symfony1 action. Only call $response->getSfWebResponse() in dire need!
 ```
 
+## Manually transcribe a PSR-7 Response to Symfony1
+
+Assume you couldn't use other means, and you're confronted with an arbitrary PSR-7 response you can use the `ResponseTranscriptor` to copy the data from your PSR-7 response to your `\sfWebResponse`.
+
+Currently the `ResponseTranscriptor` doesn't support cookies, and will fail fast and hard if it encounters some. You are free to implement your own Cookie-Handler implementing `CookieTranscriptorInterface` and pass it as an optional constructor argument
+
+```php
+// Given arbitrary PSR-7 response…
+$psr7response = $psr7responseFactory();
+// …use the ResponseTranscriptor in order to–
+$transcriptor = new \brnc\Symfony1\Message\Transcriptor\ResponseTranscriptor();
+// copy the response's contents.
+//   The returned object will be the same as in the argument!
+$sfWebResponse = $transcriptor->transcribe($psr7response, $sfWebResponse);
+```
+
 ## Pass it down to http-foundation i.e. present-day Symfony
 
 Combine this PSR7-Symfony1 Adapter and `symfony/psr-http-message-bridge` to connect your Symfony1 stack via PSR-7 to `symfony/http-foundation` objects and leverage using embedded (present-day) Symfony components.

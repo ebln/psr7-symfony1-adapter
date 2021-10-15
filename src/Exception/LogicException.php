@@ -15,4 +15,9 @@ class LogicException extends \LogicException implements AdapterThrowableInterfac
     {
         throw new self('This PSR-17 HTTP Factory is just a decoy, and is NOT implementing anything!');
     }
+
+    public static function throwCookieTranscriptionUnsupported(): void
+    {
+        throw new self('Cookie transcription is not implemented! Rely on CookieTranscriptorInterface to build it yourself!');
+    }
 }

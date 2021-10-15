@@ -10,6 +10,7 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 ### Added
 
 - PSR-17 `ResponseFactory` to enable PSR-15
+- `ResponseTranscriptor` to transcribe PSR-7 responses directly to Symfony1 one's
 - Dependency to PSR-17 i.e. `psr/http-factory`
 - PSR-17 GuzzleStreamFactory and a DecoyHttpFactory to support `symfony/psr-http-message-bridge`
 - Started a changelog
@@ -26,10 +27,8 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 
 ### TODO
 
-- **Cover new PSR-17 magic with tests!**
+- **Cover new PSR-17 magic & ResponseTranscriptor with tests!**
 
-- ResponseFactory
-- ResponseTranscriptor
 - Cookies: Write to response
 - Cookies: Read from request
 - Cookies: write and overwrite to request
