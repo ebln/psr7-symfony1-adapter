@@ -15,12 +15,17 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 - composer-normalize
 
 ### Changed
+
 - Updated dev dependencies
+- Renamed "Utillity" to `brnc\Symfony1\Message\Utility`,
+    technically [BREAKING] yet was never supposed to be used in user land
 
 ### Fixed
+
 - DX: makefile, dockerfile & xdebug
 
 ### TODO
+
 - ResponseFactory
 - ResponseTranscriptor
 - Cookies: Write to response
