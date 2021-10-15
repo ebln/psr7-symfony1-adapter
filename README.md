@@ -69,10 +69,12 @@ $sfWebResponse->send();
 
 ```
 
-## Pass it down to a PSR-15 sub-stack 
+## Pass it down to a PSR-15 sub-stack
+You may use the `ResponseFactory` implementing `\Psr\Http\Message\ResponseFactoryInterface` in order to "spawn" responses within your PSR-15 sub-stack.
+
 ```php
 $request         = \brnc\Symfony1\Message\Adapter\Request::fromSfWebRequest($sfWebRequest);
-$responseFactory = new \brnc\Symfony1\Message\Translator\ResponseFactory($sfWebResponse);
+$responseFactory = new \brnc\Symfony1\Message\Factory\ResponseFactory($sfWebResponse);
 // (dependency) inject the ResponseFactory to your dispatcher, middlewares, and handlers
 $entryPoint      = new YourPSR15Dispatcher($responseFactory);
 // Dispatch your sub-stack via PSR-15

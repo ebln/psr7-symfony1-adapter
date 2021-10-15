@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace brnc\Symfony1\Message\Translator;
+namespace brnc\Symfony1\Message\Factory;
 
 use brnc\Symfony1\Message\Adapter\Response;
 use Psr\Http\Message\ResponseFactoryInterface;
