@@ -9,7 +9,7 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
 
 /**
- * Simple StreamFactory to enable the usage of symfony/psr-http-message-bridge
+ * Simple PSR-17 StreamFactory to enable the usage of symfony/psr-http-message-bridge
  *
  * If you want to pass your PSR-7 adapters even further to present day Symfony's http-foundation
  * you may use the following example to get a response for this PSR-7-Symfony1 adapter from the http-foundation's

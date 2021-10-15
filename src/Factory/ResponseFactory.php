@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * Pseudo- ResponseFactory to support PSR-15
+ * Pseudo- ResponseFactory (via PSR-17) to support PSR-15
  *
  * As PSR-15's signatures don't support responses as arguments,
  * this hacky factory enables you to use middlewares and handlers.
