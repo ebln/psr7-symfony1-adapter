@@ -11,6 +11,7 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 
 - Changelog
 - composer-normalize
+- Updated dev dependencies
 
 ### Fixed
 - DX: makefile, dockerfile & xdebug
