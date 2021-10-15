@@ -9,22 +9,24 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 
 ### Added
 
-- `ResponseFactory` to enable PSR-15
-- Dependency to `psr/http-factory`
+- PSR-17 `ResponseFactory` to enable PSR-15
+- Dependency to PSR-17 i.e. `psr/http-factory`
+- PSR-17 GuzzleStreamFactory and a DecoyHttpFactory to support `symfony/psr-http-message-bridge`
 - Started a changelog
 - composer-normalize
 
 ### Changed
 
 - Updated dev dependencies
-- Renamed "Utillity" to `brnc\Symfony1\Message\Utility`,
-    technically [BREAKING] yet was never supposed to be used in user land
+- Renamed "Utillity" to `brnc\Symfony1\Message\Utility`, technically [BREAKING] yet was never supposed to be used in user land
 
 ### Fixed
 
 - DX: makefile, dockerfile & xdebug
 
 ### TODO
+
+- **Cover new PSR-17 magic with tests!**
 
 - ResponseFactory
 - ResponseTranscriptor
