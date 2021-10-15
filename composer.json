@@ -1,7 +1,13 @@
 {
     "name": "brnc/psr7-symfony1-adapter",
     "description": "Partial PSR-7 Adapters for Symfony 1.5",
-    "keywords": ["symfony1", "http-message", "http", "message", "psr-7"],
+    "keywords": [
+        "symfony1",
+        "http-message",
+        "http",
+        "message",
+        "psr-7"
+    ],
     "license": "MIT",
     "authors": [
         {
@@ -9,21 +15,14 @@
             "email": "34722048+ebln@users.noreply.github.com"
         }
     ],
-    "autoload": {
-        "psr-4": {
-            "brnc\\Symfony1\\Message\\": "src/"
-        }
-    },
     "require": {
-        "guzzlehttp/psr7": "^1.7 || ^2.0",
         "php": "^7.4 || ^8.0",
+        "guzzlehttp/psr7": "^1.7 || ^2.0",
         "webmozart/assert": "^1.6"
-    },
-    "archive": {
-        "exclude": ["vendor/*", "tests/", "mock/", ".*", "phpunit.xml.dist", "coverage/"]
     },
     "require-dev": {
         "composer/package-versions-deprecated": "^1.11",
+        "ergebnis/composer-normalize": "^2.15",
         "php-http/psr7-integration-tests": "^1.1",
         "phpmd/phpmd": "^2.10.1",
         "phpstan/phpstan": "^0.12.90",
@@ -32,21 +31,45 @@
         "roave/security-advisories": "dev-master",
         "vimeo/psalm": "^4.8"
     },
+    "autoload": {
+        "psr-4": {
+            "brnc\\Symfony1\\Message\\": "src/"
+        }
+    },
     "autoload-dev": {
         "psr-4": {
             "brnc\\Tests\\Symfony1\\Message\\": "tests/"
         },
-        "files": ["mock/sfWebRequest.php", "mock/sfWebResponse.php", "mock/sfEventDispatcher.php", "mock/sfEvent.php", "mock/guzzle-psr7/function_include.php"]
+        "files": [
+            "mock/sfWebRequest.php",
+            "mock/sfWebResponse.php",
+            "mock/sfEventDispatcher.php",
+            "mock/sfEvent.php",
+            "mock/guzzle-psr7/function_include.php"
+        ]
+    },
+    "archive": {
+        "exclude": [
+            "vendor/*",
+            "tests/",
+            "mock/",
+            ".*",
+            "phpunit.xml.dist",
+            "coverage/"
+        ]
     },
     "scripts": {
-        "phpunit": "phpunit --coverage-html coverage --coverage-text --colors=auto",
-        "php-cs-fixer": "php-cs-fixer fix -v --config=.php-cs-fixer.dist.php --using-cache=no --dry-run",
-        "test": [
-            "psalm --find-unused-psalm-suppress --no-cache",
+        "coverage": "XDEBUG_MODE=coverage phpunit --coverage-html coverage --coverage-text --colors=auto && chown -R 1000:1000 coverage",
+        "quality": [
+            "composer normalize --dry-run",
+            "psalm --find-unused-psalm-suppress",
             "phpstan analyse",
-            "phpmd src,tests ansi naming #,codesize,design",
-            "@php-cs-fixer",
-            "@phpunit"
-        ]
+            "phpmd src,tests ansi naming # cleancode,codesize,controversial,design,unusedcode",
+            "@style-check",
+            "@test-unit"
+        ],
+        "style-check": "php-cs-fixer fix -v --config=.php-cs-fixer.dist.php --using-cache=no --dry-run",
+        "style-fix": "php-cs-fixer fix -v --config=.php-cs-fixer.dist.php --using-cache=no",
+        "test-unit": "phpunit --no-coverage --colors=auto"
     }
 }

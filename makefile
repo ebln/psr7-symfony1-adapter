@@ -5,7 +5,7 @@ DOCKER_COMPOSE=docker-compose -f $(DOCKER_COMPOSE_YML)
 MAKE=make -s
 .DEFAULT_GOAL := help
 
-.PHONY: help build rm enter test test-all
+.PHONY: help build rm down stop enter test quality style-fix coverage
 
 help: ## Show this help.
 	@grep -E '^[a-zA-Z_-]+:.*?##\s*.*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?##\\s*"}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -26,7 +26,13 @@ enter:##Log into the main container
 	$(DOCKER_COMPOSE) run ${DEFAULT_CONTAINER} /bin/bash
 
 test:##Run unit tests
-	$(DOCKER_COMPOSE) run ${DEFAULT_CONTAINER} composer phpunit
+	$(DOCKER_COMPOSE) run ${DEFAULT_CONTAINER} composer test-unit
 
-test-all:##Run the complete code quality suite
-	$(DOCKER_COMPOSE) run ${DEFAULT_CONTAINER} composer test
+quality:##Run the complete code quality suite
+	$(DOCKER_COMPOSE) run ${DEFAULT_CONTAINER} composer quality
+
+style-fix:##Apply code style
+	$(DOCKER_COMPOSE) run ${DEFAULT_CONTAINER} composer style-fix
+
+coverage:##Generate coverage report
+	$(DOCKER_COMPOSE) run ${DEFAULT_CONTAINER} composer coverage

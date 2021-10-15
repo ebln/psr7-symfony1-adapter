@@ -10,6 +10,10 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 ### Added
 
 - Changelog
+- composer-normalize
+
+### Fixed
+- DX: makefile, dockerfile & xdebug
 
 ### TODO
 - ResponseFactory
