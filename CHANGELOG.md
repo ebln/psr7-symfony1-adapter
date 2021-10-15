@@ -9,8 +9,12 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 
 ### Added
 
-- Changelog
+- `ResponseFactory` to enable PSR-15
+- Dependency to `psr/http-factory`
+- Started a changelog
 - composer-normalize
+
+### Changed
 - Updated dev dependencies
 
 ### Fixed

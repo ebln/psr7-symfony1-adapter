@@ -68,3 +68,15 @@ $newInstance->preSend();
 $sfWebResponse->send();
 
 ```
+
+## Pass it down to a PSR-15 sub-stack 
+```php
+$request         = \brnc\Symfony1\Message\Adapter\Request::fromSfWebRequest($sfWebRequest);
+$responseFactory = new \brnc\Symfony1\Message\Translator\ResponseFactory($sfWebResponse);
+// (dependency) inject the ResponseFactory to your dispatcher, middlewares, and handlers
+$entryPoint      = new YourPSR15Dispatcher($responseFactory);
+// Dispatch your sub-stack via PSR-15
+$response        = $entryPoint->handler($response);
+// As $response will be linked to $sfWebResponse you don't need to do anything
+// if you are in the context of a Symfony1 action. Only call $response->getSfWebResponse() in dire need!
+```

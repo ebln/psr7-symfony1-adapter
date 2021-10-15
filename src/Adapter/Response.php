@@ -179,12 +179,13 @@ class Response implements ResponseInterface
     }
 
     /**
+     * N.b. Changes are directly applied to the adapted sfWebResponse,
+     *      thus the returned object will return same value as the "immutable" original instance
+     *
      * @param int    $code
      * @param string $reasonPhrase
      *
      * @return static
-     *
-     * @deprecated     Changes are directly applied to the adapted sfWebResponse, thus the returned object will return same value as the "immutable" original instance
      */
     public function withStatus($code, $reasonPhrase = ''): self
     {
