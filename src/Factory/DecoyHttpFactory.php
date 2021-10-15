@@ -25,6 +25,8 @@ use Psr\Http\Message\UriInterface;
  * you may use the following example to get a response for this PSR-7-Symfony1 adapter from the http-foundation's response:
  *
  *    (new PsrHttpFactory(DecoyHttpFactory, GuzzleStreamFactory, DecoyHttpFactory, ResponseFactory))->createResponse()
+ *
+ * @codeCoverageIgnore
  */
 class DecoyHttpFactory implements RequestFactoryInterface, ResponseFactoryInterface, ServerRequestFactoryInterface, StreamFactoryInterface, UploadedFileFactoryInterface, UriFactoryInterface
 {
