@@ -62,6 +62,8 @@ $newestInstance  = $newInstance->withBody(
 
 // selects the content of $newInstance to be send instead of the most recent instance's one (i.e. $newestInstance)
 $newInstance->preSend();
+// N.b. The stream of $newestInstance is still held in memory until $responseAdapter and all copies got destroyed!
+//      This might change in the future when this will be refactored to use WeakMap.
 
 $sfWebResponse->send();
 

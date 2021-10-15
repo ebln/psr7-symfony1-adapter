@@ -38,7 +38,7 @@ class BodyStreamHook
 
     public function addBodyFromResponse(Response $response): void
     {
-        $this->bodyStreams[$this->getObjectIdentifier($response)] = $response->getBody(); // TODO refactor to WeakReference with polyfill
+        $this->bodyStreams[$this->getObjectIdentifier($response)] = $response->getBody();
     }
 
     public function processFilterContent(\sfEvent $event, ?string $value): string
