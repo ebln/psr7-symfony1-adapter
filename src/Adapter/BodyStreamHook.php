@@ -11,7 +11,7 @@ class BodyStreamHook
 {
     /** @var StreamInterface[] */
     private array   $bodyStreams     = [];
-    private ?string $distinguishedId = null; // Holds a object identifier to the Response which content shall be used when sfWebResponse->send() is called
+    private ?string $distinguishedId = null; // Holds an object identifier to the Response which content shall be used when sfWebResponse->send() is called
 
     public function __construct(\sfWebResponse $sfWebResponse)
     {
