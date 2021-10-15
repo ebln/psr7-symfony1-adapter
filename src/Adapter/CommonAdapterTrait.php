@@ -12,6 +12,8 @@ use Psr\Http\Message\StreamInterface;
 
 /**
  * collects common behaviour of request and response
+ *
+ * @internal
  */
 trait CommonAdapterTrait
 {

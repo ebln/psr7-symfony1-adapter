@@ -35,6 +35,7 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 - Cookies: write and overwrite to request
 - Refactor `Request::withUri` to be closer to PSR-7
 - Refactor `BodyStreamHook::addBodyFromResponse` using WeakMap for a PHP >=8.0 (or with [polyfill](https://github.com/BenMorel/weakmap-polyfill))
+- Remove `mock/guzzle-psr7` when `php-http/psr7-integration-tests` supports `GuzzleHttp\Psr7 ^2.0`
 
 ----
 No changelog before October 2021, the following was only casually reconstructed

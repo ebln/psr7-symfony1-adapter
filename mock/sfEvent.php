@@ -2,6 +2,8 @@
 
 /**
  * Minimal mock of symfony's sfEvent to enable standalone testing
+ *
+ * @internal
  */
 class sfEvent
 {
