@@ -305,6 +305,8 @@ class Request implements ServerRequestInterface
     /**
      * @param string $method
      *
+     * @psalm-param mixed $method
+     *
      * @throws InvalidTypeException
      *
      * @return static

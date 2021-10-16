@@ -63,7 +63,7 @@
         "coverage": "XDEBUG_MODE=coverage phpunit --coverage-html coverage --coverage-text --colors=auto && chown -R 1000:1000 coverage",
         "quality": [
             "composer normalize --dry-run",
-            "psalm --find-unused-psalm-suppress",
+            "psalm --find-unused-psalm-suppress --show-info=true",
             "phpstan analyse",
             "phpmd src,tests ansi naming # cleancode,codesize,controversial,design,unusedcode",
             "@style-check",

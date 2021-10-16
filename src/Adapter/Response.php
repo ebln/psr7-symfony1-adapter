@@ -185,6 +185,8 @@ class Response implements ResponseInterface
      * @param int    $code
      * @param string $reasonPhrase
      *
+     * @psalm-param mixed $code
+     *
      * @return static
      */
     public function withStatus($code, $reasonPhrase = ''): self
