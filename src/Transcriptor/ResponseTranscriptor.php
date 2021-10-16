@@ -25,7 +25,9 @@ class ResponseTranscriptor
     {
         // transcribe status and reason
         $sfWebResponse->setStatusCode($psrResponse->getStatusCode(), $psrResponse->getReasonPhrase());
-        // transcribe protocol (and possibly also other options)
+        // transcribe protocol and possibly also other options though there should be no strong need:
+        //      `content_type` & `charset` are only used if no Content-Type header was set
+        //      `send_http_headers` defaults to true, and prevents headers will be sent more than once
         $sfWebResponse = $this->optionsTranscriptor->transcribeOptions($sfWebResponse, [
             'http_protocol' => 'HTTP/' . $psrResponse->getProtocolVersion(),
         ]);
