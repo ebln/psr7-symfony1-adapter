@@ -47,7 +47,7 @@ class ResponseTranscriptor
 
         // transcribe body
         $body = $psrResponse->getBody();
-        $sfWebResponse->setContent($body->getContents());
+        $sfWebResponse->setContent((string)$body);
         // prevent further writes, that wouldn't make it into the transcription
         // CAVEAT: likely causes exceptions if it will be written!
         $body->close();
