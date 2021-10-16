@@ -8,5 +8,5 @@ use Psr\Http\Message\ResponseInterface;
 
 interface CookieTranscriptorInterface
 {
-    public function transcribeCookies(ResponseInterface $psrResponse, \sfWebResponse $sfWebResponse): \sfWebResponse;
+    public function transcribeCookies(ResponseInterface $psrResponse, \sfWebResponse $sfWebResponse): void;
 }

@@ -9,13 +9,11 @@ use Psr\Http\Message\ResponseInterface;
 
 class NoCookieTranscriptor implements CookieTranscriptorInterface
 {
-    public function transcribeCookies(ResponseInterface $psrResponse, \sfWebResponse $sfWebResponse): \sfWebResponse
+    public function transcribeCookies(ResponseInterface $psrResponse, \sfWebResponse $sfWebResponse): void
     {
         $setCookies = $psrResponse->getHeader('Set-Cookie');
         if (!empty($setCookies)) {
             LogicException::throwCookieTranscriptionUnsupported();
         }
-
-        return $sfWebResponse;
     }
 }

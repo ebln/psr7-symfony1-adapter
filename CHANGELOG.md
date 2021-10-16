@@ -27,7 +27,7 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 
 ### TODO
 
-- **Cover new PSR-17 magic & ResponseTranscriptor with tests!**
+- **Cover ResponseTranscriptor with tests!**
 
 - Cookies: Write to response
 - Cookies: Read from request

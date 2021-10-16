@@ -7,7 +7,7 @@ namespace brnc\Symfony1\Message\Transcriptor\Response;
 class OptionsTranscriptor implements OptionsTranscriptorInterface
 {
     /** @param array<string, mixed> $options */
-    public function transcribeOptions(\sfWebResponse $sfWebResponse, array $options): \sfWebResponse
+    public function transcribeOptions(\sfWebResponse $sfWebResponse, array $options): void
     {
         $options              = array_merge($sfWebResponse->getOptions(), $options);
         $reflexiveWebResponse = new \ReflectionObject($sfWebResponse);
@@ -15,7 +15,5 @@ class OptionsTranscriptor implements OptionsTranscriptorInterface
         $reflexOptions->setAccessible(true);
         $reflexOptions->setValue($sfWebResponse, $options);
         $reflexOptions->setAccessible(false);
-
-        return $sfWebResponse;
     }
 }

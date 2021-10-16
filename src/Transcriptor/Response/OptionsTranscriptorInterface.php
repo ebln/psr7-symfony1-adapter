@@ -13,5 +13,5 @@ namespace brnc\Symfony1\Message\Transcriptor\Response;
 interface OptionsTranscriptorInterface
 {
     /** @param array<string, mixed> $options */
-    public function transcribeOptions(\sfWebResponse $sfWebResponse, array $options): \sfWebResponse;
+    public function transcribeOptions(\sfWebResponse $sfWebResponse, array $options): void;
 }
