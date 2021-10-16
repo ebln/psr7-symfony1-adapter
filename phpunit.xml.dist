@@ -2,9 +2,7 @@
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd" bootstrap="vendor/autoload.php" backupGlobals="false" verbose="true">
     <coverage>
         <include>
-            <directory>./src/Adapter</directory>
-            <directory>./src/Factory</directory>
-            <directory>./src/Transcriptor</directory>
+            <directory>./src</directory>
             <directory>./mock</directory>
         </include>
     </coverage>

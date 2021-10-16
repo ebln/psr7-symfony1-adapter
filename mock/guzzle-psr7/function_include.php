@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-/*
+/**
  * TODO remove this and the whole directory once php-http/psr7-integration-tests
  *      supports GuzzleHttp\Psr7 ^2
  *
@@ -11,6 +11,7 @@ declare(strict_types=1);
  *
  * @internal
  */
+// @codeCoverageIgnoreStart
 if (!function_exists('GuzzleHttp\Psr7\stream_for')) {
     require __DIR__ . '/stream_for.php';
 }
