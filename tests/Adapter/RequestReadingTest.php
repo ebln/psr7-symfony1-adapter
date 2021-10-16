@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /** @noinspection PhpUnusedParameterInspection */
 
 namespace brnc\Tests\Symfony1\Message\Adapter;
@@ -8,11 +10,12 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * artificial test
+ *
+ * @internal
  */
-class RequestReadingTest extends TestCase
+final class RequestReadingTest extends TestCase
 {
     /**
-     * @param array  $request
      * @param string $headerName
      * @param bool   $hasHeader
      * @param string $getHeader
@@ -20,6 +23,7 @@ class RequestReadingTest extends TestCase
      * @param array  $expectedHeaders
      *
      * @dataProvider provideHeaderTestData
+     *
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testHasHeader(array $request, $headerName, $hasHeader, $getHeader, $getHeaderLine, $expectedHeaders): void
@@ -28,11 +32,10 @@ class RequestReadingTest extends TestCase
         $sfWebRequest->prepare($request['method'], $request['server']);
         $readingRequestMock = Request::fromSfWebRequest($sfWebRequest);
 
-        $this->assertSame($hasHeader, $readingRequestMock->hasHeader($headerName));
+        static::assertSame($hasHeader, $readingRequestMock->hasHeader($headerName));
     }
 
     /**
-     * @param array  $request
      * @param string $headerName
      * @param bool   $hasHeader
      * @param string $getHeader
@@ -40,6 +43,7 @@ class RequestReadingTest extends TestCase
      * @param array  $expectedHeaders
      *
      * @dataProvider provideHeaderTestData
+     *
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testGetHeader(array $request, $headerName, $hasHeader, $getHeader, $getHeaderLine, $expectedHeaders): void
@@ -47,11 +51,10 @@ class RequestReadingTest extends TestCase
         $sfWebRequest = new \sfWebRequest();
         $sfWebRequest->prepare($request['method'], $request['server']);
         $readingRequestMock = Request::fromSfWebRequest($sfWebRequest);
-        $this->assertSame($getHeader, $readingRequestMock->getHeader($headerName));
+        static::assertSame($getHeader, $readingRequestMock->getHeader($headerName));
     }
 
     /**
-     * @param array  $request
      * @param string $headerName
      * @param bool   $hasHeader
      * @param string $getHeader
@@ -59,6 +62,7 @@ class RequestReadingTest extends TestCase
      * @param array  $expectedHeaders
      *
      * @dataProvider provideHeaderTestData
+     *
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testGetHeaderLine(
@@ -72,11 +76,10 @@ class RequestReadingTest extends TestCase
         $sfWebRequest = new \sfWebRequest();
         $sfWebRequest->prepare($request['method'], $request['server']);
         $readingRequestMock = Request::fromSfWebRequest($sfWebRequest);
-        $this->assertSame($getHeaderLine, $readingRequestMock->getHeaderLine($headerName));
+        static::assertSame($getHeaderLine, $readingRequestMock->getHeaderLine($headerName));
     }
 
     /**
-     * @param array  $request
      * @param string $headerName
      * @param bool   $hasHeader
      * @param string $getHeader
@@ -84,6 +87,7 @@ class RequestReadingTest extends TestCase
      * @param array  $expectedHeaders
      *
      * @dataProvider provideHeaderTestData
+     *
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testGetHeaders(
@@ -97,14 +101,14 @@ class RequestReadingTest extends TestCase
         $sfWebRequest = new \sfWebRequest();
         $sfWebRequest->prepare($request['method'], $request['server']);
         $readingRequestMock = Request::fromSfWebRequest($sfWebRequest);
-        $this->assertSame($expectedHeaders, $readingRequestMock->getHeaders());
+        static::assertSame($expectedHeaders, $readingRequestMock->getHeaders());
     }
 
     public function provideHeaderTestData(): array
     {
         return [
-            'happy case'            => [
-                'request'              => [
+            'happy case' => [
+                'request' => [
                     'method' => '',
                     'server' => [
                         'SERVER_PROTOCOL' => 'HTTP/1.0',
@@ -119,8 +123,8 @@ class RequestReadingTest extends TestCase
                     'x-test' => ['foo', 'bar'],
                 ],
             ],
-            'Content-Type set'      => [
-                'request'              => [
+            'Content-Type set' => [
+                'request' => [
                     'method' => '',
                     'server' => [
                         'SERVER_PROTOCOL'       => 'HTTP/1.0',
@@ -137,8 +141,8 @@ class RequestReadingTest extends TestCase
                     'x-another-header' => ['was set'],
                 ],
             ],
-            'Content-Type not set'  => [
-                'request'              => [
+            'Content-Type not set' => [
+                'request' => [
                     'method' => '',
                     'server' => [
                         'SERVER_PROTOCOL'       => 'HTTP/1.0',
@@ -155,8 +159,8 @@ class RequestReadingTest extends TestCase
                     'x-another-header' => ['was set'],
                 ],
             ],
-            'Content-Type Quirk I'  => [
-                'request'              => [
+            'Content-Type Quirk I' => [
+                'request' => [
                     'method' => '',
                     'server' => [
                         'HTTP_CONTENT_TYPE' => 'BOGUS (is overridden by following)',
@@ -172,7 +176,7 @@ class RequestReadingTest extends TestCase
                 ],
             ],
             'Content-Type Quirk II' => [
-                'request'              => [
+                'request' => [
                     'method' => '',
                     'server' => [
                         'CONTENT_TYPE'      => 'multipart/form-data; boundary=foobar',
@@ -191,10 +195,10 @@ class RequestReadingTest extends TestCase
     }
 
     /**
-     * @param array $request
-     * @param mixed $expectedVersion
+     * @phpstan-param mixed $expectedVersion
      *
      * @dataProvider provideProtocolVersionData
+     *
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testGetProtocolVersion(array $request, $expectedVersion): void
@@ -202,57 +206,52 @@ class RequestReadingTest extends TestCase
         $sfWebRequest = new \sfWebRequest();
         $sfWebRequest->prepare($request['method'], $request['server']);
         $readingRequestMock = Request::fromSfWebRequest($sfWebRequest);
-        $this->assertSame($expectedVersion, $readingRequestMock->getProtocolVersion());
+        static::assertSame($expectedVersion, $readingRequestMock->getProtocolVersion());
     }
 
     public function provideProtocolVersionData(): array
     {
         return [
-            'happy case'                                                                     => [
-                'request'          => [
+            'happy case' => [
+                'request' => [
                     'server' => [
                         'SERVER_PROTOCOL' => 'HTTP/1.0',
                     ],
                     'method' => '',
-
                 ],
                 'expected version' => '1.0',
             ],
-            'empty string → due to symfony\'s own fallback to \'\''                          => [
-                'request'          => [
+            'empty string → due to symfony\'s own fallback to \'\'' => [
+                'request' => [
                     'server' => [
                         'SERVER_PROTOCOL' => 'HTTP/',
                     ],
                     'method' => '',
-
                 ],
                 'expected version' => '',
             ],
-            'null → due to symfony\'s own fallback to \'\''                                  => [
-                'request'          => [
+            'null → due to symfony\'s own fallback to \'\'' => [
+                'request' => [
                     'server' => [],
                     'method' => '',
-
                 ],
                 'expected version' => '',
             ],
-            'Not number dot number I → empty string: due to symfony\'s own check to \d\.\d'  => [
-                'request'          => [
+            'Not number dot number I → empty string: due to symfony\'s own check to \d\.\d' => [
+                'request' => [
                     'method' => 'x.9',
                     'server' => [
                         'SERVER_PROTOCOL' => 'HTTP/foo bar baz',
                     ],
-
                 ],
                 'expected version' => '',
             ],
             'Not number dot number II → empty string: due to symfony\'s own check to \d\.\d' => [
-                'request'          => [
+                'request' => [
                     'method' => '5.y',
                     'server' => [
                         'SERVER_PROTOCOL' => 'foo bar baz',
                     ],
-
                 ],
                 'expected version' => '',
             ],
