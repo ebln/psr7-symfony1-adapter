@@ -27,8 +27,6 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 
 ### TODO
 
-- **Cover ResponseTranscriptor with tests!**
-
 - Cookies: Write to response
 - Cookies: Read from request
 - Cookies: write and overwrite to request
