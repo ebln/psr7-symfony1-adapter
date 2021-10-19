@@ -3,6 +3,9 @@ parameters:
     paths:
         - src
         - tests
+    excludePaths:
+        analyse:
+            - src/Factory/DecoyHttpFactory.php
     ignoreErrors:
         -
             message: "#^Unsafe usage of new static\\(\\)\\.$#"

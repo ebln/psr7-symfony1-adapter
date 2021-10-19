@@ -4,6 +4,7 @@ Partial PSR-7 Adapters for Symfony 1.5
 To enable the use of future-proof PSR-15 middlewares via partial PSR-7 adapters.
 
 ## Quickstart
+
 ```php
 // not fully PSR-7 compliant lazy adapters
 $serverRequestAdapter = \brnc\Symfony1\Message\Adapter\Request::fromSfWebRequest($sfWebRequest);
@@ -11,18 +12,17 @@ $responseAdapter      = \brnc\Symfony1\Message\Adapter\Response::fromSfWebRespon
 ```
 
 ## ServerRequest
+
 Please mind the following PSR-7 violation which is enabled by default:
+
 ### No immutability by default
+
 as this is just an adapter for `\sfWebRequest` which cannot easily be replaced with another instance.
 
-This adapter – by default – also returns the very same instance when calling `with*()` methods.
-For the same reason calls to methods which cannot act on and alter the underlying `\sfWebRequest`
+This adapter – by default – also returns the very same instance when calling `with*()` methods. For the same reason calls to methods which cannot act on and alter the underlying `\sfWebRequest`
 will throw an `\brnc\Symfony1\Message\Exception\LogicException`.
 
-This default behaviour can be changed by creating the `Request` using 
-the `Request::OPTION_IMMUTABLE_VIOLATION` option set to `false`.
-The `Request`-adapter will then always return new instances when `with*()`-methods are called and won't throw exceptions on calls which cannot transparently act on the `\sfWebRequest`- object.
-
+This default behaviour can be changed by creating the `Request` using the `Request::OPTION_IMMUTABLE_VIOLATION` option set to `false`. The `Request`-adapter will then always return new instances when `with*()`-methods are called and won't throw exceptions on calls which cannot transparently act on the `\sfWebRequest`- object.
 
 ```php
 use brnc\Symfony1\Message\Adapter\Request;
@@ -39,8 +39,8 @@ $serverRequestAdapter = Request::fromSfWebRequest(
 ```
 
 ## Response
-Please mind the default to mutability!
 
+Please mind the default to mutability!
 
 ```php
 use brnc\Symfony1\Message\Adapter\Response;
@@ -67,4 +67,65 @@ $newInstance->preSend();
 
 $sfWebResponse->send();
 
+```
+
+## Pass it down to a PSR-15 sub-stack
+
+You may use the `ResponseFactory` implementing `\Psr\Http\Message\ResponseFactoryInterface` in order to "spawn" responses within your PSR-15 sub-stack.
+
+```php
+$request         = \brnc\Symfony1\Message\Adapter\Request::fromSfWebRequest($sfWebRequest);
+$responseFactory = new \brnc\Symfony1\Message\Factory\ResponseFactory($sfWebResponse);
+// (dependency) inject the ResponseFactory to your dispatcher, middlewares, and handlers
+$entryPoint      = new YourPSR15Dispatcher($responseFactory);
+// Dispatch your sub-stack via PSR-15
+$response        = $entryPoint->handler($response);
+// As $response will be linked to $sfWebResponse you don't need to do anything
+// if you are in the context of a Symfony1 action. Only call $response->getSfWebResponse() in dire need!
+```
+
+## Manually transcribe a PSR-7 Response to Symfony1
+
+Assume you couldn't use other means, and you're confronted with an arbitrary PSR-7 response you can use the `ResponseTranscriptor` to copy the data from your PSR-7 response to your `\sfWebResponse`.
+
+Currently the `ResponseTranscriptor` doesn't support cookies, and will fail fast and hard if it encounters some. You are free to implement your own Cookie-Handler implementing `CookieTranscriptorInterface` and pass it as an optional constructor argument
+
+```php
+// Given arbitrary PSR-7 response…
+$psr7response = $psr7responseFactory();
+// …use the ResponseTranscriptor in order to–
+$transcriptor = new \brnc\Symfony1\Message\Transcriptor\ResponseTranscriptor();
+// copy the response's contents.
+//   The returned object will be the same as in the argument!
+$sfWebResponse = $transcriptor->transcribe($psr7response, $sfWebResponse);
+```
+
+## Pass it down to http-foundation i.e. present-day Symfony
+
+Combine this PSR7-Symfony1 Adapter and `symfony/psr-http-message-bridge` to connect your Symfony1 stack via PSR-7 to `symfony/http-foundation` objects and leverage using embedded (present-day) Symfony components.
+
+```php
+// Use this chain to create a http-foundation request from a Symfony1's \sfWebRequest
+$psrRequest            = \brnc\Symfony1\Message\Adapter\Request::fromSfWebRequest($sfWebRequest);
+$httpFoundationFactory = \Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory();
+$symfonyRequest        = $httpFoundationFactory->createRequest($psrRequest);
+
+// Handle the request with some present day Symfony component
+$symfonyResponse = $httpKernel->handle($symfonyRequest);
+
+// Possibly ResponseFactory is best created in the Symfony1 context
+$responseFactory = new \brnc\Symfony1\Message\Factory\ResponseFactory($sfWebResponse);
+
+// Obtain other PSR17 factories,
+//   while only ResponseFactory & StreamFactory will be used (as of today)
+$streamFactory   = \brnc\Symfony1\Message\Factory\GuzzleStreamFactory();
+$decoyFactory    = \brnc\Symfony1\Message\Factory\DecoyHttpFactory();
+// Construct the PsrHttpFactory from symfony/psr-http-message-bridge and translate…
+$psrHttpFactory  = Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory(
+    $decoyFactory, $streamFactory, $decoyFactory, $responseFactory
+);
+$psrResponse     = $psrHttpFactory->createResponse($symfonyResponse);
+// As $psrResponse will be linked to $sfWebResponse as it was created through the
+// ResponseFactory you don't need to do anything if you exit via an Symfony1 action.
+// Only call $psrResponse->getSfWebResponse() in dire need!
 ```

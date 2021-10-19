@@ -6,12 +6,14 @@ declare(strict_types=1);
 
 namespace brnc\Symfony1\Message\Adapter;
 
-use brnc\Symfony1\Message\Utillity\Assert;
+use brnc\Symfony1\Message\Utility\Assert;
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\StreamInterface;
 
 /**
  * collects common behaviour of request and response
+ *
+ * @internal
  */
 trait CommonAdapterTrait
 {

@@ -6,6 +6,8 @@
 
 /**
  * Minimal mock of symfony's sfWebRequest to enable standalone testing
+ *
+ * @internal
  */
 class sfWebRequest
 {

@@ -1,12 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace brnc\Tests\Symfony1\Message\Adapter;
 
 use brnc\Symfony1\Message\Adapter\Request;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\UploadedFileInterface;
 
-class ServerRequestUploadTest extends TestCase
+/**
+ * @internal
+ */
+final class ServerRequestUploadTest extends TestCase
 {
     public function testSingleUploadedFile(): void
     {
@@ -27,11 +32,11 @@ class ServerRequestUploadTest extends TestCase
         );
 
         $files = $request->getUploadedFiles();
-        $this->assertCount(1, $files);
+        static::assertCount(1, $files);
         $file = $files['file-one'];
-        $this->assertInstanceOf(UploadedFileInterface::class, $file);
-        $this->assertSame(1337, $file->getSize());
-        $this->assertSame('that.jpg', $file->getClientFilename());
+        static::assertInstanceOf(UploadedFileInterface::class, $file);
+        static::assertSame(1337, $file->getSize());
+        static::assertSame('that.jpg', $file->getClientFilename());
     }
 
     public function testFormSingleUploadedFile(): void
@@ -55,11 +60,11 @@ class ServerRequestUploadTest extends TestCase
         );
 
         $files = $request->getUploadedFiles();
-        $this->assertCount(1, $files);
+        static::assertCount(1, $files);
         $file = $files['form1']['file-one'];
-        $this->assertInstanceOf(UploadedFileInterface::class, $file);
-        $this->assertSame(1337, $file->getSize());
-        $this->assertSame('that.jpg', $file->getClientFilename());
+        static::assertInstanceOf(UploadedFileInterface::class, $file);
+        static::assertSame(1337, $file->getSize());
+        static::assertSame('that.jpg', $file->getClientFilename());
     }
 
     public function testFormMultipleUploadedFile(): void
@@ -70,41 +75,37 @@ class ServerRequestUploadTest extends TestCase
             null,
             null,
             [
-                'mass_upload' =>
-                    [
-                        'foo' =>
-                            [
-                                'error'    => 0,
-                                'name'     => 'test.csv',
-                                'type'     => 'text/csv',
-                                'tmp_name' => '/tmp/phpmYRXeG',
-                                'size'     => 23,
-                            ],
-                        'bar' =>
-                            [
-                                'error'    => 0,
-                                'name'     => 'bar.sql',
-                                'type'     => 'application/sql',
-                                'tmp_name' => '/tmp/phpYCTUy1',
-                                'size'     => 7206,
-                            ],
-                        'baz' =>
-                            [
-                                'error'    => 0,
-                                'name'     => 'Notes.txt',
-                                'type'     => 'text/plain',
-                                'tmp_name' => '/tmp/phpnhBSSm',
-                                'size'     => 17962,
-                            ],
+                'mass_upload' => [
+                    'foo' => [
+                        'error'    => 0,
+                        'name'     => 'test.csv',
+                        'type'     => 'text/csv',
+                        'tmp_name' => '/tmp/phpmYRXeG',
+                        'size'     => 23,
                     ],
+                    'bar' => [
+                        'error'    => 0,
+                        'name'     => 'bar.sql',
+                        'type'     => 'application/sql',
+                        'tmp_name' => '/tmp/phpYCTUy1',
+                        'size'     => 7206,
+                    ],
+                    'baz' => [
+                        'error'    => 0,
+                        'name'     => 'Notes.txt',
+                        'type'     => 'text/plain',
+                        'tmp_name' => '/tmp/phpnhBSSm',
+                        'size'     => 17962,
+                    ],
+                ],
             ]
         );
 
         $files = $request->getUploadedFiles()['mass_upload'];
-        $this->assertCount(3, $files);
-        $this->assertInstanceOf(UploadedFileInterface::class, $files['foo']);
-        $this->assertInstanceOf(UploadedFileInterface::class, $files['bar']);
-        $this->assertInstanceOf(UploadedFileInterface::class, $files['baz']);
+        static::assertCount(3, $files);
+        static::assertInstanceOf(UploadedFileInterface::class, $files['foo']);
+        static::assertInstanceOf(UploadedFileInterface::class, $files['bar']);
+        static::assertInstanceOf(UploadedFileInterface::class, $files['baz']);
     }
 
     public function testDeeplyNestledUploadedFile(): void
@@ -134,11 +135,11 @@ class ServerRequestUploadTest extends TestCase
         );
 
         $files = $request->getUploadedFiles();
-        $this->assertCount(1, $files);
+        static::assertCount(1, $files);
         $file = $files['form']['foo']['bar']['baz']['that-file'];
-        $this->assertInstanceOf(UploadedFileInterface::class, $file);
-        $this->assertSame(1337, $file->getSize());
-        $this->assertSame('that.jpg', $file->getClientFilename());
+        static::assertInstanceOf(UploadedFileInterface::class, $file);
+        static::assertSame(1337, $file->getSize());
+        static::assertSame('that.jpg', $file->getClientFilename());
     }
 
     public function testMultiFormUploadedFiles(): void
@@ -149,65 +150,61 @@ class ServerRequestUploadTest extends TestCase
             null,
             null,
             [
-                'file-foo' =>
-                    [
-                        'name'     => 'test.csv',
-                        'type'     => 'text/csv',
-                        'tmp_name' => '/tmp/php23',
-                        'error'    => 0,
-                        'size'     => 23,
-                    ],
-                'form-bar' =>
-                    [
-                        'foo'      => [
-                            'bar' => [
-                                'baz' => [
-                                    'file-bar' => [
-                                        'name'     => 'that.jpg',
-                                        'type'     => 'image/jpeg',
-                                        'tmp_name' => '/tmp/php1337',
-                                        'error'    => 0,
-                                        'size'     => 1337,
-                                    ],
+                'file-foo' => [
+                    'name'     => 'test.csv',
+                    'type'     => 'text/csv',
+                    'tmp_name' => '/tmp/php23',
+                    'error'    => 0,
+                    'size'     => 23,
+                ],
+                'form-bar' => [
+                    'foo' => [
+                        'bar' => [
+                            'baz' => [
+                                'file-bar' => [
+                                    'name'     => 'that.jpg',
+                                    'type'     => 'image/jpeg',
+                                    'tmp_name' => '/tmp/php1337',
+                                    'error'    => 0,
+                                    'size'     => 1337,
                                 ],
                             ],
                         ],
-                        'file-baz' =>
-                            [
-                                'error'    => 0,
-                                'name'     => 'text.txt',
-                                'type'     => 'text/plain',
-                                'tmp_name' => '/tmp/php42',
-                                'size'     => 42,
-                            ],
                     ],
+                    'file-baz' => [
+                        'error'    => 0,
+                        'name'     => 'text.txt',
+                        'type'     => 'text/plain',
+                        'tmp_name' => '/tmp/php42',
+                        'size'     => 42,
+                    ],
+                ],
             ]
         );
 
         $files = $request->getUploadedFiles();
-        $this->assertCount(2, $files);
+        static::assertCount(2, $files);
 
         $file1 = $files['file-foo'];
-        $this->assertInstanceOf(UploadedFileInterface::class, $file1);
-        $this->assertSame(23, $file1->getSize());
-        $this->assertSame('test.csv', $file1->getClientFilename());
+        static::assertInstanceOf(UploadedFileInterface::class, $file1);
+        static::assertSame(23, $file1->getSize());
+        static::assertSame('test.csv', $file1->getClientFilename());
 
         $file2 = $files['form-bar']['foo']['bar']['baz']['file-bar'];
-        $this->assertInstanceOf(UploadedFileInterface::class, $file2);
-        $this->assertSame(1337, $file2->getSize());
-        $this->assertSame('that.jpg', $file2->getClientFilename());
+        static::assertInstanceOf(UploadedFileInterface::class, $file2);
+        static::assertSame(1337, $file2->getSize());
+        static::assertSame('that.jpg', $file2->getClientFilename());
 
         $file3 = $files['form-bar']['file-baz'];
-        $this->assertInstanceOf(UploadedFileInterface::class, $file3);
-        $this->assertSame(42, $file3->getSize());
-        $this->assertSame('text.txt', $file3->getClientFilename());
+        static::assertInstanceOf(UploadedFileInterface::class, $file3);
+        static::assertSame(42, $file3->getSize());
+        static::assertSame('text.txt', $file3->getClientFilename());
     }
 
     /**
      * @param null|array<array|array<array>> $files
      *
      * @throws \InvalidArgumentException
-     * @return Request
      */
     private function createRequest(
         string $method = '',

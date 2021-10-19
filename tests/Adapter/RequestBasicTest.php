@@ -1,11 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace brnc\Tests\Symfony1\Message\Adapter;
 
 use brnc\Symfony1\Message\Adapter\Request;
 use PHPUnit\Framework\TestCase;
 
-class RequestBasicTest extends TestCase
+/**
+ * @internal
+ */
+final class RequestBasicTest extends TestCase
 {
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
@@ -13,11 +18,11 @@ class RequestBasicTest extends TestCase
     public function testProtocolVersion(): void
     {
         $request = $this->createRequest();
-        $this->assertSame('', $request->getProtocolVersion());
-        $this->assertSame([], $request->getServerParams());
+        static::assertSame('', $request->getProtocolVersion());
+        static::assertSame([], $request->getServerParams());
         $request = $request->withProtocolVersion('1.1');
-        $this->assertSame('1.1', $request->getProtocolVersion());
-        $this->assertSame(['SERVER_PROTOCOL' => 'HTTP/1.1'], $request->getServerParams());
+        static::assertSame('1.1', $request->getProtocolVersion());
+        static::assertSame(['SERVER_PROTOCOL' => 'HTTP/1.1'], $request->getServerParams());
     }
 
     /**
@@ -26,8 +31,8 @@ class RequestBasicTest extends TestCase
     public function testPresetProtocolVersion(): void
     {
         $request = $this->createRequest('GET', ['SERVER_PROTOCOL' => 'HTTP/1.1']);
-        $this->assertSame('1.1', $request->getProtocolVersion());
-        $this->assertSame(['SERVER_PROTOCOL' => 'HTTP/1.1'], $request->getServerParams());
+        static::assertSame('1.1', $request->getProtocolVersion());
+        static::assertSame(['SERVER_PROTOCOL' => 'HTTP/1.1'], $request->getServerParams());
     }
 
     /**
@@ -37,38 +42,33 @@ class RequestBasicTest extends TestCase
     {
         $mock    = $this->createSymfonyMock();
         $request = Request::fromSfWebRequest($mock);
-        $this->assertSame('GET', $request->getMethod());
+        static::assertSame('GET', $request->getMethod());
         $request = $request->withMethod('PuRgE');
-        $this->assertSame('PuRgE', $request->getMethod());
-        $this->assertSame('PURGE', $mock->getMethod());
+        static::assertSame('PuRgE', $request->getMethod());
+        static::assertSame('PURGE', $mock->getMethod());
         $request = $request->withMethod('GET');
-        $this->assertSame('GET', $request->getMethod());
-        $this->assertSame('GET', $mock->getMethod());
+        static::assertSame('GET', $request->getMethod());
+        static::assertSame('GET', $mock->getMethod());
     }
 
     /**
      * @dataProvider withHeaderProvider
-     *
-     * @param string $name
-     * @param string $value
-     * @param array  $expectedHeaders
-     * @param array  $expectedServerParams
      *
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testHeader(string $name, string $value, array $expectedHeaders, array $expectedServerParams): void
     {
         $request = $this->createRequest();
-        $this->assertFalse($request->hasHeader($name));
-        $this->assertSame([], $request->getHeader($name));
-        $this->assertSame([], $request->getServerParams());
+        static::assertFalse($request->hasHeader($name));
+        static::assertSame([], $request->getHeader($name));
+        static::assertSame([], $request->getServerParams());
         $request = $request->withHeader($name, 'FIRST VALUE');
         $request = $request->withHeader($name, $value);
-        $this->assertSame(true, $request->hasHeader($name));
-        $this->assertSame([$value], $request->getHeader($name));
-        $this->assertSame($value, $request->getHeaderLine($name));
-        $this->assertSame($expectedHeaders, $request->getHeaders());
-        $this->assertSame($expectedServerParams, $request->getServerParams());
+        static::assertTrue($request->hasHeader($name));
+        static::assertSame([$value], $request->getHeader($name));
+        static::assertSame($value, $request->getHeaderLine($name));
+        static::assertSame($expectedHeaders, $request->getHeaders());
+        static::assertSame($expectedServerParams, $request->getServerParams());
     }
 
     public function withHeaderProvider(): array
@@ -77,7 +77,7 @@ class RequestBasicTest extends TestCase
             [
                 'X-Foo',
                 'bar',
-                ['X-Foo' => ['bar']],
+                ['X-Foo'      => ['bar']],
                 ['HTTP_X_FOO' => 'bar'],
             ],
             [
@@ -90,8 +90,7 @@ class RequestBasicTest extends TestCase
                 'content-md5',
                 'deadbeef',
                 [
-                    'content-md5' =>
-                        ['deadbeef'],
+                    'content-md5' => ['deadbeef'],
                 ],
                 ['CONTENT_MD5' => 'deadbeef'],
             ],
@@ -99,8 +98,7 @@ class RequestBasicTest extends TestCase
                 'CONTENT-type',
                 'text/plain',
                 [
-                    'CONTENT-type' =>
-                        ['text/plain'],
+                    'CONTENT-type' => ['text/plain'],
                 ],
                 ['CONTENT_TYPE' => 'text/plain'],
             ],
@@ -113,17 +111,17 @@ class RequestBasicTest extends TestCase
     public function testWithAddedHeader(): void
     {
         $request = $this->createRequest();
-        $this->assertFalse($request->hasHeader('X-Foo'));
-        $this->assertSame([], $request->getHeader('X-Foo'));
-        $this->assertSame([], $request->getServerParams());
+        static::assertFalse($request->hasHeader('X-Foo'));
+        static::assertSame([], $request->getHeader('X-Foo'));
+        static::assertSame([], $request->getServerParams());
         $request = $request->withAddedHeader('X-Foo', 'bar');
-        $this->assertTrue($request->hasHeader('X-Foo'));
+        static::assertTrue($request->hasHeader('X-Foo'));
         $request = $request->withAddedHeader('X-Foo', 'baz');
-        $this->assertTrue($request->hasHeader('X-Foo'));
-        $this->assertSame(['bar', 'baz'], $request->getHeader('X-Foo'));
-        $this->assertSame('bar,baz', $request->getHeaderLine('X-Foo'));
-        $this->assertSame(['X-Foo' => ['bar', 'baz']], $request->getHeaders());
-        $this->assertSame(['HTTP_X_FOO' => 'bar,baz'], $request->getServerParams());
+        static::assertTrue($request->hasHeader('X-Foo'));
+        static::assertSame(['bar', 'baz'], $request->getHeader('X-Foo'));
+        static::assertSame('bar,baz', $request->getHeaderLine('X-Foo'));
+        static::assertSame(['X-Foo' => ['bar', 'baz']], $request->getHeaders());
+        static::assertSame(['HTTP_X_FOO' => 'bar,baz'], $request->getServerParams());
     }
 
     /**
@@ -132,17 +130,17 @@ class RequestBasicTest extends TestCase
     public function testWithArrayAddedHeader(): void
     {
         $request = $this->createRequest();
-        $this->assertFalse($request->hasHeader('X-Foo'));
-        $this->assertSame([], $request->getHeader('X-Foo'));
-        $this->assertSame([], $request->getServerParams());
+        static::assertFalse($request->hasHeader('X-Foo'));
+        static::assertSame([], $request->getHeader('X-Foo'));
+        static::assertSame([], $request->getServerParams());
         $request = $request->withAddedHeader('X-Foo', 'foo');
-        $this->assertSame(true, $request->hasHeader('X-Foo'));
+        static::assertTrue($request->hasHeader('X-Foo'));
         $request = $request->withAddedHeader('X-Foo', ['bar', 'baz']);
-        $this->assertTrue($request->hasHeader('X-Foo'));
-        $this->assertSame(['foo', 'bar', 'baz'], $request->getHeader('X-Foo'));
-        $this->assertSame('foo,bar,baz', $request->getHeaderLine('X-Foo'));
-        $this->assertSame(['X-Foo' => ['foo', 'bar', 'baz']], $request->getHeaders());
-        $this->assertSame(['HTTP_X_FOO' => 'foo,bar,baz'], $request->getServerParams());
+        static::assertTrue($request->hasHeader('X-Foo'));
+        static::assertSame(['foo', 'bar', 'baz'], $request->getHeader('X-Foo'));
+        static::assertSame('foo,bar,baz', $request->getHeaderLine('X-Foo'));
+        static::assertSame(['X-Foo' => ['foo', 'bar', 'baz']], $request->getHeaders());
+        static::assertSame(['HTTP_X_FOO' => 'foo,bar,baz'], $request->getServerParams());
     }
 
     /**
@@ -151,15 +149,15 @@ class RequestBasicTest extends TestCase
     public function testWithoutHeader(): void
     {
         $request = $this->createRequest('GET', ['HTTP_X_FOO' => 'bar, baz']);
-        $this->assertSame(true, $request->hasHeader('X-Foo'));
-        $this->assertSame(['bar', 'baz'], $request->getHeader('X-Foo'));
-        $this->assertSame('bar, baz', $request->getHeaderLine('X-Foo'));
-        $this->assertSame(['x-foo' => ['bar', 'baz']], $request->getHeaders());
-        $this->assertSame(['HTTP_X_FOO' => 'bar, baz'], $request->getServerParams());
+        static::assertTrue($request->hasHeader('X-Foo'));
+        static::assertSame(['bar', 'baz'], $request->getHeader('X-Foo'));
+        static::assertSame('bar, baz', $request->getHeaderLine('X-Foo'));
+        static::assertSame(['x-foo' => ['bar', 'baz']], $request->getHeaders());
+        static::assertSame(['HTTP_X_FOO' => 'bar, baz'], $request->getServerParams());
         $request = $request->withoutHeader('x-FoO');
-        $this->assertFalse($request->hasHeader('X-Foo'));
-        $this->assertSame([], $request->getHeader('X-Foo'));
-        $this->assertSame([], $request->getServerParams());
+        static::assertFalse($request->hasHeader('X-Foo'));
+        static::assertSame([], $request->getHeader('X-Foo'));
+        static::assertSame([], $request->getServerParams());
     }
 
     private function createRequest(

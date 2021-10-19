@@ -1,43 +1,48 @@
 <?php
 
+declare(strict_types=1);
+
 namespace brnc\Tests\Symfony1\Message\Adapter;
 
 use brnc\Symfony1\Message\Adapter\Request;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\UriInterface;
 
-class ServerRequestUriTargetUrlTest extends TestCase
+/**
+ * @internal
+ */
+final class ServerRequestUriTargetUrlTest extends TestCase
 {
     public function testGetUriDefault(): void
     {
         $uri = $this->createRequest(null)->getUri();
-        $this->assertInstanceOf(UriInterface::class, $uri);
-        $this->assertSame('http://localhost/', $uri->__toString());
+        static::assertInstanceOf(UriInterface::class, $uri);
+        static::assertSame('http://localhost/', $uri->__toString());
     }
 
     public function testGetUri(): void
     {
         $uri = $this->createRequest('https://example.com:1337/foo/bar?q=bar&a=42#fragment')->getUri();
-        $this->assertInstanceOf(UriInterface::class, $uri);
-        $this->assertSame('https://example.com:1337/foo/bar?q=bar&a=42#fragment', $uri->__toString());
+        static::assertInstanceOf(UriInterface::class, $uri);
+        static::assertSame('https://example.com:1337/foo/bar?q=bar&a=42#fragment', $uri->__toString());
     }
 
     public function testGetRequestTargetDefaultMock(): void
     {
         $requestTarget = $this->createRequest(null)->getRequestTarget();
-        $this->assertSame('/', $requestTarget);
+        static::assertSame('/', $requestTarget);
     }
 
     public function testGetRequestTargetDefaultEmpty(): void
     {
         $request = $this->createRequest('');
-        $this->assertSame('/', $request->getRequestTarget());;
+        static::assertSame('/', $request->getRequestTarget());
     }
 
     public function testGetRequestTarget(): void
     {
         $requestTarget = $this->createRequest('https://example.com:1337/foo/bar?q=baz&a=42#fragment')->getRequestTarget();
-        $this->assertSame('/foo/bar?q=baz&a=42', $requestTarget);
+        static::assertSame('/foo/bar?q=baz&a=42', $requestTarget);
     }
 
     public function testItFailsWithUri(): void
@@ -49,13 +54,6 @@ class ServerRequestUriTargetUrlTest extends TestCase
         $request->withUri($uriMock);
     }
 
-    /**
-     *
-     * @param string|null $uri
-     * @param string      $method
-     *
-     * @return Request
-     */
     private function createRequest(
         ?string $uri = null,
         string $method = 'GET'

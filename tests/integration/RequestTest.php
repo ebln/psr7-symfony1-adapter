@@ -7,7 +7,10 @@ namespace brnc\Tests\Symfony1\Message\integration;
 use brnc\Symfony1\Message\Adapter\Request;
 use Http\Psr7Test\RequestIntegrationTest;
 
-class RequestTest extends RequestIntegrationTest
+/**
+ * @internal
+ */
+final class RequestTest extends RequestIntegrationTest
 {
     public function createSubject()
     {

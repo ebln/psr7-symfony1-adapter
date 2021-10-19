@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace brnc\Symfony1\Message\Utillity;
+namespace brnc\Symfony1\Message\Utility;
 
 use brnc\Symfony1\Message\Exception\InvalidTypeException;
 use Webmozart\Assert\Assert as WebmozartAssert;

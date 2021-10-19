@@ -6,7 +6,7 @@ namespace brnc\Symfony1\Message\Adapter;
 
 use brnc\Symfony1\Message\Exception\InvalidTypeException;
 use brnc\Symfony1\Message\Exception\LogicException;
-use brnc\Symfony1\Message\Utillity\Assert;
+use brnc\Symfony1\Message\Utility\Assert;
 use GuzzleHttp\Psr7\CachingStream;
 use GuzzleHttp\Psr7\LazyOpenStream;
 use GuzzleHttp\Psr7\UploadedFile;
@@ -304,6 +304,8 @@ class Request implements ServerRequestInterface
 
     /**
      * @param string $method
+     *
+     * @psalm-param mixed $method
      *
      * @throws InvalidTypeException
      *

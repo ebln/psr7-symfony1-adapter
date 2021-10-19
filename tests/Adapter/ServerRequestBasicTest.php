@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace brnc\Tests\Symfony1\Message\Adapter;
 
 use brnc\Symfony1\Message\Adapter\Request;
@@ -7,8 +9,10 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * tests methods beyond the scope of PSR-7's Message Interface
+ *
+ * @internal
  */
-class ServerRequestBasicTest extends TestCase
+final class ServerRequestBasicTest extends TestCase
 {
     /**
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
@@ -18,8 +22,8 @@ class ServerRequestBasicTest extends TestCase
         $symfonyRequestMock = new \sfWebRequest();
         $symfonyRequestMock->prepare('GET');
         $request = Request::fromSfWebRequest($symfonyRequestMock, []);
-        $this->assertSame($symfonyRequestMock, $request->getSfWebRequest());
-        $this->assertSame(spl_object_hash($symfonyRequestMock), spl_object_hash($request->getSfWebRequest()));
+        static::assertSame($symfonyRequestMock, $request->getSfWebRequest());
+        static::assertSame(spl_object_hash($symfonyRequestMock), spl_object_hash($request->getSfWebRequest()));
     }
 
     /**
@@ -31,7 +35,7 @@ class ServerRequestBasicTest extends TestCase
         $cookies      = ['cookie_1' => 'asdf', 'cookie_2' => 'qwerty'];
         $_COOKIE      = $cookies;
         $request      = $this->createRequest();
-        $this->assertSame($cookies, $request->getCookieParams(), 'Rather a quirk: returns $_COOKIE');
+        static::assertSame($cookies, $request->getCookieParams(), 'Rather a quirk: returns $_COOKIE');
         $_COOKIE = $superCookies;
     }
 
@@ -43,7 +47,7 @@ class ServerRequestBasicTest extends TestCase
         $query   = ['q' => 'foo+bar', 'test' => 'true'];
         $request = $this->createRequest('GET', [], $query);
 
-        $this->assertSame($query, $request->getQueryParams());
+        static::assertSame($query, $request->getQueryParams());
     }
 
     /**
@@ -54,7 +58,7 @@ class ServerRequestBasicTest extends TestCase
         $post    = ['user' => 'foo', 'pass' => 'bar'];
         $request = $this->createRequest('POST', [], [], $post);
 
-        $this->assertSame($post, $request->getParsedBody());
+        static::assertSame($post, $request->getParsedBody());
     }
 
     /**
@@ -63,13 +67,13 @@ class ServerRequestBasicTest extends TestCase
     public function testWithAttribute(): void
     {
         $request = $this->createRequest();
-        $this->assertSame([], $request->getAttributes());
+        static::assertSame([], $request->getAttributes());
 
-        $attribute = (object)['name' => 'foo', 'id' => 42, 'bar' => 'baz',];
+        $attribute = (object)['name' => 'foo', 'id' => 42, 'bar' => 'baz'];
         $request   = $request->withAttribute('Foo', $attribute);
 
-        $this->assertSame($attribute, $request->getAttribute('Foo'));
-        $this->assertSame(['Foo' => $attribute], $request->getAttributes());
+        static::assertSame($attribute, $request->getAttribute('Foo'));
+        static::assertSame(['Foo' => $attribute], $request->getAttributes());
     }
 
     /**
@@ -78,15 +82,15 @@ class ServerRequestBasicTest extends TestCase
     public function testWithoutAttribute(): void
     {
         $request   = $this->createRequest();
-        $attribute = (object)['name' => 'foo', 'id' => 42, 'bar' => 'baz',];
+        $attribute = (object)['name' => 'foo', 'id' => 42, 'bar' => 'baz'];
         $request   = $request->withAttribute('Foo', $attribute);
         $request   = $request->withAttribute('Bar', 'remains!');
-        $this->assertSame(['Foo' => $attribute, 'Bar' => 'remains!'], $request->getAttributes());
+        static::assertSame(['Foo' => $attribute, 'Bar' => 'remains!'], $request->getAttributes());
 
         $request = $request->withoutAttribute('Foo');
 
-        $this->assertNull($request->getAttribute('Foo'));
-        $this->assertSame(['Bar' => 'remains!'], $request->getAttributes());
+        static::assertNull($request->getAttribute('Foo'));
+        static::assertSame(['Bar' => 'remains!'], $request->getAttributes());
     }
 
     /**
@@ -97,22 +101,11 @@ class ServerRequestBasicTest extends TestCase
         $request = $this->createRequest();
         $request = $request->withAttribute('Foo', 'bar');
 
-        $this->assertNull($request->getAttribute('Baz'));
-        $this->assertSame('bar', $request->getAttribute('Foo'));
-        $this->assertSame('baz', $request->getAttribute('Baz', 'baz'));
+        static::assertNull($request->getAttribute('Baz'));
+        static::assertSame('bar', $request->getAttribute('Foo'));
+        static::assertSame('baz', $request->getAttribute('Baz', 'baz'));
     }
 
-    /**
-     * @param string $method
-     * @param array  $server
-     * @param array  $get
-     * @param array  $post
-     * @param array  $cookie
-     * @param array  $requestParameters
-     * @param array  $options
-     *
-     * @return Request
-     */
     private function createRequest(
         string $method = '',
         array $server = [],

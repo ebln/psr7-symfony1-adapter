@@ -5,7 +5,7 @@ declare(strict_types=1);
 
 namespace brnc\Symfony1\Message\Adapter;
 
-use brnc\Symfony1\Message\Utillity\Assert;
+use brnc\Symfony1\Message\Utility\Assert;
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
@@ -179,12 +179,15 @@ class Response implements ResponseInterface
     }
 
     /**
+     * N.b. Changes are directly applied to the adapted sfWebResponse,
+     *      thus the returned object will return same value as the "immutable" original instance
+     *
      * @param int    $code
      * @param string $reasonPhrase
      *
-     * @return static
+     * @psalm-param mixed $code
      *
-     * @deprecated     Changes are directly applied to the adapted sfWebResponse, thus the returned object will return same value as the "immutable" original instance
+     * @return static
      */
     public function withStatus($code, $reasonPhrase = ''): self
     {
