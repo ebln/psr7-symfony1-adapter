@@ -8,6 +8,23 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 ## [Unreleased] (meant as staging area)
 
 ### Added
+- …
+
+### TODO
+
+- Cookies: Write to response
+- Cookies: Read from request
+- Cookies: write and overwrite to request
+- Refactor `Request::withUri` to be closer to PSR-7
+- Refactor `BodyStreamHook::addBodyFromResponse` using WeakMap for a PHP >=8.0 (or with [polyfill](https://github.com/BenMorel/weakmap-polyfill))
+- Remove `mock/guzzle-psr7` when `php-http/psr7-integration-tests` supports `GuzzleHttp\Psr7 ^2.0`
+- Allow configurable StreamFactory instead of hardcoded used
+
+----
+
+## [1.4.0]  - 2021-10-19
+
+### Added
 
 - PSR-17 `ResponseFactory` to enable PSR-15
 - `ResponseTranscriptor` to transcribe PSR-7 responses directly to Symfony1 one's
@@ -24,16 +41,6 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 ### Fixed
 
 - DX: makefile, dockerfile & xdebug
-
-### TODO
-
-- Cookies: Write to response
-- Cookies: Read from request
-- Cookies: write and overwrite to request
-- Refactor `Request::withUri` to be closer to PSR-7
-- Refactor `BodyStreamHook::addBodyFromResponse` using WeakMap for a PHP >=8.0 (or with [polyfill](https://github.com/BenMorel/weakmap-polyfill))
-- Remove `mock/guzzle-psr7` when `php-http/psr7-integration-tests` supports `GuzzleHttp\Psr7 ^2.0`
-- Allow configurable StreamFactory instead of hardcoded used
 
 ----
 No changelog before October 2021, the following was only casually reconstructed
