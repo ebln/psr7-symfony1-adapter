@@ -12,6 +12,7 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 
 ### TODO
 
+- Monitor [PHP RFC: Server-Side Request and Response Objects](https://wiki.php.net/rfc/request_response)
 - Cookies: Write to response
 - Cookies: Read from request
 - Cookies: write and overwrite to request
