@@ -10,6 +10,8 @@ use Psr\Http\Message\UploadedFileInterface;
 
 /**
  * @internal
+ *
+ * @coversNothing
  */
 final class ServerRequestUploadTest extends TestCase
 {
@@ -158,7 +160,7 @@ final class ServerRequestUploadTest extends TestCase
                     'size'     => 23,
                 ],
                 'form-bar' => [
-                    'foo' => [
+                    'foo'      => [
                         'bar' => [
                             'baz' => [
                                 'file-bar' => [

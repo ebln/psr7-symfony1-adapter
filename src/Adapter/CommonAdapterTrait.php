@@ -29,10 +29,10 @@ trait CommonAdapterTrait
      * @param string          $name
      * @param string|string[] $value
      *
+     * @return static
+     *
      * @throws \InvalidArgumentException
      * @throws \ReflectionException
-     *
-     * @return static
      */
     public function withAddedHeader($name, $value)
     {
@@ -61,10 +61,10 @@ trait CommonAdapterTrait
      * @param string          $name
      * @param string|string[] $value
      *
+     * @return static
+     *
      * @throws \InvalidArgumentException
      * @throws \ReflectionException
-     *
-     * @return static
      */
     public function withHeader($name, $value)
     {
@@ -76,9 +76,7 @@ trait CommonAdapterTrait
         return $new;
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
+    /** @throws \InvalidArgumentException */
     public function getBody(): StreamInterface
     {
         return $this->body ?? Utils::streamFor();

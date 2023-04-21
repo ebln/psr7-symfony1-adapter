@@ -9,6 +9,8 @@ use Http\Psr7Test\RequestIntegrationTest;
 
 /**
  * @internal
+ *
+ * @coversNothing
  */
 final class RequestTest extends RequestIntegrationTest
 {

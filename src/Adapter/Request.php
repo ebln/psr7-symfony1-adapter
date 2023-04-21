@@ -15,7 +15,6 @@ use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
-use ReflectionObject;
 
 /**
  * TODO
@@ -92,8 +91,6 @@ class Request implements ServerRequestInterface
      * @param array<string, bool> $options
      *
      * @throws \InvalidArgumentException
-     *
-     * @return Request
      */
     public static function fromSfWebRequest(\sfWebRequest $sfWebRequest, array $options = []): self
     {
@@ -118,9 +115,7 @@ class Request implements ServerRequestInterface
         return $new;
     }
 
-    /**
-     * @deprecated Avoid this at all costs! It only serves as a last resort!
-     */
+    /** @deprecated Avoid this at all costs! It only serves as a last resort! */
     public function getSfWebRequest(): \sfWebRequest
     {
         return $this->sfWebRequest;
@@ -137,9 +132,9 @@ class Request implements ServerRequestInterface
     /**
      * @param string $version
      *
-     * @throws \ReflectionException
-     *
      * @return static
+     *
+     * @throws \ReflectionException
      *
      * @deprecated Will modify sfWebRequest even though it has no intrinsic support for this
      */
@@ -154,9 +149,7 @@ class Request implements ServerRequestInterface
         return $new;
     }
 
-    /**
-     * @return string[][]
-     */
+    /** @return string[][] */
     public function getHeaders(): array
     {
         $headers = [];
@@ -197,9 +190,9 @@ class Request implements ServerRequestInterface
     /**
      * @param string $name
      *
-     * @throws \InvalidArgumentException
-     *
      * @return string[]
+     *
+     * @throws \InvalidArgumentException
      */
     public function getHeader($name): array
     {
@@ -225,10 +218,10 @@ class Request implements ServerRequestInterface
     /**
      * @param string $name
      *
+     * @return static
+     *
      * @throws \InvalidArgumentException
      * @throws \ReflectionException
-     *
-     * @return static
      *
      * @deprecated Will modify sfWebRequest even though it has no intrinsic support for this
      */
@@ -289,9 +282,7 @@ class Request implements ServerRequestInterface
         return $new;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     public function getMethod(): string
     {
         $method = $this->sfWebRequest->getMethod();
@@ -307,9 +298,9 @@ class Request implements ServerRequestInterface
      *
      * @psalm-param mixed $method
      *
-     * @throws InvalidTypeException
-     *
      * @return static
+     *
+     * @throws InvalidTypeException
      */
     public function withMethod($method): self
     {
@@ -329,11 +320,11 @@ class Request implements ServerRequestInterface
     /**
      * @param bool $preserveHost
      *
+     * @return static
+     *
      * @throws LogicException
      * @throws \InvalidArgumentException
      * @throws \ReflectionException
-     *
-     * @return static
      *
      * @deprecated Will not alter sfWebRequest! Will crash on Symfony compatibility mode if `$preserveHost === true`!
      */
@@ -376,9 +367,9 @@ class Request implements ServerRequestInterface
     /**
      * @param array<array-key, mixed>|string[] $cookies
      *
-     * @throws LogicException
-     *
      * @return static
+     *
+     * @throws LogicException
      *
      * @deprecated Will not alter sfWebRequest! Will crash on Symfony compatibility mode!
      */
@@ -390,9 +381,7 @@ class Request implements ServerRequestInterface
         return $new;
     }
 
-    /**
-     * @return array<array-key, array<array-key, mixed>|mixed|string>
-     */
+    /** @return array<array-key, array<array-key, mixed>|mixed|string> */
     public function getQueryParams(): array
     {
         return $this->queryParams ?? $this->sfWebRequest->getGetParameters();
@@ -401,9 +390,9 @@ class Request implements ServerRequestInterface
     /**
      * @param array<array-key, mixed> $query
      *
-     * @throws LogicException
-     *
      * @return static
+     *
+     * @throws LogicException
      *
      * @deprecated Will not alter sfWebRequest! Will crash on Symfony compatibility mode!
      */
@@ -416,9 +405,9 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @throws \LogicException
-     *
      * @return array<array-key, mixed>
+     *
+     * @throws \LogicException
      */
     public function getUploadedFiles(): array
     {
@@ -443,9 +432,7 @@ class Request implements ServerRequestInterface
         return $new;
     }
 
-    /**
-     * @return null|array<array-key, mixed>|object
-     */
+    /** @return null|array<array-key, mixed>|object */
     public function getParsedBody()
     {
         if (false === $this->parsedBody) {
@@ -458,9 +445,9 @@ class Request implements ServerRequestInterface
     /**
      * @param null|array<array-key, mixed>|object $data
      *
-     * @throws InvalidTypeException
-     *
      * @return static
+     *
+     * @throws InvalidTypeException
      */
     public function withParsedBody($data): self
     {
@@ -474,9 +461,7 @@ class Request implements ServerRequestInterface
         return $new;
     }
 
-    /**
-     * @return mixed[]
-     */
+    /** @return mixed[] */
     public function getAttributes(): array
     {
         return $this->attributes;
@@ -530,7 +515,7 @@ class Request implements ServerRequestInterface
     private function retroducePathInfoArray(array $pathInfo): void
     {
         if (null === $this->reflexPathInfoArray) {
-            $reflexiveWebRequest       = new ReflectionObject($this->sfWebRequest);
+            $reflexiveWebRequest       = new \ReflectionObject($this->sfWebRequest);
             $this->reflexPathInfoArray = $reflexiveWebRequest->getProperty('pathInfoArray');
             $this->reflexPathInfoArray->setAccessible(true);
         }
@@ -554,9 +539,7 @@ class Request implements ServerRequestInterface
         $this->retroducePathInfoArray($pathInfoArray);
     }
 
-    /**
-     * get the array key resp. to pathInfoArray from the header field name
-     */
+    /** get the array key resp. to pathInfoArray from the header field name */
     private function getPathInfoKey(string $name): string
     {
         $keyName = strtoupper(str_replace('-', '_', $name));
@@ -615,9 +598,9 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @throws LogicException
-     *
      * @return static
+     *
+     * @throws LogicException
      */
     private function getCloneOrDie(): self
     {
@@ -628,9 +611,7 @@ class Request implements ServerRequestInterface
         return clone $this;
     }
 
-    /**
-     * @return static
-     */
+    /** @return static */
     private function getThisOrClone(): self
     {
         if ($this->isImmutable) {

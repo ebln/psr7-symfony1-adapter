@@ -11,12 +11,12 @@ use PHPUnit\Framework\TestCase;
  * tests methods beyond the scope of PSR-7's Message Interface
  *
  * @internal
+ *
+ * @coversNothing
  */
 final class ServerRequestBasicTest extends TestCase
 {
-    /**
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testGetSfWebRequest(): void
     {
         $symfonyRequestMock = new \sfWebRequest();
@@ -26,9 +26,7 @@ final class ServerRequestBasicTest extends TestCase
         static::assertSame(spl_object_hash($symfonyRequestMock), spl_object_hash($request->getSfWebRequest()));
     }
 
-    /**
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testGetCookieParams(): void
     {
         $superCookies = $_COOKIE;
@@ -39,9 +37,7 @@ final class ServerRequestBasicTest extends TestCase
         $_COOKIE = $superCookies;
     }
 
-    /**
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testGetQueryParams(): void
     {
         $query   = ['q' => 'foo+bar', 'test' => 'true'];
@@ -50,9 +46,7 @@ final class ServerRequestBasicTest extends TestCase
         static::assertSame($query, $request->getQueryParams());
     }
 
-    /**
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testGetParsedBody(): void
     {
         $post    = ['user' => 'foo', 'pass' => 'bar'];
@@ -61,9 +55,7 @@ final class ServerRequestBasicTest extends TestCase
         static::assertSame($post, $request->getParsedBody());
     }
 
-    /**
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testWithAttribute(): void
     {
         $request = $this->createRequest();
@@ -76,9 +68,7 @@ final class ServerRequestBasicTest extends TestCase
         static::assertSame(['Foo' => $attribute], $request->getAttributes());
     }
 
-    /**
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testWithoutAttribute(): void
     {
         $request   = $this->createRequest();
@@ -93,9 +83,7 @@ final class ServerRequestBasicTest extends TestCase
         static::assertSame(['Bar' => 'remains!'], $request->getAttributes());
     }
 
-    /**
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testGetAttribute(): void
     {
         $request = $this->createRequest();

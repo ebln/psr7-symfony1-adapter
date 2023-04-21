@@ -10,6 +10,8 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * @internal
+ *
+ * @coversNothing
  */
 final class ServerRequestUriTargetUrlTest extends TestCase
 {

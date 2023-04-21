@@ -9,12 +9,12 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
+ *
+ * @coversNothing
  */
 final class RequestBasicTest extends TestCase
 {
-    /**
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testProtocolVersion(): void
     {
         $request = $this->createRequest();
@@ -25,9 +25,7 @@ final class RequestBasicTest extends TestCase
         static::assertSame(['SERVER_PROTOCOL' => 'HTTP/1.1'], $request->getServerParams());
     }
 
-    /**
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testPresetProtocolVersion(): void
     {
         $request = $this->createRequest('GET', ['SERVER_PROTOCOL' => 'HTTP/1.1']);
@@ -35,9 +33,7 @@ final class RequestBasicTest extends TestCase
         static::assertSame(['SERVER_PROTOCOL' => 'HTTP/1.1'], $request->getServerParams());
     }
 
-    /**
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testMethod(): void
     {
         $mock    = $this->createSymfonyMock();
@@ -71,7 +67,7 @@ final class RequestBasicTest extends TestCase
         static::assertSame($expectedServerParams, $request->getServerParams());
     }
 
-    public function withHeaderProvider(): array
+    public static function withHeaderProvider(): array
     {
         return [
             [
@@ -105,9 +101,7 @@ final class RequestBasicTest extends TestCase
         ];
     }
 
-    /**
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testWithAddedHeader(): void
     {
         $request = $this->createRequest();
@@ -124,9 +118,7 @@ final class RequestBasicTest extends TestCase
         static::assertSame(['HTTP_X_FOO' => 'bar,baz'], $request->getServerParams());
     }
 
-    /**
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testWithArrayAddedHeader(): void
     {
         $request = $this->createRequest();
@@ -143,9 +135,7 @@ final class RequestBasicTest extends TestCase
         static::assertSame(['HTTP_X_FOO' => 'foo,bar,baz'], $request->getServerParams());
     }
 
-    /**
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testWithoutHeader(): void
     {
         $request = $this->createRequest('GET', ['HTTP_X_FOO' => 'bar, baz']);

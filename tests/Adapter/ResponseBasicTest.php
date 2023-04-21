@@ -9,12 +9,12 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
+ *
+ * @coversNothing
  */
 final class ResponseBasicTest extends TestCase
 {
-    /**
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testProtocolVersion(): void
     {
         /**
@@ -30,9 +30,7 @@ final class ResponseBasicTest extends TestCase
         static::assertSame(['http_protocol' => 'HTTP/1.1'], $symfony->getOptions());
     }
 
-    /**
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testPresetProtocolVersion(): void
     {
         /**
@@ -46,9 +44,7 @@ final class ResponseBasicTest extends TestCase
         static::assertSame(['http_protocol' => 'HTTP/1.1'], $symfony->getOptions());
     }
 
-    /**
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testStatus(): void
     {
         /**
@@ -74,9 +70,7 @@ final class ResponseBasicTest extends TestCase
         static::assertSame('*** Bad Request ***', $symfony->getStatusText());
     }
 
-    /**
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testDefaultReasonPhrase(): void
     {
         /**
@@ -115,7 +109,7 @@ final class ResponseBasicTest extends TestCase
         static::assertSame($expectedHttpHeaders, $symfony->getHttpHeaders());
     }
 
-    public function withHeaderProvider(): array
+    public static function withHeaderProvider(): array
     {
         return [
             [
@@ -135,9 +129,7 @@ final class ResponseBasicTest extends TestCase
         ];
     }
 
-    /**
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testwithAddedHeader(): void
     {
         /**
@@ -158,9 +150,7 @@ final class ResponseBasicTest extends TestCase
         static::assertSame(['X-Foo' => 'bar,baz'], $symfony->getHttpHeaders());
     }
 
-    /**
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testwithArrayAddedHeader(): void
     {
         /**
@@ -181,9 +171,7 @@ final class ResponseBasicTest extends TestCase
         static::assertSame(['X-Foo' => 'foo,bar,baz'], $symfony->getHttpHeaders());
     }
 
-    /**
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testwithoutHeader(): void
     {
         /**
@@ -227,10 +215,10 @@ final class ResponseBasicTest extends TestCase
         static::assertSame($expectedHeadersOnly, $symfony->isHeaderOnly());
     }
 
-    public function withStatusNoContentProvider(): array
+    public static function withStatusNoContentProvider(): array
     {
         return [
-            '200 → 204 - default: set headersOnly true' => [
+            '200 → 204 - default: set headersOnly true'                            => [
                 'factory options'      => [],
                 'initial status'       => 200,
                 'initial headers only' => false,
@@ -244,42 +232,42 @@ final class ResponseBasicTest extends TestCase
                 'set to status'        => 200,
                 'expect headers only'  => false,
             ],
-            '200 → 201 - default : no change' => [
+            '200 → 201 - default : no change'                                      => [
                 'factory options'      => [],
                 'initial status'       => 200,
                 'initial headers only' => false,
                 'set to status'        => 201,
                 'expect headers only'  => false,
             ],
-            '200 → 204 - no automagic' => [
+            '200 → 204 - no automagic'                                             => [
                 'factory options'      => [Response::OPTION_SEND_BODY_ON_204 => true],
                 'initial status'       => 200,
                 'initial headers only' => false,
                 'set to status'        => 204,
                 'expect headers only'  => false,
             ],
-            '200 with setHeadersOnly(true) → 204: no change' => [
+            '200 with setHeadersOnly(true) → 204: no change'                       => [
                 'factory options'      => [],
                 'initial status'       => 200,
                 'initial headers only' => true,
                 'set to status'        => 204,
                 'expect headers only'  => true,
             ],
-            '204 with setHeadersOnly(false) → 200: no change' => [
+            '204 with setHeadersOnly(false) → 200: no change'                      => [
                 'factory options'      => [],
                 'initial status'       => 204,
                 'initial headers only' => false,
                 'set to status'        => 200,
                 'expect headers only'  => false,
             ],
-            '204 with setHeadersOnly(true) → 204: no change' => [
+            '204 with setHeadersOnly(true) → 204: no change'                       => [
                 'factory options'      => [],
                 'initial status'       => 204,
                 'initial headers only' => true,
                 'set to status'        => 204,
                 'expect headers only'  => true,
             ],
-            '204 with setHeadersOnly(false) → 204: no change' => [
+            '204 with setHeadersOnly(false) → 204: no change'                      => [
                 'factory options'      => [],
                 'initial status'       => 204,
                 'initial headers only' => false,
@@ -289,9 +277,7 @@ final class ResponseBasicTest extends TestCase
         ];
     }
 
-    /**
-     * @param string[] $headers
-     */
+    /** @param string[] $headers */
     private function createResponse(
         int $code = 200,
         ?string $reasonPhrase = null,
