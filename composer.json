@@ -45,8 +45,7 @@
             "mock/sfWebRequest.php",
             "mock/sfWebResponse.php",
             "mock/sfEventDispatcher.php",
-            "mock/sfEvent.php",
-            "mock/guzzle-psr7/function_include.php"
+            "mock/sfEvent.php"
         ]
     },
     "archive": {

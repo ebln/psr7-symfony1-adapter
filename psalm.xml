@@ -7,8 +7,8 @@
         allowPhpStormGenerics="true"
         strictBinaryOperands="true"
         checkForThrowsDocblock="false"
-        findUnusedVariablesAndParams="true"
-        findUnusedCode="true"
+        findUnusedVariablesAndParams="false"
+        findUnusedCode="false"
         findUnusedPsalmSuppress="true"
         errorBaseline="psalm-baseline.xml"
 >

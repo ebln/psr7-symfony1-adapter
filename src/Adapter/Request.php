@@ -258,9 +258,13 @@ class Request implements ServerRequestInterface
         }
 
         $target = $this->uri->getPath();
-        if ('' === $target) {
+        // normalize to single slash @see \Http\Psr7Test\RequestIntegrationTest::testGetRequestTargetInOriginFormNormalizesUriWithMultipleLeadingSlashesInPath
+        $target = preg_replace('#^(/+)#', '/', $target);
+
+        if (!is_string($target) || '' === $target) {
             $target = '/';
         }
+
         if ('' !== $this->uri->getQuery()) {
             $target .= '?' . $this->uri->getQuery();
         }

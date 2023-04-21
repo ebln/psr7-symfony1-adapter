@@ -12,19 +12,35 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 
 ### TODO
 
+- IMPORTANT: add `psr/http-message` as a direct dependency!
 - Monitor [PHP RFC: Server-Side Request and Response Objects](https://wiki.php.net/rfc/request_response)
 - Cookies: Write to response
 - Cookies: Read from request
 - Cookies: write and overwrite to request
 - Refactor `Request::withUri` to be closer to PSR-7
 - Refactor `BodyStreamHook::addBodyFromResponse` using WeakMap for a PHP >=8.0 (or with [polyfill](https://github.com/BenMorel/weakmap-polyfill))
-- Remove `mock/guzzle-psr7` when `php-http/psr7-integration-tests` supports `GuzzleHttp\Psr7 ^2.0`
 - Allow configurable StreamFactory instead of hardcoded used
+  - or try `php-http/discovery`
 - Bump dependencies
   - Support `psr/http-message ^2`
   - Bump `guzzlehttp/psr7` [Changelog](https://github.com/guzzle/psr7/blob/2.5/CHANGELOG.md)
 
 ----
+
+## [1.5.0]  - 2023-04-21
+
+### Changed
+- Code
+  - fixed `getRequestTarget` due to `RequestIntegrationTest::testGetRequestTargetInOriginFormNormalizesUriWithMultipleLeadingSlashesInPath`
+  - Signature of `Factory\DecoyHttpFactory::createUploadedFile` changed slightly
+  - `withRequestTarget` not accepting mixed anymore
+- Remove `mock/guzzle-psr7` as `php-http/psr7-integration-tests` supports `GuzzleHttp\Psr7 ^2.0`
+- Updated dev dependencies
+- Update code style
+
+### Fixed
+
+- downstream vulnerabilities by bumping `guzzlehttp/psr7`
 
 ## [1.4.0]  - 2021-10-19
 

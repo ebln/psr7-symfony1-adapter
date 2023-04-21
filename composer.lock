@@ -1826,16 +1826,16 @@
         },
         {
             "name": "php-http/psr7-integration-tests",
-            "version": "1.1.1",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-http/psr7-integration-tests.git",
-                "reference": "dbc81e59655c3d927ba62b2cd38be9af334590fc"
+                "reference": "d11c83205562b7a4701873e496ec8d0b71946e36"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-http/psr7-integration-tests/zipball/dbc81e59655c3d927ba62b2cd38be9af334590fc",
-                "reference": "dbc81e59655c3d927ba62b2cd38be9af334590fc",
+                "url": "https://api.github.com/repos/php-http/psr7-integration-tests/zipball/d11c83205562b7a4701873e496ec8d0b71946e36",
+                "reference": "d11c83205562b7a4701873e496ec8d0b71946e36",
                 "shasum": ""
             },
             "require": {
@@ -1844,7 +1844,7 @@
                 "psr/http-message": "^1.0"
             },
             "require-dev": {
-                "guzzlehttp/psr7": "^1.4",
+                "guzzlehttp/psr7": "^1.7 || ^2.0",
                 "laminas/laminas-diactoros": "^2.1",
                 "nyholm/psr7": "^1.0",
                 "ringcentral/psr7": "^1.2",
@@ -1879,9 +1879,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-http/psr7-integration-tests/issues",
-                "source": "https://github.com/php-http/psr7-integration-tests/tree/1.1.1"
+                "source": "https://github.com/php-http/psr7-integration-tests/tree/1.2.0"
             },
-            "time": "2020-11-02T14:08:03+00:00"
+            "time": "2022-12-01T07:49:31+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -2817,12 +2817,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "0488e161600117fc3a0d72397dad154729002f54"
+                "reference": "20f03d27a8ee2e23a29aa65c117f20cf31d2e531"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/0488e161600117fc3a0d72397dad154729002f54",
-                "reference": "0488e161600117fc3a0d72397dad154729002f54",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/20f03d27a8ee2e23a29aa65c117f20cf31d2e531",
+                "reference": "20f03d27a8ee2e23a29aa65c117f20cf31d2e531",
                 "shasum": ""
             },
             "conflict": {
@@ -3410,7 +3410,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-09-30T18:03:50+00:00"
+            "time": "2023-04-20T21:04:06+00:00"
         },
         {
             "name": "sebastian/cli-parser",
