@@ -10,6 +10,8 @@ use Psr\Http\Message\UploadedFileInterface;
 
 /**
  * @internal
+ *
+ * @coversNothing
  */
 final class ServerRequestUploadTest extends TestCase
 {
@@ -101,6 +103,7 @@ final class ServerRequestUploadTest extends TestCase
             ]
         );
 
+        /** @var array<string, array<string, int|mixed>> $files */
         $files = $request->getUploadedFiles()['mass_upload'];
         static::assertCount(3, $files);
         static::assertInstanceOf(UploadedFileInterface::class, $files['foo']);
@@ -158,7 +161,7 @@ final class ServerRequestUploadTest extends TestCase
                     'size'     => 23,
                 ],
                 'form-bar' => [
-                    'foo' => [
+                    'foo'      => [
                         'bar' => [
                             'baz' => [
                                 'file-bar' => [

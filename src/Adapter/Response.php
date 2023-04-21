@@ -9,7 +9,6 @@ use brnc\Symfony1\Message\Utility\Assert;
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
-use ReflectionObject;
 
 /**
  * TODO
@@ -54,11 +53,7 @@ class Response implements ResponseInterface
         $this->sfWebResponse = $sfWebResponse;
     }
 
-    /**
-     * @param array<string, bool> $options
-     *
-     * @return Response
-     */
+    /** @param array<string, bool> $options */
     public static function fromSfWebResponse(\sfWebResponse $sfWebResponse, array $options = []): self
     {
         $new = new static($sfWebResponse);
@@ -75,9 +70,7 @@ class Response implements ResponseInterface
         return $new;
     }
 
-    /**
-     * @deprecated Avoid this at all costs! It only serves as a last resort!
-     */
+    /** @deprecated Avoid this at all costs! It only serves as a last resort! */
     public function getSfWebResponse(): \sfWebResponse
     {
         return $this->sfWebResponse;
@@ -94,9 +87,9 @@ class Response implements ResponseInterface
     /**
      * @param string $version
      *
-     * @throws \ReflectionException
-     *
      * @return static
+     *
+     * @throws \ReflectionException
      *
      * @deprecated Changes are directly applied to the adapted sfWebResponse, thus the returned object will return same value as the "immutable" original instance
      */
@@ -110,9 +103,7 @@ class Response implements ResponseInterface
         return $this->getThisOrClone();
     }
 
-    /**
-     * @return string[][]
-     */
+    /** @return string[][] */
     public function getHeaders(): array
     {
         $shadowedHeaders = [];
@@ -126,17 +117,13 @@ class Response implements ResponseInterface
         return $shadowedHeaders;
     }
 
-    /**
-     * @param string $name
-     */
+    /** @param string $name */
     public function getHeaderLine($name): string
     {
         return $this->sfWebResponse->getHttpHeader($name) ?? '';
     }
 
-    /**
-     * @param string $name
-     */
+    /** @param string $name */
     public function hasHeader($name): bool
     {
         return $this->sfWebResponse->hasHttpHeader($name);
@@ -158,10 +145,10 @@ class Response implements ResponseInterface
     /**
      * @param string $name
      *
-     * @throws \InvalidArgumentException
-     *
      * @return $this In conflict with PSR-7's immutability paradigm, this method does not return a clone but the very
      *               same instance, due to the nature of the underlying adapted symfony object
+     *
+     * @throws \InvalidArgumentException
      */
     public function withoutHeader($name): self
     {
@@ -217,9 +204,7 @@ class Response implements ResponseInterface
         return $this->sfWebResponse->getStatusText();
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
+    /** @throws \InvalidArgumentException */
     public function getBody(): StreamInterface
     {
         if (!$this->body || !$this->body->isReadable()) {
@@ -283,14 +268,14 @@ class Response implements ResponseInterface
     /**
      * sets symfony response's options property using reflection
      *
-     * @param array{http_protocol: string ,__brncBodyStreamHook: null|\brnc\Symfony1\Message\Adapter\BodyStreamHook} $options
+     * @param array{http_protocol: ?string ,__brncBodyStreamHook: null|\brnc\Symfony1\Message\Adapter\BodyStreamHook} $options
      *
      * @throws \ReflectionException
      */
     private function retroduceOptions(array $options): void
     {
         if (null === $this->reflexOptions) {
-            $reflexiveWebResponse = new ReflectionObject($this->sfWebResponse);
+            $reflexiveWebResponse = new \ReflectionObject($this->sfWebResponse);
             $this->reflexOptions  = $reflexiveWebResponse->getProperty('options');
             $this->reflexOptions->setAccessible(true);
         }
@@ -332,7 +317,7 @@ class Response implements ResponseInterface
     private function retroduceHeaders(array $headers): void
     {
         if (null === $this->reflexHeaders) {
-            $reflexiveWebResponse = new ReflectionObject($this->sfWebResponse);
+            $reflexiveWebResponse = new \ReflectionObject($this->sfWebResponse);
             $this->reflexHeaders  = $reflexiveWebResponse->getProperty('headers');
             $this->reflexHeaders->setAccessible(true);
         }
@@ -346,12 +331,10 @@ class Response implements ResponseInterface
         }
 
         // either return internal default for null to trigger symfony's default lookup
-        return static::$defaultReasonPhrases[$code] ?? null;
+        return self::$defaultReasonPhrases[$code] ?? null;
     }
 
-    /**
-     * @return static
-     */
+    /** @return static */
     private function getThisOrClone(): self
     {
         if ($this->isImmutable) {

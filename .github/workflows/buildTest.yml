@@ -22,7 +22,7 @@ jobs:
       - name: Require php-cs-fixer
         run: |
           mkdir --parents ./tools/php-cs-fixer
-          composer require --working-dir=tools/php-cs-fixer friendsofphp/php-cs-fixer "friendsofphp/php-cs-fixer:3.0.0" --prefer-dist --no-progress
+          composer require --working-dir=tools/php-cs-fixer friendsofphp/php-cs-fixer "friendsofphp/php-cs-fixer:3.15.1" --prefer-dist --no-progress
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
       - name: Unit tests

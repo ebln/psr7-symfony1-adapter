@@ -12,6 +12,8 @@ use PHPUnit\Framework\TestCase;
  * artificial test
  *
  * @internal
+ *
+ * @coversNothing
  */
 final class RequestReadingTest extends TestCase
 {
@@ -104,11 +106,11 @@ final class RequestReadingTest extends TestCase
         static::assertSame($expectedHeaders, $readingRequestMock->getHeaders());
     }
 
-    public function provideHeaderTestData(): array
+    public static function provideHeaderTestData(): array
     {
         return [
-            'happy case' => [
-                'request' => [
+            'happy case'            => [
+                'request'              => [
                     'method' => '',
                     'server' => [
                         'SERVER_PROTOCOL' => 'HTTP/1.0',
@@ -123,8 +125,8 @@ final class RequestReadingTest extends TestCase
                     'x-test' => ['foo', 'bar'],
                 ],
             ],
-            'Content-Type set' => [
-                'request' => [
+            'Content-Type set'      => [
+                'request'              => [
                     'method' => '',
                     'server' => [
                         'SERVER_PROTOCOL'       => 'HTTP/1.0',
@@ -141,8 +143,8 @@ final class RequestReadingTest extends TestCase
                     'x-another-header' => ['was set'],
                 ],
             ],
-            'Content-Type not set' => [
-                'request' => [
+            'Content-Type not set'  => [
+                'request'              => [
                     'method' => '',
                     'server' => [
                         'SERVER_PROTOCOL'       => 'HTTP/1.0',
@@ -159,8 +161,8 @@ final class RequestReadingTest extends TestCase
                     'x-another-header' => ['was set'],
                 ],
             ],
-            'Content-Type Quirk I' => [
-                'request' => [
+            'Content-Type Quirk I'  => [
+                'request'              => [
                     'method' => '',
                     'server' => [
                         'HTTP_CONTENT_TYPE' => 'BOGUS (is overridden by following)',
@@ -176,7 +178,7 @@ final class RequestReadingTest extends TestCase
                 ],
             ],
             'Content-Type Quirk II' => [
-                'request' => [
+                'request'              => [
                     'method' => '',
                     'server' => [
                         'CONTENT_TYPE'      => 'multipart/form-data; boundary=foobar',
@@ -209,11 +211,11 @@ final class RequestReadingTest extends TestCase
         static::assertSame($expectedVersion, $readingRequestMock->getProtocolVersion());
     }
 
-    public function provideProtocolVersionData(): array
+    public static function provideProtocolVersionData(): array
     {
         return [
-            'happy case' => [
-                'request' => [
+            'happy case'                                                                     => [
+                'request'          => [
                     'server' => [
                         'SERVER_PROTOCOL' => 'HTTP/1.0',
                     ],
@@ -221,8 +223,8 @@ final class RequestReadingTest extends TestCase
                 ],
                 'expected version' => '1.0',
             ],
-            'empty string → due to symfony\'s own fallback to \'\'' => [
-                'request' => [
+            'empty string → due to symfony\'s own fallback to \'\''                          => [
+                'request'          => [
                     'server' => [
                         'SERVER_PROTOCOL' => 'HTTP/',
                     ],
@@ -230,15 +232,15 @@ final class RequestReadingTest extends TestCase
                 ],
                 'expected version' => '',
             ],
-            'null → due to symfony\'s own fallback to \'\'' => [
-                'request' => [
+            'null → due to symfony\'s own fallback to \'\''                                  => [
+                'request'          => [
                     'server' => [],
                     'method' => '',
                 ],
                 'expected version' => '',
             ],
-            'Not number dot number I → empty string: due to symfony\'s own check to \d\.\d' => [
-                'request' => [
+            'Not number dot number I → empty string: due to symfony\'s own check to \d\.\d'  => [
+                'request'          => [
                     'method' => 'x.9',
                     'server' => [
                         'SERVER_PROTOCOL' => 'HTTP/foo bar baz',
@@ -247,7 +249,7 @@ final class RequestReadingTest extends TestCase
                 'expected version' => '',
             ],
             'Not number dot number II → empty string: due to symfony\'s own check to \d\.\d' => [
-                'request' => [
+                'request'          => [
                     'method' => '5.y',
                     'server' => [
                         'SERVER_PROTOCOL' => 'foo bar baz',

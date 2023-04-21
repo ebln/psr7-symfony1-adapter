@@ -12,13 +12,12 @@ use PHPUnit\Framework\TestCase;
  * which has not been implicitly covered by Adapter tests
  *
  * @internal
+ *
  * @coversNothing
  */
 final class ResponseMockTest extends TestCase
 {
-    /**
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testSetHttpHeaderAppend(): void
     {
         /**
@@ -53,9 +52,7 @@ final class ResponseMockTest extends TestCase
         static::assertSame(['X-Append-Test' => 'foo/baz'], $symfony->getHttpHeaders());
     }
 
-    /**
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     */
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testSetHttpHeaderNoAppendContentType(): void
     {
         /**

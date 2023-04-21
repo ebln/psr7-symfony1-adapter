@@ -10,6 +10,8 @@ use Psr\Http\Message\StreamInterface;
 
 /**
  * @internal
+ *
+ * @coversNothing
  */
 final class GuzzleStreamFactoryTest extends TestCase
 {

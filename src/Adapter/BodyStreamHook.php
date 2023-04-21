@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace brnc\Symfony1\Message\Adapter;
 
 use Psr\Http\Message\StreamInterface;
-use ReflectionObject;
 
 class BodyStreamHook
 {
@@ -18,9 +17,7 @@ class BodyStreamHook
         $this->connect($sfWebResponse);
     }
 
-    /**
-     * picks the specified Response's BodyStream to be send when sfWebResponse->send() or ->sendContent() is called
-     */
+    /** picks the specified Response's BodyStream to be send when sfWebResponse->send() or ->sendContent() is called */
     public function distinguishResponse(Response $response): void
     {
         $distinguishedId = $this->getObjectIdentifier($response);
@@ -67,7 +64,7 @@ class BodyStreamHook
     private function connect(\sfWebResponse $sfWebResponse): void
     {
         // Use reflection
-        $reflexiveWebResponse = new ReflectionObject($sfWebResponse);
+        $reflexiveWebResponse = new \ReflectionObject($sfWebResponse);
         $dispatcherRetriever  = $reflexiveWebResponse->getProperty('dispatcher');
         $dispatcherRetriever->setAccessible(true);
         /** @var null|\sfEventDispatcher $dispatcher */

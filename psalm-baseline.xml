@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="3.8.3@389af1bfc739bfdff3f9e3dc7bd6499aee51a831">
-  <file src="src/Adapter/Request.php">
-    <DocblockTypeContradiction occurrences="1">
-      <code>null === $this-&gt;uploadedFiles</code>
-    </DocblockTypeContradiction>
-    <MixedAssignment occurrences="2">
-      <code>$new-&gt;requestTarget</code>
-      <code>$new-&gt;parsedBody</code>
-    </MixedAssignment>
-    <MixedReturnTypeCoercion occurrences="2">
-      <code>$this-&gt;cookieParams ?? $_COOKIE</code>
-      <code>array&lt;string, string&gt;</code>
-    </MixedReturnTypeCoercion>
-    <MoreSpecificImplementedParamType occurrences="3">
-      <code>$cookies</code>
-      <code>$query</code>
-      <code>$uploadedFiles</code>
-    </MoreSpecificImplementedParamType>
-    <PropertyNotSetInConstructor occurrences="4">
-      <code>$sfWebRequest</code>
-      <code>$uri</code>
-      <code>$uploadedFiles</code>
-      <code>$method</code>
-    </PropertyNotSetInConstructor>
-    <RedundantConditionGivenDocblockType occurrences="1">
+<files psalm-version="5.9.0@8b9ad1eb9e8b7d3101f949291da2b9f7767cd163">
+  <file src="src/Adapter/BodyStreamHook.php">
+    <PossiblyUnusedParam>
+      <code>$event</code>
+    </PossiblyUnusedParam>
+    <PossiblyUnusedReturnValue>
       <code>string</code>
-    </RedundantConditionGivenDocblockType>
+    </PossiblyUnusedReturnValue>
+  </file>
+  <file src="src/Adapter/Request.php">
+    <PossiblyUnusedMethod>
+      <code>fromSfWebRequest</code>
+      <code>getSfWebRequest</code>
+    </PossiblyUnusedMethod>
   </file>
   <file src="src/Adapter/Response.php">
-    <MixedArgumentTypeCoercion occurrences="3">
-      <code>$this-&gt;sfWebResponse-&gt;getOptions()</code>
-      <code>$options</code>
-      <code>$key</code>
-    </MixedArgumentTypeCoercion>
-    <PropertyNotSetInConstructor occurrences="1">
-      <code>$sfWebResponse</code>
-    </PropertyNotSetInConstructor>
-    <RedundantConditionGivenDocblockType occurrences="1">
-      <code>integer</code>
-    </RedundantConditionGivenDocblockType>
+    <PossiblyUnusedMethod>
+      <code>getSfWebResponse</code>
+      <code>preSend</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Factory/DecoyHttpFactory.php">
+    <UnusedClass>
+      <code>DecoyHttpFactory</code>
+    </UnusedClass>
+  </file>
+  <file src="src/Factory/GuzzleStreamFactory.php">
+    <UnusedClass>
+      <code>GuzzleStreamFactory</code>
+    </UnusedClass>
+  </file>
+  <file src="src/Factory/ResponseFactory.php">
+    <PossiblyUnusedMethod>
+      <code>createFactoryFromWebResponse</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Transcriptor/ResponseTranscriptor.php">
+    <UnusedClass>
+      <code>ResponseTranscriptor</code>
+    </UnusedClass>
   </file>
 </files>
