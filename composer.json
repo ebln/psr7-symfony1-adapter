@@ -1,6 +1,7 @@
 {
     "name": "brnc/psr7-symfony1-adapter",
     "description": "Partial PSR-7 Adapters for Symfony 1.5",
+    "license": "MIT",
     "keywords": [
         "symfony1",
         "http-message",
@@ -8,7 +9,6 @@
         "message",
         "psr-7"
     ],
-    "license": "MIT",
     "authors": [
         {
             "name": "ebln",
@@ -26,16 +26,11 @@
         "ergebnis/composer-normalize": "^2.15",
         "php-http/psr7-integration-tests": "^1.1",
         "phpmd/phpmd": "^2.10.1",
-        "phpstan/phpstan": "^0.12.90",
-        "phpstan/phpstan-webmozart-assert": "^0.12.12",
-        "phpunit/phpunit": "^9.5",
+        "phpstan/phpstan": "^1.10",
+        "phpstan/phpstan-webmozart-assert": "^1.2",
+        "phpunit/phpunit": "^9.6.7",
         "roave/security-advisories": "dev-master",
-        "vimeo/psalm": "^4.8"
-    },
-    "config": {
-        "allow-plugins": {
-            "ergebnis/composer-normalize": true
-        }
+        "vimeo/psalm": "^5.9"
     },
     "autoload": {
         "psr-4": {
@@ -63,6 +58,11 @@
             "phpunit.xml.dist",
             "coverage/"
         ]
+    },
+    "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true
+        }
     },
     "scripts": {
         "coverage": "XDEBUG_MODE=coverage phpunit --coverage-html coverage --coverage-text --colors=auto && chown -R 1000:1000 coverage",

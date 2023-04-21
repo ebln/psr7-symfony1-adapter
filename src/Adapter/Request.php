@@ -63,7 +63,7 @@ class Request implements ServerRequestInterface
 
     private bool $initialisedUploads = false;
 
-    /** @var null|mixed|string */
+    /** @var null|string|UriInterface */
     private $requestTarget;
 
     /** @var null|string shadow to honour: »[…]method names are case-sensitive and thus implementations SHOULD NOT modify the given string.« */
@@ -161,9 +161,8 @@ class Request implements ServerRequestInterface
                 $useKey = $key;
             }
 
-            if (null !== $useKey) {
+            if ($useKey) {
                 $headerName = $this->normalizeHeaderName($useKey);
-                /* @noinspection NullCoalescingOperatorCanBeUsedInspection */
                 if (isset($this->headerNames[$headerName])) {
                     $headerName = $this->headerNames[$headerName]; // return shadowed header name
                 }
@@ -270,7 +269,7 @@ class Request implements ServerRequestInterface
     }
 
     /**
-     * @param mixed|string|UriInterface $requestTarget
+     * @param string|UriInterface $requestTarget
      *
      * @return static
      */

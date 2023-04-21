@@ -103,6 +103,7 @@ final class ServerRequestUploadTest extends TestCase
             ]
         );
 
+        /** @var array<string, array<string, int|mixed>> $files */
         $files = $request->getUploadedFiles()['mass_upload'];
         static::assertCount(3, $files);
         static::assertInstanceOf(UploadedFileInterface::class, $files['foo']);

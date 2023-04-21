@@ -1,22 +1,26 @@
 <?xml version="1.0"?>
 <psalm
-    totallyTyped="true"
-    resolveFromConfigFile="true"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="https://getpsalm.org/schema/config"
-    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
-    allowPhpStormGenerics="true"
-    errorBaseline="psalm-baseline.xml"
+        errorLevel="1"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="https://getpsalm.org/schema/config"
+        xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+        allowPhpStormGenerics="true"
+        strictBinaryOperands="true"
+        checkForThrowsDocblock="false"
+        findUnusedVariablesAndParams="true"
+        findUnusedCode="true"
+        findUnusedPsalmSuppress="true"
+        errorBaseline="psalm-baseline.xml"
 >
     <projectFiles>
-        <directory name="src" />
+        <directory name="src"/>
         <ignoreFiles>
-            <directory name="vendor" />
-            <directory name="tests" />
+            <directory name="vendor"/>
+            <directory name="tests"/>
         </ignoreFiles>
     </projectFiles>
 
     <issueHandlers>
-        <LessSpecificReturnType errorLevel="info" />
+        <LessSpecificReturnType errorLevel="info"/>
     </issueHandlers>
 </psalm>

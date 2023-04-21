@@ -15,6 +15,7 @@ class Assert extends WebmozartAssert
      * @throws InvalidTypeException
      *
      * @psalm-pure
+     * @psalm-return never
      */
     protected static function reportInvalidArgument($message): void
     {

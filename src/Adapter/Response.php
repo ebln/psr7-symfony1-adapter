@@ -53,9 +53,7 @@ class Response implements ResponseInterface
         $this->sfWebResponse = $sfWebResponse;
     }
 
-    /**
-     * @param array<string, bool> $options
-     */
+    /** @param array<string, bool> $options */
     public static function fromSfWebResponse(\sfWebResponse $sfWebResponse, array $options = []): self
     {
         $new = new static($sfWebResponse);
@@ -270,7 +268,7 @@ class Response implements ResponseInterface
     /**
      * sets symfony response's options property using reflection
      *
-     * @param array{http_protocol: string ,__brncBodyStreamHook: null|\brnc\Symfony1\Message\Adapter\BodyStreamHook} $options
+     * @param array{http_protocol: ?string ,__brncBodyStreamHook: null|\brnc\Symfony1\Message\Adapter\BodyStreamHook} $options
      *
      * @throws \ReflectionException
      */
@@ -333,7 +331,7 @@ class Response implements ResponseInterface
         }
 
         // either return internal default for null to trigger symfony's default lookup
-        return static::$defaultReasonPhrases[$code] ?? null;
+        return self::$defaultReasonPhrases[$code] ?? null;
     }
 
     /** @return static */
