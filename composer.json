@@ -17,9 +17,9 @@
     ],
     "require": {
         "php": "^7.4 || ^8.0",
-        "guzzlehttp/psr7": "^1.7 || ^2.0",
+        "guzzlehttp/psr7": "^1.9.1 || ^2.4.5",
         "psr/http-factory": "^1.0",
-        "webmozart/assert": "^1.6"
+        "webmozart/assert": "^1.10"
     },
     "require-dev": {
         "composer/package-versions-deprecated": "^1.11",
@@ -31,6 +31,11 @@
         "phpunit/phpunit": "^9.5",
         "roave/security-advisories": "dev-master",
         "vimeo/psalm": "^4.8"
+    },
+    "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true
+        }
     },
     "autoload": {
         "psr-4": {

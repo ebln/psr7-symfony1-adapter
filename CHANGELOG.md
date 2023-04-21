@@ -20,6 +20,9 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 - Refactor `BodyStreamHook::addBodyFromResponse` using WeakMap for a PHP >=8.0 (or with [polyfill](https://github.com/BenMorel/weakmap-polyfill))
 - Remove `mock/guzzle-psr7` when `php-http/psr7-integration-tests` supports `GuzzleHttp\Psr7 ^2.0`
 - Allow configurable StreamFactory instead of hardcoded used
+- Bump dependencies
+  - Support `psr/http-message ^2`
+  - Bump `guzzlehttp/psr7` [Changelog](https://github.com/guzzle/psr7/blob/2.5/CHANGELOG.md)
 
 ----
 
