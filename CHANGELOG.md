@@ -35,10 +35,6 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 - Fix local dev env / dockerfile
 - Update code style and cs-fixer
 
-### Fixed
-
-- downstream vulnerabilities by bumping `guzzlehttp/psr7`
-
 ## [1.5.0]  - 2023-04-21
 
 ### Changed
