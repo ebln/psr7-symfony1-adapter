@@ -11,7 +11,6 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 - …
 
 ### TODO
-- Monitor [PHP RFC: Server-Side Request and Response Objects](https://wiki.php.net/rfc/request_response)
 - Cookies: Write to response
 - Cookies: Read from request
 - Cookies: write and overwrite to request
@@ -19,11 +18,26 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 - Refactor `BodyStreamHook::addBodyFromResponse` using WeakMap for a PHP >=8.0 (or with [polyfill](https://github.com/BenMorel/weakmap-polyfill))
 - Allow configurable StreamFactory instead of hardcoded used
   - or try `php-http/discovery`
-- Bump dependencies
-  - Support `psr/http-message ^2`
-  - Bump `guzzlehttp/psr7` [Changelog](https://github.com/guzzle/psr7/blob/2.5/CHANGELOG.md)
 
 ----
+
+## [1.6.0]  - 2024-06-07
+
+### Changed
+- Dependencies
+  - added:  `"psr/http-message": "^1.1 || ^2.0"` as a direct dependency!
+  - removed: support for `guzzlehttp/psr7` < `2.4.5`
+  - bumped to `webmozart/assert:^1.11`
+- Running CI checks fro PHP 7.4 - 8.3
+- Minor code fixes, due to psalm reports
+- Update dev dependencies
+- Update CI (GH actions)
+- Fix local dev env / dockerfile
+- Update code style and cs-fixer
+
+### Fixed
+
+- downstream vulnerabilities by bumping `guzzlehttp/psr7`
 
 ## [1.5.0]  - 2023-04-21
 
