@@ -22,12 +22,12 @@ final class ResponseBasicTest extends TestCase
          * @var \sfWebResponse $symfony
          */
         [$response, $symfony] = $this->createResponse();
-        static::assertSame('', $response->getProtocolVersion());
-        static::assertSame([], $symfony->getOptions());
+        self::assertSame('', $response->getProtocolVersion());
+        self::assertSame([], $symfony->getOptions());
 
         $response = $response->withProtocolVersion('1.1');
-        static::assertSame('1.1', $response->getProtocolVersion());
-        static::assertSame(['http_protocol' => 'HTTP/1.1'], $symfony->getOptions());
+        self::assertSame('1.1', $response->getProtocolVersion());
+        self::assertSame(['http_protocol' => 'HTTP/1.1'], $symfony->getOptions());
     }
 
     /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
@@ -38,10 +38,10 @@ final class ResponseBasicTest extends TestCase
          * @var \sfWebResponse $symfony
          */
         [$response, $symfony] = $this->createResponse(200, null, [], [], false, ['http_protocol' => 'HTTP/1.0']);
-        static::assertSame('1.0', $response->getProtocolVersion());
+        self::assertSame('1.0', $response->getProtocolVersion());
         $response = $response->withProtocolVersion('1.1');
-        static::assertSame('1.1', $response->getProtocolVersion());
-        static::assertSame(['http_protocol' => 'HTTP/1.1'], $symfony->getOptions());
+        self::assertSame('1.1', $response->getProtocolVersion());
+        self::assertSame(['http_protocol' => 'HTTP/1.1'], $symfony->getOptions());
     }
 
     /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
@@ -52,22 +52,22 @@ final class ResponseBasicTest extends TestCase
          * @var \sfWebResponse $symfony
          */
         [$response, $symfony] = $this->createResponse(204);
-        static::assertSame(204, $response->getStatusCode());
-        static::assertSame('No reason phrase given', $response->getReasonPhrase());
-        static::assertSame(204, $symfony->getStatusCode());
-        static::assertSame('No reason phrase given', $symfony->getStatusText());
+        self::assertSame(204, $response->getStatusCode());
+        self::assertSame('No reason phrase given', $response->getReasonPhrase());
+        self::assertSame(204, $symfony->getStatusCode());
+        self::assertSame('No reason phrase given', $symfony->getStatusText());
 
         $response = $response->withStatus(200);
-        static::assertSame(200, $response->getStatusCode());
-        static::assertSame('OK', $response->getReasonPhrase());
-        static::assertSame(200, $symfony->getStatusCode());
-        static::assertSame('OK', $symfony->getStatusText());
+        self::assertSame(200, $response->getStatusCode());
+        self::assertSame('OK', $response->getReasonPhrase());
+        self::assertSame(200, $symfony->getStatusCode());
+        self::assertSame('OK', $symfony->getStatusText());
 
         $response = $response->withStatus(400, '*** Bad Request ***');
-        static::assertSame(400, $response->getStatusCode());
-        static::assertSame('*** Bad Request ***', $response->getReasonPhrase());
-        static::assertSame(400, $symfony->getStatusCode());
-        static::assertSame('*** Bad Request ***', $symfony->getStatusText());
+        self::assertSame(400, $response->getStatusCode());
+        self::assertSame('*** Bad Request ***', $response->getReasonPhrase());
+        self::assertSame(400, $symfony->getStatusCode());
+        self::assertSame('*** Bad Request ***', $symfony->getStatusText());
     }
 
     /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
@@ -79,14 +79,14 @@ final class ResponseBasicTest extends TestCase
          */
         [$response, $symfony] = $this->createResponse(204);
         $response             = $response->withStatus(308);
-        static::assertSame(308, $response->getStatusCode());
-        static::assertSame('Permanent Redirect', $response->getReasonPhrase());
-        static::assertSame(308, $symfony->getStatusCode());
-        static::assertSame('Permanent Redirect', $symfony->getStatusText());
+        self::assertSame(308, $response->getStatusCode());
+        self::assertSame('Permanent Redirect', $response->getReasonPhrase());
+        self::assertSame(308, $symfony->getStatusCode());
+        self::assertSame('Permanent Redirect', $symfony->getStatusText());
     }
 
     /**
-     * @dataProvider withHeaderProvider
+     * @dataProvider provideHeaderCases
      *
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
@@ -97,19 +97,19 @@ final class ResponseBasicTest extends TestCase
          * @var \sfWebResponse $symfony
          */
         [$response, $symfony] = $this->createResponse();
-        static::assertFalse($response->hasHeader($name));
-        static::assertSame([], $response->getHeader($name));
-        static::assertSame([], $symfony->getHttpHeaders());
+        self::assertFalse($response->hasHeader($name));
+        self::assertSame([], $response->getHeader($name));
+        self::assertSame([], $symfony->getHttpHeaders());
         $response = $response->withHeader($name, 'FIRST VALUE');
         $response = $response->withHeader($name, $value);
-        static::assertTrue($response->hasHeader($name));
-        static::assertSame([$value], $response->getHeader($name));
-        static::assertSame($value, $response->getHeaderLine($name));
-        static::assertSame($expectedHeaders, $response->getHeaders());
-        static::assertSame($expectedHttpHeaders, $symfony->getHttpHeaders());
+        self::assertTrue($response->hasHeader($name));
+        self::assertSame([$value], $response->getHeader($name));
+        self::assertSame($value, $response->getHeaderLine($name));
+        self::assertSame($expectedHeaders, $response->getHeaders());
+        self::assertSame($expectedHttpHeaders, $symfony->getHttpHeaders());
     }
 
-    public static function withHeaderProvider(): array
+    public static function provideHeaderCases(): iterable
     {
         return [
             [
@@ -137,17 +137,17 @@ final class ResponseBasicTest extends TestCase
          * @var \sfWebResponse $symfony
          */
         [$response, $symfony] = $this->createResponse();
-        static::assertFalse($response->hasHeader('X-Foo'));
-        static::assertSame([], $response->getHeader('X-Foo'));
-        static::assertSame([], $symfony->getHttpHeaders());
+        self::assertFalse($response->hasHeader('X-Foo'));
+        self::assertSame([], $response->getHeader('X-Foo'));
+        self::assertSame([], $symfony->getHttpHeaders());
         $response = $response->withAddedHeader('X-Foo', 'bar');
-        static::assertTrue($response->hasHeader('X-Foo'));
+        self::assertTrue($response->hasHeader('X-Foo'));
         $response = $response->withAddedHeader('X-Foo', 'baz');
-        static::assertTrue($response->hasHeader('X-Foo'));
-        static::assertSame(['bar', 'baz'], $response->getHeader('X-Foo'));
-        static::assertSame('bar,baz', $response->getHeaderLine('X-Foo'));
-        static::assertSame(['X-Foo' => ['bar', 'baz']], $response->getHeaders());
-        static::assertSame(['X-Foo' => 'bar,baz'], $symfony->getHttpHeaders());
+        self::assertTrue($response->hasHeader('X-Foo'));
+        self::assertSame(['bar', 'baz'], $response->getHeader('X-Foo'));
+        self::assertSame('bar,baz', $response->getHeaderLine('X-Foo'));
+        self::assertSame(['X-Foo' => ['bar', 'baz']], $response->getHeaders());
+        self::assertSame(['X-Foo' => 'bar,baz'], $symfony->getHttpHeaders());
     }
 
     /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
@@ -158,17 +158,17 @@ final class ResponseBasicTest extends TestCase
          * @var \sfWebResponse $symfony
          */
         [$response, $symfony] = $this->createResponse();
-        static::assertFalse($response->hasHeader('X-Foo'));
-        static::assertSame([], $response->getHeader('X-Foo'));
-        static::assertSame([], $symfony->getHttpHeaders());
+        self::assertFalse($response->hasHeader('X-Foo'));
+        self::assertSame([], $response->getHeader('X-Foo'));
+        self::assertSame([], $symfony->getHttpHeaders());
         $response = $response->withAddedHeader('X-Foo', 'foo');
-        static::assertTrue($response->hasHeader('X-Foo'));
+        self::assertTrue($response->hasHeader('X-Foo'));
         $response = $response->withAddedHeader('X-Foo', ['bar', 'baz']);
-        static::assertTrue($response->hasHeader('X-Foo'));
-        static::assertSame(['foo', 'bar', 'baz'], $response->getHeader('X-Foo'));
-        static::assertSame('foo,bar,baz', $response->getHeaderLine('X-Foo'));
-        static::assertSame(['X-Foo' => ['foo', 'bar', 'baz']], $response->getHeaders());
-        static::assertSame(['X-Foo' => 'foo,bar,baz'], $symfony->getHttpHeaders());
+        self::assertTrue($response->hasHeader('X-Foo'));
+        self::assertSame(['foo', 'bar', 'baz'], $response->getHeader('X-Foo'));
+        self::assertSame('foo,bar,baz', $response->getHeaderLine('X-Foo'));
+        self::assertSame(['X-Foo' => ['foo', 'bar', 'baz']], $response->getHeaders());
+        self::assertSame(['X-Foo' => 'foo,bar,baz'], $symfony->getHttpHeaders());
     }
 
     /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
@@ -180,19 +180,19 @@ final class ResponseBasicTest extends TestCase
          */
         [$response, $symfony] = $this->createResponse(204, 'No Content', ['X-Foo' => 'bar, baz']);
 
-        static::assertTrue($response->hasHeader('X-FOO'));
-        static::assertSame(['bar', 'baz'], $response->getHeader('X-Foo'));
-        static::assertSame('bar, baz', $response->getHeaderLine('X-Foo'));
-        static::assertSame(['X-Foo' => ['bar', 'baz']], $response->getHeaders());
-        static::assertSame(['X-Foo' => 'bar, baz'], $symfony->getHttpHeaders());
+        self::assertTrue($response->hasHeader('X-FOO'));
+        self::assertSame(['bar', 'baz'], $response->getHeader('X-Foo'));
+        self::assertSame('bar, baz', $response->getHeaderLine('X-Foo'));
+        self::assertSame(['X-Foo' => ['bar', 'baz']], $response->getHeaders());
+        self::assertSame(['X-Foo' => 'bar, baz'], $symfony->getHttpHeaders());
         $response = $response->withoutHeader('x-FoO');
-        static::assertFalse($response->hasHeader('X-Foo'));
-        static::assertSame([], $response->getHeader('X-Foo'));
-        static::assertSame([], $symfony->getHttpHeaders());
+        self::assertFalse($response->hasHeader('X-Foo'));
+        self::assertSame([], $response->getHeader('X-Foo'));
+        self::assertSame([], $symfony->getHttpHeaders());
     }
 
     /**
-     * @dataProvider withStatusNoContentProvider
+     * @dataProvider provideWithStatusNoContentCases
      *
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
@@ -204,18 +204,18 @@ final class ResponseBasicTest extends TestCase
          */
         [$response, $symfony] = $this->createResponse($initialCode, null, [], [], $initialHeaderOnly, [], $adapterOptions);
 
-        static::assertSame($initialCode, $symfony->getStatusCode());
-        static::assertSame($initialCode, $response->getStatusCode());
-        static::assertSame($initialHeaderOnly, $symfony->isHeaderOnly());
+        self::assertSame($initialCode, $symfony->getStatusCode());
+        self::assertSame($initialCode, $response->getStatusCode());
+        self::assertSame($initialHeaderOnly, $symfony->isHeaderOnly());
 
         $newResponse = $response->withStatus($setCode);
 
-        static::assertSame($setCode, $symfony->getStatusCode());
-        static::assertSame($setCode, $newResponse->getStatusCode());
-        static::assertSame($expectedHeadersOnly, $symfony->isHeaderOnly());
+        self::assertSame($setCode, $symfony->getStatusCode());
+        self::assertSame($setCode, $newResponse->getStatusCode());
+        self::assertSame($expectedHeadersOnly, $symfony->isHeaderOnly());
     }
 
-    public static function withStatusNoContentProvider(): array
+    public static function provideWithStatusNoContentCases(): iterable
     {
         return [
             '200 → 204 - default: set headersOnly true'                            => [

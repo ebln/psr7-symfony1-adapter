@@ -21,13 +21,13 @@ final class ResponseBodyTest extends TestCase
 
         $newStream = Utils::streamFor('Hello');
         $new       = $response->withBody($newStream);
-        static::assertNotSame(spl_object_hash($response), spl_object_hash($new));
+        self::assertNotSame(spl_object_hash($response), spl_object_hash($new));
     }
 
     public function testWithBodyImmutableGetBody(): void
     {
         $response = $this->createResponse(false);
-        static::assertSame('', $response->getBody()->getContents());
+        self::assertSame('', $response->getBody()->getContents());
     }
 
     public function testWithBodyMutable(): void
@@ -36,21 +36,21 @@ final class ResponseBodyTest extends TestCase
 
         $newStream = Utils::streamFor('Hello');
         $new       = $response->withBody($newStream);
-        static::assertSame(spl_object_hash($response), spl_object_hash($new), 'ONLY QUIRK!');
+        self::assertSame(spl_object_hash($response), spl_object_hash($new), 'ONLY QUIRK!');
     }
 
     public function testWithBodyReadback(): void
     {
         $response = $this->createResponse(false);
-        static::assertSame('', (string)$response->getBody());
-        static::assertSame('', $response->getSfWebResponse()->sendContent());
+        self::assertSame('', (string)$response->getBody());
+        self::assertSame('', $response->getSfWebResponse()->sendContent());
 
         $newStream = Utils::streamFor('Hello');
         $new       = $response->withBody($newStream);
 
-        static::assertSame('Hello', (string)$new->getBody());
-        static::assertSame('', (string)$response->getBody(), 'Original instance must not change.');
-        static::assertSame('Hello', $response->getSfWebResponse()->sendContent(), 'ONLY QUIRK! → last withBody wins!');
+        self::assertSame('Hello', (string)$new->getBody());
+        self::assertSame('', (string)$response->getBody(), 'Original instance must not change.');
+        self::assertSame('Hello', $response->getSfWebResponse()->sendContent(), 'ONLY QUIRK! → last withBody wins!');
     }
 
     public function testStreamWriting(): void
@@ -59,19 +59,19 @@ final class ResponseBodyTest extends TestCase
         $initialStream = Utils::streamFor('FOOBAR');
         $initial       = $original->withBody($initialStream);
 
-        static::assertSame('FOOBAR', (string)$initial->getBody());
-        static::assertSame('FOOBAR', $initial->getSfWebResponse()->sendContent());
+        self::assertSame('FOOBAR', (string)$initial->getBody());
+        self::assertSame('FOOBAR', $initial->getSfWebResponse()->sendContent());
 
         $newStream = Utils::streamFor('Hello');
         $new       = $initial->withBody($newStream);
 
-        static::assertSame('Hello', (string)$new->getBody());
-        static::assertSame('Hello', $new->getSfWebResponse()->sendContent());
+        self::assertSame('Hello', (string)$new->getBody());
+        self::assertSame('Hello', $new->getSfWebResponse()->sendContent());
 
         $newStream->write(' world!');
 
-        static::assertSame('Hello world!', (string)$new->getBody());
-        static::assertSame('Hello world!', $new->getSfWebResponse()->sendContent(), 'ONLY QUIRK! → last withBody wins!');
+        self::assertSame('Hello world!', (string)$new->getBody());
+        self::assertSame('Hello world!', $new->getSfWebResponse()->sendContent(), 'ONLY QUIRK! → last withBody wins!');
     }
 
     public function testMultipleStreamWriting(): void
@@ -81,19 +81,19 @@ final class ResponseBodyTest extends TestCase
         $responseOne = $original->withBody($streamOne);
         $streamOne->write('bar');
 
-        static::assertSame('foobar', (string)$responseOne->getBody());
-        static::assertSame('foobar', $responseOne->getSfWebResponse()->sendContent(), 'ONLY QUIRK! → last withBody wins!');
+        self::assertSame('foobar', (string)$responseOne->getBody());
+        self::assertSame('foobar', $responseOne->getSfWebResponse()->sendContent(), 'ONLY QUIRK! → last withBody wins!');
 
         $streamTwo   = Utils::streamFor('Hello');
         $responseTwo = $responseOne->withBody($streamTwo);
         $streamTwo->write(' world!');
         $streamOne->write('baz');
 
-        static::assertSame('foobarbaz', (string)$responseOne->getBody());
-        static::assertSame('Hello world!', $responseOne->getSfWebResponse()->sendContent(), 'ONLY QUIRK! → last withBody wins!');
+        self::assertSame('foobarbaz', (string)$responseOne->getBody());
+        self::assertSame('Hello world!', $responseOne->getSfWebResponse()->sendContent(), 'ONLY QUIRK! → last withBody wins!');
 
-        static::assertSame('Hello world!', (string)$responseTwo->getBody());
-        static::assertSame('Hello world!', $responseTwo->getSfWebResponse()->sendContent(), 'ONLY QUIRK! → last withBody wins!');
+        self::assertSame('Hello world!', (string)$responseTwo->getBody());
+        self::assertSame('Hello world!', $responseTwo->getSfWebResponse()->sendContent(), 'ONLY QUIRK! → last withBody wins!');
     }
 
     public function testDeleteStream(): void
@@ -104,8 +104,8 @@ final class ResponseBodyTest extends TestCase
         $streamOne->write('bar');
         $streamOne->close();
 
-        static::assertSame('foo', (string)$responseOne->getBody(), 'ONLY QUIRK! Preserves content of last withBody(), even when stream was closed.');
-        static::assertSame('foo', $responseOne->getSfWebResponse()->sendContent(), 'ONLY QUIRK! Preserves content of last withBody(), even when stream was closed.');
+        self::assertSame('foo', (string)$responseOne->getBody(), 'ONLY QUIRK! Preserves content of last withBody(), even when stream was closed.');
+        self::assertSame('foo', $responseOne->getSfWebResponse()->sendContent(), 'ONLY QUIRK! Preserves content of last withBody(), even when stream was closed.');
     }
 
     public function testDeleteSecondStream(): void
@@ -120,11 +120,11 @@ final class ResponseBodyTest extends TestCase
         $streamTwo->write(' world!');
         $streamTwo->close();
 
-        static::assertSame('foobar', $responseOne->getSfWebResponse()->sendContent(), 'Fall back to earlier stream, if the later one got closed.');
-        static::assertSame('foobar', (string)$responseOne->getBody());
+        self::assertSame('foobar', $responseOne->getSfWebResponse()->sendContent(), 'Fall back to earlier stream, if the later one got closed.');
+        self::assertSame('foobar', (string)$responseOne->getBody());
 
-        static::assertSame('foobar', $responseTwo->getSfWebResponse()->sendContent(), 'ONLY QUIRK! → last readable withBody() stream wins!');
-        static::assertSame('Hello', (string)$responseTwo->getBody(), 'ONLY QUIRK! Preserves content of last withBody(), even when stream was closed.');
+        self::assertSame('foobar', $responseTwo->getSfWebResponse()->sendContent(), 'ONLY QUIRK! → last readable withBody() stream wins!');
+        self::assertSame('Hello', (string)$responseTwo->getBody(), 'ONLY QUIRK! Preserves content of last withBody(), even when stream was closed.');
     }
 
     public function testDistinguishedStream(): void
@@ -140,10 +140,10 @@ final class ResponseBodyTest extends TestCase
 
         $responseOne->preSend();
 
-        static::assertSame('foobarbaz', (string)$responseOne->getBody());
-        static::assertSame('foobarbaz', $responseOne->getSfWebResponse()->sendContent(), 'Distinguished body wins.');
-        static::assertSame('Hello world!', (string)$responseTwo->getBody(), 'Non-distinguished stream remains unchanged.');
-        static::assertSame('foobarbaz', $responseTwo->getSfWebResponse()->sendContent(), 'Distinguished body wins.');
+        self::assertSame('foobarbaz', (string)$responseOne->getBody());
+        self::assertSame('foobarbaz', $responseOne->getSfWebResponse()->sendContent(), 'Distinguished body wins.');
+        self::assertSame('Hello world!', (string)$responseTwo->getBody(), 'Non-distinguished stream remains unchanged.');
+        self::assertSame('foobarbaz', $responseTwo->getSfWebResponse()->sendContent(), 'Distinguished body wins.');
     }
 
     private function createResponse(

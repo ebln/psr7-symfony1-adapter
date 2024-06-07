@@ -18,33 +18,33 @@ final class ServerRequestUriTargetUrlTest extends TestCase
     public function testGetUriDefault(): void
     {
         $uri = $this->createRequest(null)->getUri();
-        static::assertInstanceOf(UriInterface::class, $uri);
-        static::assertSame('http://localhost/', $uri->__toString());
+        self::assertInstanceOf(UriInterface::class, $uri);
+        self::assertSame('http://localhost/', $uri->__toString());
     }
 
     public function testGetUri(): void
     {
         $uri = $this->createRequest('https://example.com:1337/foo/bar?q=bar&a=42#fragment')->getUri();
-        static::assertInstanceOf(UriInterface::class, $uri);
-        static::assertSame('https://example.com:1337/foo/bar?q=bar&a=42#fragment', $uri->__toString());
+        self::assertInstanceOf(UriInterface::class, $uri);
+        self::assertSame('https://example.com:1337/foo/bar?q=bar&a=42#fragment', $uri->__toString());
     }
 
     public function testGetRequestTargetDefaultMock(): void
     {
         $requestTarget = $this->createRequest(null)->getRequestTarget();
-        static::assertSame('/', $requestTarget);
+        self::assertSame('/', $requestTarget);
     }
 
     public function testGetRequestTargetDefaultEmpty(): void
     {
         $request = $this->createRequest('');
-        static::assertSame('/', $request->getRequestTarget());
+        self::assertSame('/', $request->getRequestTarget());
     }
 
     public function testGetRequestTarget(): void
     {
         $requestTarget = $this->createRequest('https://example.com:1337/foo/bar?q=baz&a=42#fragment')->getRequestTarget();
-        static::assertSame('/foo/bar?q=baz&a=42', $requestTarget);
+        self::assertSame('/foo/bar?q=baz&a=42', $requestTarget);
     }
 
     public function testItFailsWithUri(): void

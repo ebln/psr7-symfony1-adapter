@@ -25,31 +25,31 @@ final class ResponseMockTest extends TestCase
          * @var \sfWebResponse $symfony
          */
         [$response, $symfony] = $this->createResponse();
-        static::assertFalse($response->hasHeader('X-Append-Test'));
-        static::assertSame([], $response->getHeader('X-Append-Test'));
-        static::assertSame([], $symfony->getHttpHeaders());
+        self::assertFalse($response->hasHeader('X-Append-Test'));
+        self::assertSame([], $response->getHeader('X-Append-Test'));
+        self::assertSame([], $symfony->getHttpHeaders());
 
         $response = $response->withHeader('X-Append-Test', 'foo/bar');
 
-        static::assertTrue($response->hasHeader('X-Append-Test'));
-        static::assertSame(['foo/bar'], $response->getHeader('X-Append-Test'));
-        static::assertSame('foo/bar', $response->getHeaderLine('X-Append-Test'));
-        static::assertSame(['X-Append-Test' => ['foo/bar']], $response->getHeaders());
-        static::assertSame(['X-Append-Test' => 'foo/bar'], $symfony->getHttpHeaders());
+        self::assertTrue($response->hasHeader('X-Append-Test'));
+        self::assertSame(['foo/bar'], $response->getHeader('X-Append-Test'));
+        self::assertSame('foo/bar', $response->getHeaderLine('X-Append-Test'));
+        self::assertSame(['X-Append-Test' => ['foo/bar']], $response->getHeaders());
+        self::assertSame(['X-Append-Test' => 'foo/bar'], $symfony->getHttpHeaders());
 
         $symfony->setHttpHeader('X-Append-Test', 'foo/baz', false);
-        static::assertTrue($response->hasHeader('X-Append-Test'));
-        static::assertSame(['foo/bar', 'foo/baz'], $response->getHeader('X-Append-Test'));
-        static::assertSame('foo/bar, foo/baz', $response->getHeaderLine('X-Append-Test'));
-        static::assertSame(['X-Append-Test' => ['foo/bar', 'foo/baz']], $response->getHeaders());
-        static::assertSame(['X-Append-Test' => 'foo/bar, foo/baz'], $symfony->getHttpHeaders());
+        self::assertTrue($response->hasHeader('X-Append-Test'));
+        self::assertSame(['foo/bar', 'foo/baz'], $response->getHeader('X-Append-Test'));
+        self::assertSame('foo/bar, foo/baz', $response->getHeaderLine('X-Append-Test'));
+        self::assertSame(['X-Append-Test' => ['foo/bar', 'foo/baz']], $response->getHeaders());
+        self::assertSame(['X-Append-Test' => 'foo/bar, foo/baz'], $symfony->getHttpHeaders());
 
         $symfony->setHttpHeader('X-Append-Test', 'foo/baz', true);
-        static::assertTrue($response->hasHeader('X-Append-Test'));
-        static::assertSame(['foo/baz'], $response->getHeader('X-Append-Test'));
-        static::assertSame('foo/baz', $response->getHeaderLine('X-Append-Test'));
-        static::assertSame(['X-Append-Test' => ['foo/baz']], $response->getHeaders());
-        static::assertSame(['X-Append-Test' => 'foo/baz'], $symfony->getHttpHeaders());
+        self::assertTrue($response->hasHeader('X-Append-Test'));
+        self::assertSame(['foo/baz'], $response->getHeader('X-Append-Test'));
+        self::assertSame('foo/baz', $response->getHeaderLine('X-Append-Test'));
+        self::assertSame(['X-Append-Test' => ['foo/baz']], $response->getHeaders());
+        self::assertSame(['X-Append-Test' => 'foo/baz'], $symfony->getHttpHeaders());
     }
 
     /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
@@ -60,31 +60,31 @@ final class ResponseMockTest extends TestCase
          * @var \sfWebResponse $symfony
          */
         [$response, $symfony] = $this->createResponse();
-        static::assertFalse($response->hasHeader('Content-Type'));
-        static::assertSame([], $response->getHeader('Content-Type'));
-        static::assertSame([], $symfony->getHttpHeaders());
+        self::assertFalse($response->hasHeader('Content-Type'));
+        self::assertSame([], $response->getHeader('Content-Type'));
+        self::assertSame([], $symfony->getHttpHeaders());
 
         $response = $response->withHeader('Content-Type', 'foo/bar');
 
-        static::assertTrue($response->hasHeader('Content-Type'));
-        static::assertSame(['foo/bar'], $response->getHeader('Content-Type'));
-        static::assertSame('foo/bar', $response->getHeaderLine('Content-Type'));
-        static::assertSame(['Content-Type' => ['foo/bar']], $response->getHeaders());
-        static::assertSame(['Content-Type' => 'foo/bar'], $symfony->getHttpHeaders());
+        self::assertTrue($response->hasHeader('Content-Type'));
+        self::assertSame(['foo/bar'], $response->getHeader('Content-Type'));
+        self::assertSame('foo/bar', $response->getHeaderLine('Content-Type'));
+        self::assertSame(['Content-Type' => ['foo/bar']], $response->getHeaders());
+        self::assertSame(['Content-Type' => 'foo/bar'], $symfony->getHttpHeaders());
 
         $symfony->setHttpHeader('Content-Type', 'foo/baz', false);
-        static::assertTrue($response->hasHeader('Content-Type'));
-        static::assertSame(['foo/bar'], $response->getHeader('Content-Type'));
-        static::assertSame('foo/bar', $response->getHeaderLine('Content-Type'));
-        static::assertSame(['Content-Type' => ['foo/bar']], $response->getHeaders());
-        static::assertSame(['Content-Type' => 'foo/bar'], $symfony->getHttpHeaders());
+        self::assertTrue($response->hasHeader('Content-Type'));
+        self::assertSame(['foo/bar'], $response->getHeader('Content-Type'));
+        self::assertSame('foo/bar', $response->getHeaderLine('Content-Type'));
+        self::assertSame(['Content-Type' => ['foo/bar']], $response->getHeaders());
+        self::assertSame(['Content-Type' => 'foo/bar'], $symfony->getHttpHeaders());
 
         $symfony->setHttpHeader('Content-Type', 'foo/baz', true);
-        static::assertTrue($response->hasHeader('Content-Type'));
-        static::assertSame(['foo/baz'], $response->getHeader('Content-Type'));
-        static::assertSame('foo/baz', $response->getHeaderLine('Content-Type'));
-        static::assertSame(['Content-Type' => ['foo/baz']], $response->getHeaders());
-        static::assertSame(['Content-Type' => 'foo/baz'], $symfony->getHttpHeaders());
+        self::assertTrue($response->hasHeader('Content-Type'));
+        self::assertSame(['foo/baz'], $response->getHeader('Content-Type'));
+        self::assertSame('foo/baz', $response->getHeaderLine('Content-Type'));
+        self::assertSame(['Content-Type' => ['foo/baz']], $response->getHeaders());
+        self::assertSame(['Content-Type' => 'foo/baz'], $symfony->getHttpHeaders());
     }
 
     /**

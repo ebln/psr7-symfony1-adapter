@@ -25,19 +25,19 @@ final class GuzzleStreamFactoryTest extends TestCase
         $stream->seek(6);
         $stream->write('Z');
 
-        static::assertSame('_', $stream->getContents());
+        self::assertSame('_', $stream->getContents());
         $stream->rewind();
-        static::assertSame('FOO_BAZ_', $stream->getContents());
-        static::assertSame('', $stream->getContents());
-        static::assertSame('FOO_BAZ_', (string)$stream);
+        self::assertSame('FOO_BAZ_', $stream->getContents());
+        self::assertSame('', $stream->getContents());
+        self::assertSame('FOO_BAZ_', (string)$stream);
     }
 
     public function testCreateStream(): void
     {
         $factory = new GuzzleStreamFactory();
         $stream  = $factory->createStream('Hello world…');
-        static::assertInstanceOf(StreamInterface::class, $stream);
-        static::assertSame('Hello world…', $stream->getContents());
+        self::assertInstanceOf(StreamInterface::class, $stream);
+        self::assertSame('Hello world…', $stream->getContents());
     }
 
     public function testCreateStreamFromResource(): void
@@ -46,25 +46,25 @@ final class GuzzleStreamFactoryTest extends TestCase
         // Create resource
         /** @phpstan-var resource $tmpFile */
         $tmpFile = tmpfile();
-        static::assertIsResource($tmpFile);
+        self::assertIsResource($tmpFile);
         // Write to resource before stream creation
-        static::assertSame(10, fwrite($tmpFile, '1234567890'));
+        self::assertSame(10, fwrite($tmpFile, '1234567890'));
         // Try to read back
-        static::assertSame(0, fseek($tmpFile, 0));
-        static::assertSame('1234567890', stream_get_contents($tmpFile));
+        self::assertSame(0, fseek($tmpFile, 0));
+        self::assertSame('1234567890', stream_get_contents($tmpFile));
         // Seek to 5th byte on resource
-        static::assertSame(0, fseek($tmpFile, 5));
+        self::assertSame(0, fseek($tmpFile, 5));
         // Create stream
         $stream = $factory->createStreamFromResource($tmpFile);
         // Write to resource after stream creation
-        static::assertSame(12, fwrite($tmpFile, ' ABCDE FGHIJ'));
+        self::assertSame(12, fwrite($tmpFile, ' ABCDE FGHIJ'));
         // Seek to byte 3 on resource
-        static::assertSame(0, fseek($tmpFile, 3));
+        self::assertSame(0, fseek($tmpFile, 3));
         // Read from Stream which appears to be coupled to the resource's index
-        static::assertSame('45 ABCDE FGHIJ', $stream->getContents());
+        self::assertSame('45 ABCDE FGHIJ', $stream->getContents());
         // Rewind on the steam…
         $stream->rewind();
-        static::assertSame('12345 ABCDE FGHIJ', $stream->getContents());
+        self::assertSame('12345 ABCDE FGHIJ', $stream->getContents());
         fclose($tmpFile);
     }
 }

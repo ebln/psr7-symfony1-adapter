@@ -18,19 +18,19 @@ final class RequestBasicTest extends TestCase
     public function testProtocolVersion(): void
     {
         $request = $this->createRequest();
-        static::assertSame('', $request->getProtocolVersion());
-        static::assertSame([], $request->getServerParams());
+        self::assertSame('', $request->getProtocolVersion());
+        self::assertSame([], $request->getServerParams());
         $request = $request->withProtocolVersion('1.1');
-        static::assertSame('1.1', $request->getProtocolVersion());
-        static::assertSame(['SERVER_PROTOCOL' => 'HTTP/1.1'], $request->getServerParams());
+        self::assertSame('1.1', $request->getProtocolVersion());
+        self::assertSame(['SERVER_PROTOCOL' => 'HTTP/1.1'], $request->getServerParams());
     }
 
     /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testPresetProtocolVersion(): void
     {
         $request = $this->createRequest('GET', ['SERVER_PROTOCOL' => 'HTTP/1.1']);
-        static::assertSame('1.1', $request->getProtocolVersion());
-        static::assertSame(['SERVER_PROTOCOL' => 'HTTP/1.1'], $request->getServerParams());
+        self::assertSame('1.1', $request->getProtocolVersion());
+        self::assertSame(['SERVER_PROTOCOL' => 'HTTP/1.1'], $request->getServerParams());
     }
 
     /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
@@ -38,36 +38,36 @@ final class RequestBasicTest extends TestCase
     {
         $mock    = $this->createSymfonyMock();
         $request = Request::fromSfWebRequest($mock);
-        static::assertSame('GET', $request->getMethod());
+        self::assertSame('GET', $request->getMethod());
         $request = $request->withMethod('PuRgE');
-        static::assertSame('PuRgE', $request->getMethod());
-        static::assertSame('PURGE', $mock->getMethod());
+        self::assertSame('PuRgE', $request->getMethod());
+        self::assertSame('PURGE', $mock->getMethod());
         $request = $request->withMethod('GET');
-        static::assertSame('GET', $request->getMethod());
-        static::assertSame('GET', $mock->getMethod());
+        self::assertSame('GET', $request->getMethod());
+        self::assertSame('GET', $mock->getMethod());
     }
 
     /**
-     * @dataProvider withHeaderProvider
+     * @dataProvider provideHeaderCases
      *
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
     public function testHeader(string $name, string $value, array $expectedHeaders, array $expectedServerParams): void
     {
         $request = $this->createRequest();
-        static::assertFalse($request->hasHeader($name));
-        static::assertSame([], $request->getHeader($name));
-        static::assertSame([], $request->getServerParams());
+        self::assertFalse($request->hasHeader($name));
+        self::assertSame([], $request->getHeader($name));
+        self::assertSame([], $request->getServerParams());
         $request = $request->withHeader($name, 'FIRST VALUE');
         $request = $request->withHeader($name, $value);
-        static::assertTrue($request->hasHeader($name));
-        static::assertSame([$value], $request->getHeader($name));
-        static::assertSame($value, $request->getHeaderLine($name));
-        static::assertSame($expectedHeaders, $request->getHeaders());
-        static::assertSame($expectedServerParams, $request->getServerParams());
+        self::assertTrue($request->hasHeader($name));
+        self::assertSame([$value], $request->getHeader($name));
+        self::assertSame($value, $request->getHeaderLine($name));
+        self::assertSame($expectedHeaders, $request->getHeaders());
+        self::assertSame($expectedServerParams, $request->getServerParams());
     }
 
-    public static function withHeaderProvider(): array
+    public static function provideHeaderCases(): iterable
     {
         return [
             [
@@ -105,49 +105,49 @@ final class RequestBasicTest extends TestCase
     public function testWithAddedHeader(): void
     {
         $request = $this->createRequest();
-        static::assertFalse($request->hasHeader('X-Foo'));
-        static::assertSame([], $request->getHeader('X-Foo'));
-        static::assertSame([], $request->getServerParams());
+        self::assertFalse($request->hasHeader('X-Foo'));
+        self::assertSame([], $request->getHeader('X-Foo'));
+        self::assertSame([], $request->getServerParams());
         $request = $request->withAddedHeader('X-Foo', 'bar');
-        static::assertTrue($request->hasHeader('X-Foo'));
+        self::assertTrue($request->hasHeader('X-Foo'));
         $request = $request->withAddedHeader('X-Foo', 'baz');
-        static::assertTrue($request->hasHeader('X-Foo'));
-        static::assertSame(['bar', 'baz'], $request->getHeader('X-Foo'));
-        static::assertSame('bar,baz', $request->getHeaderLine('X-Foo'));
-        static::assertSame(['X-Foo' => ['bar', 'baz']], $request->getHeaders());
-        static::assertSame(['HTTP_X_FOO' => 'bar,baz'], $request->getServerParams());
+        self::assertTrue($request->hasHeader('X-Foo'));
+        self::assertSame(['bar', 'baz'], $request->getHeader('X-Foo'));
+        self::assertSame('bar,baz', $request->getHeaderLine('X-Foo'));
+        self::assertSame(['X-Foo' => ['bar', 'baz']], $request->getHeaders());
+        self::assertSame(['HTTP_X_FOO' => 'bar,baz'], $request->getServerParams());
     }
 
     /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testWithArrayAddedHeader(): void
     {
         $request = $this->createRequest();
-        static::assertFalse($request->hasHeader('X-Foo'));
-        static::assertSame([], $request->getHeader('X-Foo'));
-        static::assertSame([], $request->getServerParams());
+        self::assertFalse($request->hasHeader('X-Foo'));
+        self::assertSame([], $request->getHeader('X-Foo'));
+        self::assertSame([], $request->getServerParams());
         $request = $request->withAddedHeader('X-Foo', 'foo');
-        static::assertTrue($request->hasHeader('X-Foo'));
+        self::assertTrue($request->hasHeader('X-Foo'));
         $request = $request->withAddedHeader('X-Foo', ['bar', 'baz']);
-        static::assertTrue($request->hasHeader('X-Foo'));
-        static::assertSame(['foo', 'bar', 'baz'], $request->getHeader('X-Foo'));
-        static::assertSame('foo,bar,baz', $request->getHeaderLine('X-Foo'));
-        static::assertSame(['X-Foo' => ['foo', 'bar', 'baz']], $request->getHeaders());
-        static::assertSame(['HTTP_X_FOO' => 'foo,bar,baz'], $request->getServerParams());
+        self::assertTrue($request->hasHeader('X-Foo'));
+        self::assertSame(['foo', 'bar', 'baz'], $request->getHeader('X-Foo'));
+        self::assertSame('foo,bar,baz', $request->getHeaderLine('X-Foo'));
+        self::assertSame(['X-Foo' => ['foo', 'bar', 'baz']], $request->getHeaders());
+        self::assertSame(['HTTP_X_FOO' => 'foo,bar,baz'], $request->getServerParams());
     }
 
     /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testWithoutHeader(): void
     {
         $request = $this->createRequest('GET', ['HTTP_X_FOO' => 'bar, baz']);
-        static::assertTrue($request->hasHeader('X-Foo'));
-        static::assertSame(['bar', 'baz'], $request->getHeader('X-Foo'));
-        static::assertSame('bar, baz', $request->getHeaderLine('X-Foo'));
-        static::assertSame(['x-foo' => ['bar', 'baz']], $request->getHeaders());
-        static::assertSame(['HTTP_X_FOO' => 'bar, baz'], $request->getServerParams());
+        self::assertTrue($request->hasHeader('X-Foo'));
+        self::assertSame(['bar', 'baz'], $request->getHeader('X-Foo'));
+        self::assertSame('bar, baz', $request->getHeaderLine('X-Foo'));
+        self::assertSame(['x-foo' => ['bar', 'baz']], $request->getHeaders());
+        self::assertSame(['HTTP_X_FOO' => 'bar, baz'], $request->getServerParams());
         $request = $request->withoutHeader('x-FoO');
-        static::assertFalse($request->hasHeader('X-Foo'));
-        static::assertSame([], $request->getHeader('X-Foo'));
-        static::assertSame([], $request->getServerParams());
+        self::assertFalse($request->hasHeader('X-Foo'));
+        self::assertSame([], $request->getHeader('X-Foo'));
+        self::assertSame([], $request->getServerParams());
     }
 
     private function createRequest(
