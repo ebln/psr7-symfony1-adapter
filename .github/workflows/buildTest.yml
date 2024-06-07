@@ -7,14 +7,14 @@ jobs:
     runs-on: ${{ matrix.operating-system }}
     strategy:
       matrix:
-        operating-system: [ ubuntu-20.04 ]
-        php: [ '7.4', '8.0' ]
+        operating-system: [ ubuntu-latest ]
+        php: [ '7.4', '8.0', '8.1', '8.2', '8.3' ]
     name: Build and test on ${{ matrix.php }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Force PHP ${{ matrix.php }}
-        uses: nanasess/setup-php@master
+        uses: nanasess/setup-php@v4
         with:
           php-version: ${{ matrix.php }}
       - name: Validate composer.json and composer.lock
@@ -22,7 +22,7 @@ jobs:
       - name: Require php-cs-fixer
         run: |
           mkdir --parents ./tools/php-cs-fixer
-          composer require --working-dir=tools/php-cs-fixer friendsofphp/php-cs-fixer "friendsofphp/php-cs-fixer:3.15.1" --prefer-dist --no-progress
+          composer require --working-dir=tools/php-cs-fixer friendsofphp/php-cs-fixer "friendsofphp/php-cs-fixer:3.58" --prefer-dist --no-progress
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
       - name: Unit tests

@@ -34,7 +34,7 @@ final class RequestReadingTest extends TestCase
         $sfWebRequest->prepare($request['method'], $request['server']);
         $readingRequestMock = Request::fromSfWebRequest($sfWebRequest);
 
-        static::assertSame($hasHeader, $readingRequestMock->hasHeader($headerName));
+        self::assertSame($hasHeader, $readingRequestMock->hasHeader($headerName));
     }
 
     /**
@@ -53,7 +53,7 @@ final class RequestReadingTest extends TestCase
         $sfWebRequest = new \sfWebRequest();
         $sfWebRequest->prepare($request['method'], $request['server']);
         $readingRequestMock = Request::fromSfWebRequest($sfWebRequest);
-        static::assertSame($getHeader, $readingRequestMock->getHeader($headerName));
+        self::assertSame($getHeader, $readingRequestMock->getHeader($headerName));
     }
 
     /**
@@ -78,7 +78,7 @@ final class RequestReadingTest extends TestCase
         $sfWebRequest = new \sfWebRequest();
         $sfWebRequest->prepare($request['method'], $request['server']);
         $readingRequestMock = Request::fromSfWebRequest($sfWebRequest);
-        static::assertSame($getHeaderLine, $readingRequestMock->getHeaderLine($headerName));
+        self::assertSame($getHeaderLine, $readingRequestMock->getHeaderLine($headerName));
     }
 
     /**
@@ -103,10 +103,10 @@ final class RequestReadingTest extends TestCase
         $sfWebRequest = new \sfWebRequest();
         $sfWebRequest->prepare($request['method'], $request['server']);
         $readingRequestMock = Request::fromSfWebRequest($sfWebRequest);
-        static::assertSame($expectedHeaders, $readingRequestMock->getHeaders());
+        self::assertSame($expectedHeaders, $readingRequestMock->getHeaders());
     }
 
-    public static function provideHeaderTestData(): array
+    public static function provideHeaderTestData(): iterable
     {
         return [
             'happy case'            => [
@@ -199,7 +199,7 @@ final class RequestReadingTest extends TestCase
     /**
      * @phpstan-param mixed $expectedVersion
      *
-     * @dataProvider provideProtocolVersionData
+     * @dataProvider provideGetProtocolVersionCases
      *
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
@@ -208,10 +208,10 @@ final class RequestReadingTest extends TestCase
         $sfWebRequest = new \sfWebRequest();
         $sfWebRequest->prepare($request['method'], $request['server']);
         $readingRequestMock = Request::fromSfWebRequest($sfWebRequest);
-        static::assertSame($expectedVersion, $readingRequestMock->getProtocolVersion());
+        self::assertSame($expectedVersion, $readingRequestMock->getProtocolVersion());
     }
 
-    public static function provideProtocolVersionData(): array
+    public static function provideGetProtocolVersionCases(): iterable
     {
         return [
             'happy case'                                                                     => [

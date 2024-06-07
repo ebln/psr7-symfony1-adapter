@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * @see https://mlocati.github.io/php-cs-fixer-configurator/#version:3.15
+ * @see https://mlocati.github.io/php-cs-fixer-configurator/#version:3.58
  * @see https://cs.symfony.com/doc/rules/index.html
  * @see https://cs.symfony.com/doc/ruleSets/index.html
  */
@@ -19,12 +19,12 @@ $config = new \PhpCsFixer\Config();
 $config->setRiskyAllowed(true)
     ->setRules(
         [
-            '@PER'                                             => true,
+            '@PER-CS2.0'                                       => true,
             '@Symfony'                                         => true,
             '@PhpCsFixer'                                      => true,
             '@PhpCsFixer:risky'                                => true,
             '@PHPUnit100Migration:risky'                       => true,
-             // '@PHP80Migration:risky'                            => true,
+            // '@PHP80Migration:risky'                            => true,
             '@PHP82Migration'                                  => true,
             'no_superfluous_phpdoc_tags'                       => true,
             'native_function_invocation'                       => false,
@@ -33,7 +33,7 @@ $config->setRiskyAllowed(true)
             'single_line_comment_style'                        => ['comment_types' => [ /* 'hash' */],],
             'phpdoc_summary'                                   => false,
             'cast_spaces'                                      => ['space' => 'none'],
-            'binary_operator_spaces'                           => ['default' => null, 'operators' => ['=' => 'align_single_space_minimal', '=>' => 'align_single_space_minimal_by_scope']],
+            'binary_operator_spaces'                           => ['default' => 'at_least_single_space', 'operators' => ['=' => 'align_single_space_minimal', '=>' => 'align_single_space_minimal_by_scope']],
             'no_unused_imports'                                => true,
             'ordered_imports'                                  => ['sort_algorithm' => 'alpha', 'imports_order' => ['const', 'class', 'function']],
             'control_structure_braces'                         => true,
@@ -45,6 +45,9 @@ $config->setRiskyAllowed(true)
             'simplified_null_return'                           => true,
             'statement_indentation'                            => true,
             'blank_line_before_statement'                      => ['statements' => ['continue', 'declare', 'default', 'exit', 'goto', 'include', 'include_once', 'require', 'require_once', 'return', 'switch']],
+            'yoda_style'                                       => ['less_and_greater' => false],
+            'type_declaration_spaces'                          => ['elements' => ['function']],
+            'fully_qualified_strict_types'                     => false,
         ]
     )
     ->setFinder($finder);
@@ -52,7 +55,9 @@ $config->setRiskyAllowed(true)
 if (false) {
     $resolver = new \PhpCsFixer\Console\ConfigurationResolver($config, [], '', new \PhpCsFixer\ToolInfo());
     echo "\n\n# DUMPING EFFECTIVE RULES #################\n";
-    var_export($resolver->getRules());
+    $rules = $resolver->getRules();
+    ksort($rules);
+    var_export($rules);
     echo "\n\n###########################################\n";
 
     die();

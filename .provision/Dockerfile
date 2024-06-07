@@ -19,11 +19,9 @@ RUN apt-get update \
 
 COPY 30-xdebug-config.ini /usr/local/etc/php/conf.d/
 
-USER app
-
-ENV PATH "$PATH:/home/app/.composer/vendor/bin"
+ENV PATH "$PATH:/root/.composer/vendor/bin"
 
 RUN composer global require friendsofphp/php-cs-fixer \
-    && sed -i -e '/alias l\|export\|eval/s/#//' /home/app/.bashrc
+    && sed -i -e '/alias l\|export\|eval/s/#//' /root/.bashrc
 
 WORKDIR /var/www/

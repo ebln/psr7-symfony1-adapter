@@ -34,11 +34,11 @@ final class ServerRequestUploadTest extends TestCase
         );
 
         $files = $request->getUploadedFiles();
-        static::assertCount(1, $files);
+        self::assertCount(1, $files);
         $file = $files['file-one'];
-        static::assertInstanceOf(UploadedFileInterface::class, $file);
-        static::assertSame(1337, $file->getSize());
-        static::assertSame('that.jpg', $file->getClientFilename());
+        self::assertInstanceOf(UploadedFileInterface::class, $file);
+        self::assertSame(1337, $file->getSize());
+        self::assertSame('that.jpg', $file->getClientFilename());
     }
 
     public function testFormSingleUploadedFile(): void
@@ -62,11 +62,11 @@ final class ServerRequestUploadTest extends TestCase
         );
 
         $files = $request->getUploadedFiles();
-        static::assertCount(1, $files);
+        self::assertCount(1, $files);
         $file = $files['form1']['file-one'];
-        static::assertInstanceOf(UploadedFileInterface::class, $file);
-        static::assertSame(1337, $file->getSize());
-        static::assertSame('that.jpg', $file->getClientFilename());
+        self::assertInstanceOf(UploadedFileInterface::class, $file);
+        self::assertSame(1337, $file->getSize());
+        self::assertSame('that.jpg', $file->getClientFilename());
     }
 
     public function testFormMultipleUploadedFile(): void
@@ -105,10 +105,10 @@ final class ServerRequestUploadTest extends TestCase
 
         /** @var array<string, array<string, int|mixed>> $files */
         $files = $request->getUploadedFiles()['mass_upload'];
-        static::assertCount(3, $files);
-        static::assertInstanceOf(UploadedFileInterface::class, $files['foo']);
-        static::assertInstanceOf(UploadedFileInterface::class, $files['bar']);
-        static::assertInstanceOf(UploadedFileInterface::class, $files['baz']);
+        self::assertCount(3, $files);
+        self::assertInstanceOf(UploadedFileInterface::class, $files['foo']);
+        self::assertInstanceOf(UploadedFileInterface::class, $files['bar']);
+        self::assertInstanceOf(UploadedFileInterface::class, $files['baz']);
     }
 
     public function testDeeplyNestledUploadedFile(): void
@@ -138,11 +138,11 @@ final class ServerRequestUploadTest extends TestCase
         );
 
         $files = $request->getUploadedFiles();
-        static::assertCount(1, $files);
+        self::assertCount(1, $files);
         $file = $files['form']['foo']['bar']['baz']['that-file'];
-        static::assertInstanceOf(UploadedFileInterface::class, $file);
-        static::assertSame(1337, $file->getSize());
-        static::assertSame('that.jpg', $file->getClientFilename());
+        self::assertInstanceOf(UploadedFileInterface::class, $file);
+        self::assertSame(1337, $file->getSize());
+        self::assertSame('that.jpg', $file->getClientFilename());
     }
 
     public function testMultiFormUploadedFiles(): void
@@ -186,22 +186,22 @@ final class ServerRequestUploadTest extends TestCase
         );
 
         $files = $request->getUploadedFiles();
-        static::assertCount(2, $files);
+        self::assertCount(2, $files);
 
         $file1 = $files['file-foo'];
-        static::assertInstanceOf(UploadedFileInterface::class, $file1);
-        static::assertSame(23, $file1->getSize());
-        static::assertSame('test.csv', $file1->getClientFilename());
+        self::assertInstanceOf(UploadedFileInterface::class, $file1);
+        self::assertSame(23, $file1->getSize());
+        self::assertSame('test.csv', $file1->getClientFilename());
 
         $file2 = $files['form-bar']['foo']['bar']['baz']['file-bar'];
-        static::assertInstanceOf(UploadedFileInterface::class, $file2);
-        static::assertSame(1337, $file2->getSize());
-        static::assertSame('that.jpg', $file2->getClientFilename());
+        self::assertInstanceOf(UploadedFileInterface::class, $file2);
+        self::assertSame(1337, $file2->getSize());
+        self::assertSame('that.jpg', $file2->getClientFilename());
 
         $file3 = $files['form-bar']['file-baz'];
-        static::assertInstanceOf(UploadedFileInterface::class, $file3);
-        static::assertSame(42, $file3->getSize());
-        static::assertSame('text.txt', $file3->getClientFilename());
+        self::assertInstanceOf(UploadedFileInterface::class, $file3);
+        self::assertSame(42, $file3->getSize());
+        self::assertSame('text.txt', $file3->getClientFilename());
     }
 
     /**

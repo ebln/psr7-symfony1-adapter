@@ -20,17 +20,17 @@ final class ResponseFactoryTest extends TestCase
         $symfonyResponseMock = new \sfWebResponse(null, []);
         $symfonyResponseMock->prepare(200, 'Mkay', ['X-Test' => 'foobar'], [], false);
         $factory = ResponseFactory::createFactoryFromWebResponse($symfonyResponseMock);
-        static::assertInstanceOf(ResponseFactory::class, $factory);
+        self::assertInstanceOf(ResponseFactory::class, $factory);
 
         $response = $factory->createResponse(123, 'Foo bar baZ');
-        static::assertInstanceOf(ResponseFactory::class, $factory);
+        self::assertInstanceOf(ResponseFactory::class, $factory);
 
-        static::assertInstanceOf(Response::class, $response);
+        self::assertInstanceOf(Response::class, $response);
         /** @phpstan-var Response $responseCopy */
         $responseCopy = $response;
-        static::assertSame($symfonyResponseMock, $responseCopy->getSfWebResponse());
+        self::assertSame($symfonyResponseMock, $responseCopy->getSfWebResponse());
 
-        static::assertSame(123, $response->getStatusCode());
-        static::assertSame('Foo bar baZ', $response->getReasonPhrase());
+        self::assertSame(123, $response->getStatusCode());
+        self::assertSame('Foo bar baZ', $response->getReasonPhrase());
     }
 }

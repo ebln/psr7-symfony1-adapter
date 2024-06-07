@@ -8,7 +8,7 @@ use Psr\Http\Message\StreamInterface;
 
 class BodyStreamHook
 {
-    /** @var StreamInterface[] */
+    /** @var array<string, StreamInterface> */
     private array   $bodyStreams     = [];
     private ?string $distinguishedId = null; // Holds an object identifier to the Response which content shall be used when sfWebResponse->send() is called
 

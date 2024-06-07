@@ -22,8 +22,8 @@ final class ServerRequestBasicTest extends TestCase
         $symfonyRequestMock = new \sfWebRequest();
         $symfonyRequestMock->prepare('GET');
         $request = Request::fromSfWebRequest($symfonyRequestMock, []);
-        static::assertSame($symfonyRequestMock, $request->getSfWebRequest());
-        static::assertSame(spl_object_hash($symfonyRequestMock), spl_object_hash($request->getSfWebRequest()));
+        self::assertSame($symfonyRequestMock, $request->getSfWebRequest());
+        self::assertSame(spl_object_hash($symfonyRequestMock), spl_object_hash($request->getSfWebRequest()));
     }
 
     /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
@@ -33,7 +33,7 @@ final class ServerRequestBasicTest extends TestCase
         $cookies      = ['cookie_1' => 'asdf', 'cookie_2' => 'qwerty'];
         $_COOKIE      = $cookies;
         $request      = $this->createRequest();
-        static::assertSame($cookies, $request->getCookieParams(), 'Rather a quirk: returns $_COOKIE');
+        self::assertSame($cookies, $request->getCookieParams(), 'Rather a quirk: returns $_COOKIE');
         $_COOKIE = $superCookies;
     }
 
@@ -43,7 +43,7 @@ final class ServerRequestBasicTest extends TestCase
         $query   = ['q' => 'foo+bar', 'test' => 'true'];
         $request = $this->createRequest('GET', [], $query);
 
-        static::assertSame($query, $request->getQueryParams());
+        self::assertSame($query, $request->getQueryParams());
     }
 
     /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
@@ -52,20 +52,20 @@ final class ServerRequestBasicTest extends TestCase
         $post    = ['user' => 'foo', 'pass' => 'bar'];
         $request = $this->createRequest('POST', [], [], $post);
 
-        static::assertSame($post, $request->getParsedBody());
+        self::assertSame($post, $request->getParsedBody());
     }
 
     /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testWithAttribute(): void
     {
         $request = $this->createRequest();
-        static::assertSame([], $request->getAttributes());
+        self::assertSame([], $request->getAttributes());
 
         $attribute = (object)['name' => 'foo', 'id' => 42, 'bar' => 'baz'];
         $request   = $request->withAttribute('Foo', $attribute);
 
-        static::assertSame($attribute, $request->getAttribute('Foo'));
-        static::assertSame(['Foo' => $attribute], $request->getAttributes());
+        self::assertSame($attribute, $request->getAttribute('Foo'));
+        self::assertSame(['Foo' => $attribute], $request->getAttributes());
     }
 
     /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
@@ -75,12 +75,12 @@ final class ServerRequestBasicTest extends TestCase
         $attribute = (object)['name' => 'foo', 'id' => 42, 'bar' => 'baz'];
         $request   = $request->withAttribute('Foo', $attribute);
         $request   = $request->withAttribute('Bar', 'remains!');
-        static::assertSame(['Foo' => $attribute, 'Bar' => 'remains!'], $request->getAttributes());
+        self::assertSame(['Foo' => $attribute, 'Bar' => 'remains!'], $request->getAttributes());
 
         $request = $request->withoutAttribute('Foo');
 
-        static::assertNull($request->getAttribute('Foo'));
-        static::assertSame(['Bar' => 'remains!'], $request->getAttributes());
+        self::assertNull($request->getAttribute('Foo'));
+        self::assertSame(['Bar' => 'remains!'], $request->getAttributes());
     }
 
     /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
@@ -89,9 +89,9 @@ final class ServerRequestBasicTest extends TestCase
         $request = $this->createRequest();
         $request = $request->withAttribute('Foo', 'bar');
 
-        static::assertNull($request->getAttribute('Baz'));
-        static::assertSame('bar', $request->getAttribute('Foo'));
-        static::assertSame('baz', $request->getAttribute('Baz', 'baz'));
+        self::assertNull($request->getAttribute('Baz'));
+        self::assertSame('bar', $request->getAttribute('Foo'));
+        self::assertSame('baz', $request->getAttribute('Baz', 'baz'));
     }
 
     private function createRequest(

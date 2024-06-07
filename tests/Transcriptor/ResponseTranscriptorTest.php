@@ -37,7 +37,7 @@ final class ResponseTranscriptorTest extends TestCase
         $psr7Response  = $psr7Response->withAddedHeader('x-test', 'test 2');
         $mockResponse  = $this->createSfWebResponse();
         $transcription = (new ResponseTranscriptor(null, null))->transcribe($psr7Response, $mockResponse);
-        static::assertSame(
+        self::assertSame(
             [
                 'X-Preset-Header' => 'sfWebResponse',
                 'X-Psr-7-Default' => 'guzzle constructor',
@@ -57,7 +57,7 @@ final class ResponseTranscriptorTest extends TestCase
             ['sf-default'      => ['name' => 'sf-default', 'value' => 'preset', 'expire' => null, 'path' => '/', 'domain' => '*', 'secure' => false, 'httpOnly' => false]]
         );
         $transcription = (new ResponseTranscriptor(null, null))->transcribe($psr7Response, $mockResponse);
-        static::assertSame(
+        self::assertSame(
             [
                 'sf-default' => ['name' => 'sf-default', 'value' => 'preset', 'expire' => null, 'path' => '/', 'domain' => '*', 'secure' => false, 'httpOnly' => false],
             ],
@@ -70,15 +70,15 @@ final class ResponseTranscriptorTest extends TestCase
         $psr7Response  = new Response(201, [], null, '1.1', 'Tested');
         $mockResponse  = $this->createSfWebResponse();
         $transcription = (new ResponseTranscriptor(null, null))->transcribe($psr7Response, $mockResponse);
-        static::assertSame($mockResponse, $transcription);
+        self::assertSame($mockResponse, $transcription);
 
-        static::assertSame(201, $transcription->getStatusCode());
-        static::assertSame('Tested', $transcription->getStatusText());
-        static::assertSame('', $transcription->getContent());
-        static::assertFalse($transcription->isHeaderOnly());
-        static::assertSame([], $transcription->getCookies());
-        static::assertSame(['X-Preset-Header' => 'sfWebResponse'], $transcription->getHttpHeaders());
-        static::assertSame(
+        self::assertSame(201, $transcription->getStatusCode());
+        self::assertSame('Tested', $transcription->getStatusText());
+        self::assertSame('', $transcription->getContent());
+        self::assertFalse($transcription->isHeaderOnly());
+        self::assertSame([], $transcription->getCookies());
+        self::assertSame(['X-Preset-Header' => 'sfWebResponse'], $transcription->getHttpHeaders());
+        self::assertSame(
             [
                 'http_protocol'     => 'HTTP/1.1',
                 'charset'           => 'utf-8',
@@ -94,7 +94,7 @@ final class ResponseTranscriptorTest extends TestCase
         $psr7Response  = new Response(200, [], 'PSR-7 Body');
         $mockResponse  = $this->createSfWebResponse();
         $transcription = (new ResponseTranscriptor(null, null))->transcribe($psr7Response, $mockResponse);
-        static::assertSame('PSR-7 Body', $transcription->getContent());
+        self::assertSame('PSR-7 Body', $transcription->getContent());
     }
 
     public function testTranscribeOverwriteBody(): void
@@ -103,7 +103,7 @@ final class ResponseTranscriptorTest extends TestCase
         $mockResponse = $this->createSfWebResponse();
         $mockResponse->setContent('Symfony Content');
         $transcription = (new ResponseTranscriptor(null, null))->transcribe($psr7Response, $mockResponse);
-        static::assertSame('PSR-7 Body', $transcription->getContent());
+        self::assertSame('PSR-7 Body', $transcription->getContent());
     }
 
     /**
