@@ -161,7 +161,7 @@ class Request implements ServerRequestInterface
                 $useKey = $key;
             }
 
-            if ($useKey) {
+            if (is_string($useKey)) {
                 $headerName = $this->normalizeHeaderName($useKey);
                 if (isset($this->headerNames[$headerName])) {
                     $headerName = $this->headerNames[$headerName]; // return shadowed header name
@@ -253,7 +253,7 @@ class Request implements ServerRequestInterface
 
     public function getRequestTarget(): string
     {
-        if ($this->requestTarget) {
+        if (null !== $this->requestTarget) {
             return (string)$this->requestTarget;
         }
 
@@ -289,7 +289,7 @@ class Request implements ServerRequestInterface
     public function getMethod(): string
     {
         $method = $this->sfWebRequest->getMethod();
-        if (!$this->method || $method !== strtoupper($this->method)) {
+        if (null === $this->method || $method !== strtoupper($this->method)) {
             $this->method = $method;   // overwrite capitalisation despite the »SHOULD NOT« in the PSR-7 definition
         }
 
@@ -341,7 +341,7 @@ class Request implements ServerRequestInterface
             $headerName = $this->normalizeHeaderName('host');
             $headerName = $this->headerNames[$headerName] ?? $headerName;
 
-            $new->setHeader($headerName, $uri->getHost() . ($uri->getPort() ? (':' . (string)$uri->getPort()) : ''));
+            $new->setHeader($headerName, $uri->getHost() . (null !== $uri->getPort() ? (':' . (string)$uri->getPort()) : ''));
         }
 
         return $new;
