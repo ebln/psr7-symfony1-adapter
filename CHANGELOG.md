@@ -18,8 +18,14 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 - Refactor `BodyStreamHook::addBodyFromResponse` using WeakMap for a PHP >=8.0 (or with [polyfill](https://github.com/BenMorel/weakmap-polyfill))
 - Allow configurable StreamFactory instead of hardcoded used
   - or try `php-http/discovery`
+- Change namespace from brnc to ebln, with version ^2
 
 ----
+
+## [1.6.1]  - 2024-06-07
+
+### Changed
+- Changed package name to `ebln/psr7-symfony1-adapter`
 
 ## [1.6.0]  - 2024-06-07
 
