@@ -11,8 +11,6 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 - …
 
 ### TODO
-
-- IMPORTANT: add `psr/http-message` as a direct dependency!
 - Monitor [PHP RFC: Server-Side Request and Response Objects](https://wiki.php.net/rfc/request_response)
 - Cookies: Write to response
 - Cookies: Read from request
