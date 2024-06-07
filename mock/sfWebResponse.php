@@ -163,13 +163,13 @@ class sfWebResponse
     }
 
     /**
-     * @param string $name
-     * @param string $value
-     * @param null   $expire
-     * @param string $path
-     * @param string $domain
-     * @param bool   $secure
-     * @param bool   $httpOnly
+     * @param string          $name
+     * @param string          $value
+     * @param null|int|string $expire
+     * @param string          $path
+     * @param string          $domain
+     * @param bool            $secure
+     * @param bool            $httpOnly
      */
     public function setCookie(
         $name,
@@ -235,9 +235,9 @@ class sfWebResponse
     }
 
     /**
+     * @return null|string
      * @deprecated Only for testing! Original methods echos instead of returning
      *
-     * @return null|string
      */
     public function sendContent()
     {
