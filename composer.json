@@ -17,9 +17,9 @@
     ],
     "require": {
         "php": "^7.4 || ^8.0",
-        "guzzlehttp/psr7": "^1.9.1 || ^2.4.5",
+        "guzzlehttp/psr7": "^2.4.5",
         "psr/http-factory": "^1.0",
-        "webmozart/assert": "^1.10"
+        "webmozart/assert": "^1.11"
     },
     "require-dev": {
         "composer/package-versions-deprecated": "^1.11",
