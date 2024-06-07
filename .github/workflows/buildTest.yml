@@ -7,14 +7,14 @@ jobs:
     runs-on: ${{ matrix.operating-system }}
     strategy:
       matrix:
-        operating-system: [ ubuntu-20.04 ]
-        php: [ '7.4', '8.0' ]
+        operating-system: [ ubuntu-latest ]
+        php: [ '7.4', '8.0', '8.1', '8.2', '8.3' ]
     name: Build and test on ${{ matrix.php }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Force PHP ${{ matrix.php }}
-        uses: nanasess/setup-php@master
+        uses: nanasess/setup-php@v4
         with:
           php-version: ${{ matrix.php }}
       - name: Validate composer.json and composer.lock
