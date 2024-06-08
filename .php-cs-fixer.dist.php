@@ -50,7 +50,8 @@ $config->setRiskyAllowed(true)
             'fully_qualified_strict_types'                     => false,
         ]
     )
-    ->setFinder($finder);
+    ->setFinder($finder)
+    ->setParallelConfig(PhpCsFixer\Runner\Parallel\ParallelConfigFactory::detect());
 
 if (false) {
     $resolver = new \PhpCsFixer\Console\ConfigurationResolver($config, [], '', new \PhpCsFixer\ToolInfo());
