@@ -8,9 +8,10 @@
 class sfEvent
 {
     /** @var mixed */
-    protected $value = null;
-    /** @var string */
-    protected $name = '';
+    protected        $value = null;
+    protected string $name  = '';
+    protected object $subject;
+    protected array  $parameters;
 
     public function getName(): string
     {
@@ -19,7 +20,9 @@ class sfEvent
 
     public function __construct($subject, string $name, array $parameters = [])
     {
-        $this->name = $name;
+        $this->name       = $name;
+        $this->subject    = $subject;
+        $this->parameters = $parameters;
     }
 
     public function setReturnValue($value)
@@ -30,5 +33,24 @@ class sfEvent
     public function getReturnValue()
     {
         return $this->value;
+    }
+
+    public function getSubject(): object
+    {
+        return $this->subject;
+    }
+
+    public function offsetGet($name)
+    {
+        if (!array_key_exists($name, $this->parameters)) {
+            throw new \InvalidArgumentException();
+        }
+
+        return $this->parameters[$name];
+    }
+
+    public function offsetSet($name, $value)
+    {
+        $this->parameters[$name] = $value;
     }
 }

@@ -31,4 +31,13 @@ class sfEventDispatcher
 
         return $event;
     }
+
+    public function notify(sfEvent $event): sfEvent
+    {
+        foreach ($this->listeners[$event->getName()] ?? [] as $listener) {
+            call_user_func($listener, $event);
+        }
+
+        return $event;
+    }
 }

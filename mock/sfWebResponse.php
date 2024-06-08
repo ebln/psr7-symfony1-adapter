@@ -237,7 +237,6 @@ class sfWebResponse
     /**
      * @return null|string
      * @deprecated Only for testing! Original methods echos instead of returning
-     *
      */
     public function sendContent()
     {
@@ -247,5 +246,21 @@ class sfWebResponse
         $event = $this->dispatcher->filter(new sfEvent($this, 'response.filter_content'), $this->getContent());
 
         return $event->getReturnValue();
+    }
+
+    /**
+     * @deprecated Only for testing! Original methods uses `header` & `setrawcookie`  instead of returning
+     */
+    public function sendHttpHeaders(): void
+    {
+        if ($this->options['logging']) {
+            $this->dispatcher->notify(new sfEvent($this, 'application.log', ['Send status "???"']));
+        }
+        $this->setHttpHeader('Content-Type', 'example');
+        foreach ($this->headers as $name => $value) {
+            if (null !== $this->dispatcher && $this->options['logging'] && !empty($value)) {
+                $this->dispatcher->notify(new sfEvent($this, 'application.log', ["Send header \"{$name}: {$value}\""]));
+            }
+        }
     }
 }
