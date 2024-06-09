@@ -28,7 +28,7 @@ final class CookieHeaderTranscriptorTest extends TestCase
      * @dataProvider provideCookieCases
      * @dataProvider provideMultiCookieCases
      */
-    public function testTranscribeFailCookies(array $fixture, array $expectation): void
+    public function testItTranscribesSetCookieHeadersToSymfony(array $fixture, array $expectation): void
     {
         $psr7Response = new Response(203);
         foreach ($fixture as $cookie) {
@@ -95,7 +95,7 @@ final class CookieHeaderTranscriptorTest extends TestCase
     public static function provideCookieCases(): iterable
     {
         return [
-            'Basic Cookie'                  => [
+            'Basic Cookie'                                          => [
                 'set-cookie'  => ['sessionId=abc123; Path=/; HttpOnly; SameSite=Strict'],
                 'expectation' => [
                     'sessionId' => [
@@ -109,7 +109,7 @@ final class CookieHeaderTranscriptorTest extends TestCase
                     ],
                 ],
             ],
-            'Broken Cookie value'           => [
+            'Broken Cookie value'                                   => [
                 'set-cookie'  => ['sessionId'],
                 'expectation' => [
                     'sessionId' => [
@@ -123,7 +123,7 @@ final class CookieHeaderTranscriptorTest extends TestCase
                     ],
                 ],
             ],
-            'Unknown Attribute'             => [
+            'Unknown Attribute'                                     => [
                 'set-cookie'  => ['sessionId=abc123; Unknown'],
                 'expectation' => [
                     'sessionId' => [
@@ -137,7 +137,7 @@ final class CookieHeaderTranscriptorTest extends TestCase
                     ],
                 ],
             ],
-            'Cookie with All Attributes'    => [
+            'Cookie with All Attributes'                            => [
                 'set-cookie'  => ['token=1337; Domain=cookie.test; Path=/; Expires=Fri, 12 Dec 2025 13:37:42 GMT; SameSite=Lax; Secure; HttpOnly'],
                 'expectation' => [
                     'token' => [
@@ -151,7 +151,7 @@ final class CookieHeaderTranscriptorTest extends TestCase
                     ],
                 ],
             ],
-            'Cookie with Max-Age'           => [
+            'Cookie with Max-Age'                                   => [
                 'set-cookie'  => ['userSettings=darkMode; Max-Age=3600; HttpOnly'],
                 'expectation' => [
                     'userSettings' => [
@@ -193,7 +193,7 @@ final class CookieHeaderTranscriptorTest extends TestCase
                     ],
                 ],
             ],
-            'Secure Only Cookie'            => [
+            'Secure Only Cookie'                                    => [
                 'set-cookie'  => ['admin=true; Secure; HttpOnly'],
                 'expectation' => [
                     'admin' => [
@@ -207,7 +207,7 @@ final class CookieHeaderTranscriptorTest extends TestCase
                     ],
                 ],
             ],
-            'Cookie With Invalid Expires'   => [
+            'Cookie With Invalid Expires'                           => [
                 'set-cookie'  => ['debug=false; Expires=Invalid-Date; Path=/'],
                 'expectation' => [
                     'debug' => [

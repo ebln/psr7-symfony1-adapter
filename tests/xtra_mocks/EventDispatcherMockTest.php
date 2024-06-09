@@ -29,7 +29,9 @@ final class EventDispatcherMockTest extends TestCase
         $listener = static function ($event) use (&$counter): void {
             ++$counter;
         };
+        self::assertCount(0, $this->dispatcher->getListeners('test.event'));
         $this->dispatcher->connect('test.event', $listener);
+        self::assertCount(1, $this->dispatcher->getListeners('test.event'));
         $this->dispatcher->notify(new \sfEvent($this, 'test.event'));
         $this->dispatcher->filter(new \sfEvent($this, 'test.event'), null);
         self::assertSame(2, $counter);

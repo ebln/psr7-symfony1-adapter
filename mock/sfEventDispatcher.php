@@ -10,6 +10,11 @@ class sfEventDispatcher
     /** @var callable[][] */
     private $listeners = [];
 
+    public function __construct()
+    {
+        $this->listeners['default'] = [fn(\sfEvent $e) => $e->setReturnValue(($e->getReturnValue() ?? 0) + 1)];
+    }
+
     public function connect(string $name, callable $listener)
     {
         if (!isset($this->listeners[$name])) {
@@ -17,6 +22,11 @@ class sfEventDispatcher
         }
 
         $this->listeners[$name][] = $listener;
+    }
+
+    public function getListeners(string $name): array
+    {
+        return $this->listeners[$name] ?? [];
     }
 
     public function filter(sfEvent $event, $value): sfEvent
