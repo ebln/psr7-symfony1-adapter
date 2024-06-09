@@ -8,9 +8,25 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 ## [Unreleased] (meant as staging area)
 
 ### Added
+- Two new CookieTranscriptors
+  - `CookieHeaderTranscriptor`; squeezing `Set-Cookie` headers from PSR-7 into the cookie management of `sfWebRequest`
+  - `AbstractCookieDispatchTranscriptor`; more powerful, extensible, yet more dangerous approach – using black magic.
+    - Comes with new `CookieDispatcher`, `DispatchSubstitutor` and a bunch of other cookie related classes
+### Changed
+- General maintainance: annotations, spelling
+- Improving test coverage calculation
+  - using `@covers` & `@uses` annotations
+  - enforce using new phpunit settings
+- Improve test coverage
+- Improve DX (docker, Makefile, gitattributes, cs-fixer rules)
+- Extend mocks, due to new functionality
+### Deprecated
 - …
 
-### TODO
+
+## TODO
+- Clone the CookieDispatcher-Approach for the ResponseAdapter
+  - but instead of reading CookieContainer from options → in-situ intercept them → onStatusSent
 - Cookies: Write to response
 - Cookies: Read from request
 - Cookies: write and overwrite to request
@@ -52,9 +68,9 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 - Updated dev dependencies
 - Update code style
 
-### Fixed
+### Security
 
-- downstream vulnerabilities by bumping `guzzlehttp/psr7`
+- fixed downstream vulnerabilities by bumping `guzzlehttp/psr7`
 
 ## [1.4.0]  - 2021-10-19
 
@@ -70,7 +86,7 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 ### Changed
 
 - Updated dev dependencies
-- Renamed "Utillity" to `brnc\Symfony1\Message\Utility`, technically [BREAKING] yet was never supposed to be used in user land
+- Renamed "Utility" to `brnc\Symfony1\Message\Utility`, technically [BREAKING] yet was never supposed to be used in user land
 
 ### Fixed
 

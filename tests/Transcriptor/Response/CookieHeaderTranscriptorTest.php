@@ -14,6 +14,10 @@ use Psr\Clock\ClockInterface;
  * @internal
  *
  * @covers \brnc\Symfony1\Message\Transcriptor\Response\CookieHeaderTranscriptor
+ *
+ * @uses   \brnc\Symfony1\Message\Transcriptor\ResponseTranscriptor
+ * @uses   \brnc\Symfony1\Message\Transcriptor\Response\OptionsTranscriptor
+ * @uses   \sfWebResponse
  */
 final class CookieHeaderTranscriptorTest extends TestCase
 {
@@ -24,7 +28,7 @@ final class CookieHeaderTranscriptorTest extends TestCase
      * @dataProvider provideCookieCases
      * @dataProvider provideMultiCookieCases
      */
-    public function testTranscribeFailCookies(array $fixture, array $expectation): void
+    public function testItTranscribesSetCookieHeadersToSymfony(array $fixture, array $expectation): void
     {
         $psr7Response = new Response(203);
         foreach ($fixture as $cookie) {
@@ -61,13 +65,13 @@ final class CookieHeaderTranscriptorTest extends TestCase
                 'set-cookie'  => [
                     'token=42; Domain=cookie.test; Path=/; HttpOnly',
                     'sessionId=abc123; Path=/; HttpOnly; SameSite=Strict',
-                    'token=1337; Domain=cookie.test; Path=/; Expires=Sun, 12 Dec 2025 13:37:42 GMT; SameSite=Lax; Secure; HttpOnly',
+                    'token=1337; Domain=cookie.test; Path=/; Expires=Fri, 12 Dec 2025 13:37:42 GMT; SameSite=Lax; Secure; HttpOnly',
                 ],
                 'expectation' => [
                     'token'     => [
                         'name'     => 'token',
                         'value'    => '1337',
-                        'expire'   => 1765719462,  // Epoch timestamp for 'Sun, 12 Dec 2025 13:37:42 GMT'
+                        'expire'   => 1765546662,  // Epoch timestamp for 'Fri, 12 Dec 2025 13:37:42 GMT'
                         'path'     => '/',
                         'domain'   => 'cookie.test',
                         'secure'   => true,
@@ -91,7 +95,7 @@ final class CookieHeaderTranscriptorTest extends TestCase
     public static function provideCookieCases(): iterable
     {
         return [
-            'Basic Cookie'                  => [
+            'Basic Cookie'                                          => [
                 'set-cookie'  => ['sessionId=abc123; Path=/; HttpOnly; SameSite=Strict'],
                 'expectation' => [
                     'sessionId' => [
@@ -105,7 +109,7 @@ final class CookieHeaderTranscriptorTest extends TestCase
                     ],
                 ],
             ],
-            'Broken Cookie value'           => [
+            'Broken Cookie value'                                   => [
                 'set-cookie'  => ['sessionId'],
                 'expectation' => [
                     'sessionId' => [
@@ -119,7 +123,7 @@ final class CookieHeaderTranscriptorTest extends TestCase
                     ],
                 ],
             ],
-            'Unknown Attribute'             => [
+            'Unknown Attribute'                                     => [
                 'set-cookie'  => ['sessionId=abc123; Unknown'],
                 'expectation' => [
                     'sessionId' => [
@@ -133,13 +137,13 @@ final class CookieHeaderTranscriptorTest extends TestCase
                     ],
                 ],
             ],
-            'Cookie with All Attributes'    => [
-                'set-cookie'  => ['token=1337; Domain=cookie.test; Path=/; Expires=Sun, 12 Dec 2025 13:37:42 GMT; SameSite=Lax; Secure; HttpOnly'],
+            'Cookie with All Attributes'                            => [
+                'set-cookie'  => ['token=1337; Domain=cookie.test; Path=/; Expires=Fri, 12 Dec 2025 13:37:42 GMT; SameSite=Lax; Secure; HttpOnly'],
                 'expectation' => [
                     'token' => [
                         'name'     => 'token',
                         'value'    => '1337',
-                        'expire'   => 1765719462,  // Epoch timestamp for 'Sun, 12 Dec 2025 13:37:42 GMT'
+                        'expire'   => 1765546662,  // Epoch timestamp for 'Fri, 12 Dec 2025 13:37:42 GMT'
                         'path'     => '/',
                         'domain'   => 'cookie.test',
                         'secure'   => true,
@@ -147,7 +151,7 @@ final class CookieHeaderTranscriptorTest extends TestCase
                     ],
                 ],
             ],
-            'Cookie with Max-Age'           => [
+            'Cookie with Max-Age'                                   => [
                 'set-cookie'  => ['userSettings=darkMode; Max-Age=3600; HttpOnly'],
                 'expectation' => [
                     'userSettings' => [
@@ -161,7 +165,7 @@ final class CookieHeaderTranscriptorTest extends TestCase
                     ],
                 ],
             ],
-            'Cookie with Max-Age < Expires' => [
+            'Cookie with Max-Age < Expires → shortest TTL prevails' => [
                 'set-cookie'  => ['maxage=LTexpires; Expires=Thu, 01 Jan 1970 01:00:10 GMT; Max-Age=' . (3600 - 63)],
                 'expectation' => [
                     'maxage' => [
@@ -175,7 +179,7 @@ final class CookieHeaderTranscriptorTest extends TestCase
                     ],
                 ],
             ],
-            'Cookie with Max-Age > Expires' => [
+            'Cookie with Max-Age > Expires → shortest TTL prevails' => [ // Not really up to specs: Max-Age should take precedence with both are present!
                 'set-cookie'  => ['maxage=GTexpires; Expires=Thu, 01 Jan 1970 01:00:00 GMT; Max-Age=3610'],
                 'expectation' => [
                     'maxage' => [
@@ -189,7 +193,7 @@ final class CookieHeaderTranscriptorTest extends TestCase
                     ],
                 ],
             ],
-            'Secure Only Cookie'            => [
+            'Secure Only Cookie'                                    => [
                 'set-cookie'  => ['admin=true; Secure; HttpOnly'],
                 'expectation' => [
                     'admin' => [
@@ -203,7 +207,7 @@ final class CookieHeaderTranscriptorTest extends TestCase
                     ],
                 ],
             ],
-            'Cookie With Invalid Expires'   => [
+            'Cookie With Invalid Expires'                           => [
                 'set-cookie'  => ['debug=false; Expires=Invalid-Date; Path=/'],
                 'expectation' => [
                     'debug' => [

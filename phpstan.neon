@@ -3,6 +3,7 @@ includes:
 
 parameters:
     level: max
+    tmpDir: .provision/cache
     paths:
         - src
         - tests

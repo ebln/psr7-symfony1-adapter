@@ -11,7 +11,7 @@ use Psr\Http\Message\StreamInterface;
 /**
  * @internal
  *
- * @coversNothing
+ * @covers \brnc\Symfony1\Message\Factory\GuzzleStreamFactory
  */
 final class GuzzleStreamFactoryTest extends TestCase
 {

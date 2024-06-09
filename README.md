@@ -88,7 +88,8 @@ $response        = $entryPoint->handler($response);
 
 Assume you couldn't use other means, and you're confronted with an arbitrary PSR-7 response you can use the `ResponseTranscriptor` to copy the data from your PSR-7 response to your `\sfWebResponse`.
 
-Currently the `ResponseTranscriptor` doesn't support cookies, and will fail fast and hard if it encounters some. You are free to implement your own Cookie-Handler implementing `CookieTranscriptorInterface` and pass it as an optional constructor argument
+The `ResponseTranscriptor` by default uses `NoCookieTranscriptor`, which fails hard in the presence of `Set-Cookie'` headers.
+Incorporating (present-day) Cookies into the `\sfWebResponse` is not strait-forward. However, you are free to implement your own Cookie-Handler implementing `CookieTranscriptorInterface` and pass it as an optional constructor argument.
 
 ```php
 // Given arbitrary PSR-7 response…
@@ -99,6 +100,22 @@ $transcriptor = new \brnc\Symfony1\Message\Transcriptor\ResponseTranscriptor();
 //   The returned object will be the same as in the argument!
 $sfWebResponse = $transcriptor->transcribe($psr7response, $sfWebResponse);
 ```
+
+### Implemented `CookieTranscriptorInterface`s
+
+There are a few CookieTranscriptors already implemented; each come with their specific compromises.
+
+#### `CookieHeaderTranscriptor`
+Transcribes `Set-Cookie` headers from your PSR-7 response, into the cookie management of the Symfony1 response.
+This comes with all downsides of the legacy signature of `setrawcookie()`. Foremost it's not supporting `SameSite`-attribute, nor everything else being `extension-av` as of RFC 265.
+
+#### `AbstractCookieDispatchTranscriptor`
+The (abstract) CookieDispatchTranscriptor uses reflection and swaps the response's EventDispatcher against a new one.
+It is very tied against the original implementation of `sfWebResponse::sendHttpHeaders` especially its logging mechanism via events.
+The `CookieDispatcher` puts itself between `sfWebResponse` and the original `sfEventDispatcher`, and fires the cookies from the PSR-7 response right before Symfony1 would have sent theirs.
+You need to implement `AbstractCookieDispatchTranscriptor`'s `transcribeCookies()` method, depending on your source for the cookies being set. E.g. if your using a 3rd party library.
+Your code eventually needs to return `CookieContainerInterface` full of `CookieInterface`s. There is already a `HeaderCookie`, that uses `header()` and expects an already crafted and complete `Set-Cookie`-headerline.
+There are also `SetCookie` and `SetRawCookie` which will use the respective methods with the new signature – i.e. three arguments, with the options-array as a third one.
 
 ## Pass it down to http-foundation i.e. present-day Symfony
 

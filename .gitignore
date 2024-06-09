@@ -1,7 +1,6 @@
 /.web-server-pid
 /app/config/parameters.yml
 /build/
-/phpunit.xml
 .php-cs-fixer*
 !.php-cs-fixer.dist.*
 /var/*
@@ -29,3 +28,4 @@
 /composer.phar
 /coverage/
 /.phpunit.result.cache
+/.provision/cache/

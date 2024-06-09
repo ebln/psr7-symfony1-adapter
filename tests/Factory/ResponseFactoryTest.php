@@ -11,7 +11,10 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  *
- * @coversNothing
+ * @covers \brnc\Symfony1\Message\Factory\ResponseFactory
+ *
+ * @uses   \sfWebResponse
+ * @uses   \brnc\Symfony1\Message\Adapter\Response
  */
 final class ResponseFactoryTest extends TestCase
 {

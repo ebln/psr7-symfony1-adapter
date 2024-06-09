@@ -13,8 +13,7 @@ RUN apt-get update \
     && useradd --uid 1000 --gid app --shell /bin/bash --create-home app \
     && touch /var/log/xdebug.log && chgrp 1000 /var/log/xdebug.log && chmod g+w /var/log/xdebug.log \
     && sed -i -e '/alias l\|export\|eval/s/#//' /root/.bashrc \
-    && mkdir --parents /var/www/src /var/www/tests \
-    && chown 1000:1000 /var/www/src /var/www/tests \
+    && mkdir --parents /var/www/src /var/www/tests /var/www/coverage \
     && true
 
 COPY 30-xdebug-config.ini /usr/local/etc/php/conf.d/

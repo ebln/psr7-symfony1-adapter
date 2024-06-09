@@ -11,7 +11,9 @@ use Psr\Http\Message\UploadedFileInterface;
 /**
  * @internal
  *
- * @coversNothing
+ * @covers \brnc\Symfony1\Message\Adapter\Request
+ *
+ * @uses   \sfWebRequest
  */
 final class ServerRequestUploadTest extends TestCase
 {

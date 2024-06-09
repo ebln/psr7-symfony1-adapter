@@ -11,7 +11,12 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  *
- * @coversNothing
+ * @covers \brnc\Symfony1\Message\Adapter\BodyStreamHook
+ * @covers \brnc\Symfony1\Message\Adapter\Response
+ *
+ * @uses   \sfWebResponse
+ * @uses   \sfEventDispatcher
+ * @uses   \sfEvent
  */
 final class ResponseBodyTest extends TestCase
 {

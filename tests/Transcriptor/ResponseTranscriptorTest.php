@@ -12,10 +12,15 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  *
- * @coversNothing
+ * @covers \brnc\Symfony1\Message\Transcriptor\Response\NoCookieTranscriptor
+ * @covers \brnc\Symfony1\Message\Transcriptor\Response\OptionsTranscriptor
+ * @covers \brnc\Symfony1\Message\Transcriptor\ResponseTranscriptor
+ *
+ * @uses   \sfWebResponse
  */
 final class ResponseTranscriptorTest extends TestCase
 {
+    /** @covers \brnc\Symfony1\Message\Exception\LogicException */
     public function testTranscribeFailCookies(): void
     {
         $this->expectException(LogicException::class);

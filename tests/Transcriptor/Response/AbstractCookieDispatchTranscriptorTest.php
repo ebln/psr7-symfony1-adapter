@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace brnc\Tests\Symfony1\Message\Transcriptor\Response;
 
+use brnc\Symfony1\Message\Transcriptor\CookieDispatcher;
 use brnc\Symfony1\Message\Transcriptor\Response\AbstractCookieDispatchTranscriptor;
 use brnc\Symfony1\Message\Transcriptor\Response\CookieDispatch\CookieContainerInterface;
 use brnc\Symfony1\Message\Transcriptor\Response\CookieDispatch\DispatchSubstitutor;
@@ -17,7 +18,17 @@ use Psr\Http\Message\ResponseInterface;
 /**
  * @internal
  *
- * @coversNothing
+ * @covers \brnc\Symfony1\Message\Transcriptor\CookieDispatcher
+ * @covers \brnc\Symfony1\Message\Transcriptor\Response\AbstractCookieDispatchTranscriptor
+ * @covers \brnc\Symfony1\Message\Transcriptor\Response\CookieDispatch\DispatchSubstitutor
+ * @covers \brnc\Symfony1\Message\Transcriptor\Response\CookieDispatch\TestContainer
+ * @covers \brnc\Symfony1\Message\Transcriptor\Response\CookieDispatch\TestCookie
+ *
+ * @uses   \brnc\Symfony1\Message\Transcriptor\ResponseTranscriptor
+ * @uses   \brnc\Symfony1\Message\Transcriptor\Response\OptionsTranscriptor
+ * @uses   \sfWebResponse
+ * @uses   \sfEventDispatcher
+ * @uses   \sfEvent
  */
 final class AbstractCookieDispatchTranscriptorTest extends TestCase
 {
@@ -25,16 +36,16 @@ final class AbstractCookieDispatchTranscriptorTest extends TestCase
      * @param array<TestCookie>                                                                                                              $fixture
      * @param array<string,array{name: string, value: string, expire: null|int, path: string, domain: string, secure: bool, httpOnly: bool}> $expectation
      *
-     * @dataProvider provideTranscribeFailCookiesCases
+     * @dataProvider provideItDispatchesCookiesCases
      */
-    public function testTranscribeFailCookies(array $fixture, array $expectation): void
+    public function testItDispatchesCookies(array $fixture, array $expectation): void
     {
         $psr7Response = new Response(203);
 
         $transcriptor = new class($fixture) extends AbstractCookieDispatchTranscriptor {
             public TestContainer $container;
 
-            /** @param array<TestCookie> $cookies*/
+            /** @param array<TestCookie> $cookies */
             public function __construct(array $cookies)
             {
                 parent::__construct(new DispatchSubstitutor());
@@ -76,7 +87,7 @@ final class AbstractCookieDispatchTranscriptorTest extends TestCase
     }
 
     /** @return array<string, array{cookies: array<TestCookie>, expectation: array{reports: string[], notifications: array<array{event: string, notification: string}>}}> */
-    public static function provideTranscribeFailCookiesCases(): iterable
+    public static function provideItDispatchesCookiesCases(): iterable
     {
         return [
             'Dispatch Interception for Cookies' => [
@@ -114,5 +125,81 @@ final class AbstractCookieDispatchTranscriptorTest extends TestCase
                 ],
             ],
         ];
+    }
+
+    public function testConntectIsTransparent(): void
+    {
+        $listener = static function ($event): void {};
+
+        $basalDispatcher = $this->createMock(\sfEventDispatcher::class);
+        $basalDispatcher->expects(self::once())->method('connect')->with('test.event', self::identicalTo($listener));
+        $cookieDispatcher = new CookieDispatcher($basalDispatcher, false);
+        $cookieDispatcher->connect('test.event', $listener);
+    }
+
+    public function testNotifyIsTransparentForOtherLogEvents(): void
+    {
+        $otherLogTransparent = new \sfEvent($this, 'application.log', [0 => 'logline']);
+
+        $basalDispatcher = $this->createMock(\sfEventDispatcher::class);
+        $basalDispatcher->expects(self::once())->method('notify')->with(self::identicalTo($otherLogTransparent));
+
+        $cookieDispatcher = new CookieDispatcher($basalDispatcher, false);
+        $cookieDispatcher->notify($otherLogTransparent);
+    }
+
+    public function testNotifyIsTransparentOtherEvents(): void
+    {
+        $fullyTransparent = new \sfEvent($this, 'other', ['key' => 'value']);
+
+        $basalDispatcher = $this->createMock(\sfEventDispatcher::class);
+        $basalDispatcher->expects(self::once())->method('notify')->with(self::identicalTo($fullyTransparent));
+
+        $cookieDispatcher = new CookieDispatcher($basalDispatcher, false);
+        $cookieDispatcher->notify($fullyTransparent);
+    }
+
+    public function testNotifyIsTransparentForResponseIfLoggingEnabled(): void
+    {
+        $basalDispatcher     = $this->createMock(\sfEventDispatcher::class);
+        $otherLogTransparent = new \sfEvent(new \sfWebResponse($basalDispatcher, ['logging' => true]), 'application.log', [0 => 'logging enabled!']);
+        $basalDispatcher->expects(self::once())->method('notify')->with(self::identicalTo($otherLogTransparent));
+
+        $cookieDispatcher = new CookieDispatcher($basalDispatcher, true);
+        $cookieDispatcher->notify($otherLogTransparent);
+    }
+
+    public function testNotifyIsTransparentForResponseIfLoggingDisabled(): void
+    {
+        $basalDispatcher     = $this->createMock(\sfEventDispatcher::class);
+        $otherLogTransparent = new \sfEvent(new \sfWebResponse($basalDispatcher, ['logging' => false]), 'application.log', [0 => 'logging enabled!']);
+        $basalDispatcher->expects(self::never())->method('notify');
+
+        $cookieDispatcher = new CookieDispatcher($basalDispatcher, false);
+        $cookieDispatcher->notify($otherLogTransparent);
+    }
+
+    public function testNotifySpawnsNoDispatcherIfNoDispatcher(): void
+    {
+        $notTransparent = new \sfEvent($this, 'default', ['key' => 'value']);
+        $notTransparent->setReturnValue(-1);
+        $cookieDispatcher = new CookieDispatcher(null, false);
+        $cookieDispatcher->notify($notTransparent);
+        self::assertSame(-1, $notTransparent->getReturnValue());
+    }
+
+    public function testNotifySpawnsDispatcherAfterOtherCallIfNoDispatcher(): void
+    {
+        $fullyTransparent = new \sfEvent($this, 'default', ['key' => 'value']);
+        $cookieDispatcher = new CookieDispatcher(null, false);
+        self::assertCount(1, $cookieDispatcher->getListeners('default')); // default listener, incrementing return value by one
+
+        $cookieDispatcher->notify($fullyTransparent);
+        self::assertSame(1, $fullyTransparent->getReturnValue());
+
+        $cookieDispatcher->connect('default', static fn (\sfEvent $e) => $e->setReturnValue(($e->getReturnValue() ?? 0) + 10));
+        $alsoTransparent = new \sfEvent($this, 'default', ['key' => 'value']);
+        $cookieDispatcher->notify($alsoTransparent);
+        self::assertSame(11, $alsoTransparent->getReturnValue());
     }
 }

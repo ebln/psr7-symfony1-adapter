@@ -34,6 +34,7 @@ jobs:
           ./vendor/bin/psalm --monochrome --no-progress --stats --show-info=false
       - name: phpstan
         run: |
+          ./vendor/bin/phpstan --version
           ./vendor/bin/phpstan --no-interaction --no-ansi analyse
       - name: Mess Detector
         run: |

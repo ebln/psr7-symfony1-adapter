@@ -1,7 +1,6 @@
 <?php
 
 declare(strict_types=1);
-/** @noinspection PhpUnusedParameterInspection */
 
 namespace brnc\Tests\Symfony1\Message\Adapter;
 
@@ -13,7 +12,9 @@ use PHPUnit\Framework\TestCase;
  *
  * @internal
  *
- * @coversNothing
+ * @covers \brnc\Symfony1\Message\Adapter\Request
+ *
+ * @uses   \sfWebRequest
  */
 final class RequestReadingTest extends TestCase
 {

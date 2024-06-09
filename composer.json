@@ -59,8 +59,9 @@
             "tests/",
             "mock/",
             ".*",
-            "phpunit.xml.dist",
-            "coverage/"
+            "phpunit.xml",
+            "coverage/",
+            ".provision/cache"
         ]
     },
     "config": {
