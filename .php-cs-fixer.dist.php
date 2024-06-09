@@ -123,6 +123,7 @@ if (false) {
     echo "\n\n# DUMPING EFFECTIVE RULES #################\n";
     $rules = $resolver->getRules();
     ksort($rules);
+    /** @noinspection ForgottenDebugOutputInspection */
     var_export($rules);
     echo "\n\n###########################################\n";
 

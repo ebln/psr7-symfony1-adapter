@@ -1,7 +1,5 @@
 <?php
 
-/** @noinspection ReturnTypeCanBeDeclaredInspection */
-
 declare(strict_types=1);
 
 namespace brnc\Symfony1\Message\Adapter;
@@ -83,7 +81,7 @@ trait CommonAdapterTrait
     }
 
     /**
-     * Explodes a HTTP header's value to address PSR-7 array-fied sub-value approach
+     * Explodes an HTTP header's value to address PSR-7 array-field sub-value approach
      *
      * @return string[]
      */

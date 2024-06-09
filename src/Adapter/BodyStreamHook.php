@@ -17,7 +17,7 @@ class BodyStreamHook
         $this->connect($sfWebResponse);
     }
 
-    /** picks the specified Response's BodyStream to be send when sfWebResponse->send() or ->sendContent() is called */
+    /** picks the specified Response's BodyStream to be sent when sfWebResponse->send() or ->sendContent() is called */
     public function distinguishResponse(Response $response): void
     {
         $distinguishedId = $this->getObjectIdentifier($response);

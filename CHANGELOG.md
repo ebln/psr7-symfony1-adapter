@@ -11,6 +11,9 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 - …
 
 ### TODO
+- Alter README for new Cookie Transcriptors
+- Clone the CookieDispatcher-Approach for the ResponseAdapter
+  - but instead of reading CookieContainer from options → in-situ intercept them → onStatusSent
 - Cookies: Write to response
 - Cookies: Read from request
 - Cookies: write and overwrite to request
@@ -70,7 +73,7 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 ### Changed
 
 - Updated dev dependencies
-- Renamed "Utillity" to `brnc\Symfony1\Message\Utility`, technically [BREAKING] yet was never supposed to be used in user land
+- Renamed "Utility" to `brnc\Symfony1\Message\Utility`, technically [BREAKING] yet was never supposed to be used in user land
 
 ### Fixed
 

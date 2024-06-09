@@ -47,7 +47,8 @@ class CookieHeaderTranscriptor implements CookieTranscriptorInterface
             foreach ($parts as $part) {
                 $part                   = trim($part);
                 [$attrName, $attrValue] = [...explode('=', $part, 2), ''];
-                $attrName               = strtolower($attrName);
+                /** @noinspection PhpStrictTypeCheckingInspection */
+                $attrName = strtolower($attrName);
                 if (array_key_exists($attrName, self::ATTRIBUTES)) {
                     if ('secure' === $attrName || 'httponly' === $attrName) {
                         $attributes[$attrName] = ('' === $attrValue);

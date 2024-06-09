@@ -88,7 +88,7 @@ $response        = $entryPoint->handler($response);
 
 Assume you couldn't use other means, and you're confronted with an arbitrary PSR-7 response you can use the `ResponseTranscriptor` to copy the data from your PSR-7 response to your `\sfWebResponse`.
 
-Currently the `ResponseTranscriptor` doesn't support cookies, and will fail fast and hard if it encounters some. You are free to implement your own Cookie-Handler implementing `CookieTranscriptorInterface` and pass it as an optional constructor argument
+Currently, the `ResponseTranscriptor` doesn't support cookies, and will fail fast and hard if it encounters some. You are free to implement your own Cookie-Handler implementing `CookieTranscriptorInterface` and pass it as an optional constructor argument
 
 ```php
 // Given arbitrary PSR-7 response…

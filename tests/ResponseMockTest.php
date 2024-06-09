@@ -6,6 +6,7 @@ namespace brnc\Tests\Symfony1\Message;
 
 use brnc\Symfony1\Message\Adapter\Response;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * tests only edge-cases for setHttpHeader of mocked sfWebResponse
@@ -93,6 +94,8 @@ final class ResponseMockTest extends TestCase
      * @param string[]                                                                                                                      $headers
      * @param array<string, array{name:string, value:string, expire:null|string, path:string, domain: string, secure: bool, httpOnly:bool}> $cookies
      * @param array<int|string, mixed>                                                                                                      $options
+     *
+     * @return array{0: ResponseInterface, 1: \sfWebResponse}
      */
     private function createResponse(
         $code = 200,

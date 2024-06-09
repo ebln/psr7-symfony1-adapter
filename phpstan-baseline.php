@@ -313,11 +313,5 @@ $ignoreErrors[] = [
 	'count' => 1,
 	'path' => __DIR__ . '/tests/Adapter/ServerRequestUploadTest.php',
 ];
-$ignoreErrors[] = [
-	// identifier: missingType.iterableValue
-	'message' => '#^Method brnc\\\\Tests\\\\Symfony1\\\\Message\\\\ResponseMockTest\\:\\:createResponse\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/tests/ResponseMockTest.php',
-];
 
 return ['parameters' => ['ignoreErrors' => $ignoreErrors]];

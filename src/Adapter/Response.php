@@ -1,6 +1,5 @@
 <?php
 
-/** @noinspection PhpFullyQualifiedNameUsageInspection */
 declare(strict_types=1);
 
 namespace brnc\Symfony1\Message\Adapter;
@@ -235,7 +234,7 @@ class Response implements ResponseInterface
     /**
      * Mark the body if this very instance as the to be sent one, when dealing with multiple adaptions for a single sfWebResponse
      *
-     * When using the immutability-mode (as PSR-7 demands) there is no bijection any more between
+     * When using the immutability-mode (as PSR-7 demands) there is no bijection anymore between
      *   adapted sfWebResponse and this adapter. You may have several instances due to with* methods.
      *
      * The body of the very instance where this method was called the latest will be returned when
