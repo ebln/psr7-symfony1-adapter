@@ -61,13 +61,13 @@ final class CookieHeaderTranscriptorTest extends TestCase
                 'set-cookie'  => [
                     'token=42; Domain=cookie.test; Path=/; HttpOnly',
                     'sessionId=abc123; Path=/; HttpOnly; SameSite=Strict',
-                    'token=1337; Domain=cookie.test; Path=/; Expires=Sun, 12 Dec 2025 13:37:42 GMT; SameSite=Lax; Secure; HttpOnly',
+                    'token=1337; Domain=cookie.test; Path=/; Expires=Fri, 12 Dec 2025 13:37:42 GMT; SameSite=Lax; Secure; HttpOnly',
                 ],
                 'expectation' => [
                     'token'     => [
                         'name'     => 'token',
                         'value'    => '1337',
-                        'expire'   => 1765719462,  // Epoch timestamp for 'Sun, 12 Dec 2025 13:37:42 GMT'
+                        'expire'   => 1765546662,  // Epoch timestamp for 'Fri, 12 Dec 2025 13:37:42 GMT'
                         'path'     => '/',
                         'domain'   => 'cookie.test',
                         'secure'   => true,
@@ -134,12 +134,12 @@ final class CookieHeaderTranscriptorTest extends TestCase
                 ],
             ],
             'Cookie with All Attributes'    => [
-                'set-cookie'  => ['token=1337; Domain=cookie.test; Path=/; Expires=Sun, 12 Dec 2025 13:37:42 GMT; SameSite=Lax; Secure; HttpOnly'],
+                'set-cookie'  => ['token=1337; Domain=cookie.test; Path=/; Expires=Fri, 12 Dec 2025 13:37:42 GMT; SameSite=Lax; Secure; HttpOnly'],
                 'expectation' => [
                     'token' => [
                         'name'     => 'token',
                         'value'    => '1337',
-                        'expire'   => 1765719462,  // Epoch timestamp for 'Sun, 12 Dec 2025 13:37:42 GMT'
+                        'expire'   => 1765546662,  // Epoch timestamp for 'Fri, 12 Dec 2025 13:37:42 GMT'
                         'path'     => '/',
                         'domain'   => 'cookie.test',
                         'secure'   => true,
