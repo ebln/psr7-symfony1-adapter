@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class CookieContainerTest extends TestCase
 {
-    public function testGetCookies()
+    public function testGetCookies(): void
     {
         $cookieMock = $this->createMock(CookieInterface::class);
         $cookies    = [$cookieMock];
@@ -24,7 +24,7 @@ final class CookieContainerTest extends TestCase
         self::assertSame($cookies, $container->getCookies());
     }
 
-    public function testConstructorAssignsCookies()
+    public function testConstructorAssignsCookies(): void
     {
         $cookieMock1 = $this->createMock(CookieInterface::class);
         $cookieMock2 = $this->createMock(CookieInterface::class);

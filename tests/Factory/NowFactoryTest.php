@@ -14,28 +14,21 @@ use PHPUnit\Framework\TestCase;
  */
 final class NowFactoryTest extends TestCase
 {
-    private ?NowFactory $nowFactory = null;
-
-    protected function setUp(): void
+    public function testNowReturnsDateTimeImmutable(): void
     {
-        $this->nowFactory = new NowFactory();
-    }
-
-    public function testNowReturnsDateTimeImmutable()
-    {
-        $result = $this->nowFactory->now();
+        $result = (new NowFactory())->now();
         self::assertInstanceOf(\DateTimeImmutable::class, $result);
     }
 
-    public function testNowReturnsUtcTimezone()
+    public function testNowReturnsUtcTimezone(): void
     {
-        $result = $this->nowFactory->now();
+        $result = (new NowFactory())->now();
         self::assertSame('UTC', $result->getTimezone()->getName());
     }
 
-    public function testNowReturnsCurrentTime()
+    public function testNowReturnsCurrentTime(): void
     {
-        $result         = $this->nowFactory->now();
+        $result         = (new NowFactory())->now();
         $currentUtcTime = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
 
         // Allow a small difference to account for execution time

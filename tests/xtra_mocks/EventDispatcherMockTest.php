@@ -15,29 +15,23 @@ use PHPUnit\Framework\TestCase;
  */
 final class EventDispatcherMockTest extends TestCase
 {
-    private $dispatcher;
-
-    protected function setUp(): void
-    {
-        $this->dispatcher = new \sfEventDispatcher();
-    }
-
     /** @covers sfEventDispatcher::connect */
-    public function testConnect()
+    public function testConnect(): void
     {
         $counter  = 0;
         $listener = static function ($event) use (&$counter): void {
             ++$counter;
         };
-        self::assertCount(0, $this->dispatcher->getListeners('test.event'));
-        $this->dispatcher->connect('test.event', $listener);
-        self::assertCount(1, $this->dispatcher->getListeners('test.event'));
-        $this->dispatcher->notify(new \sfEvent($this, 'test.event'));
-        $this->dispatcher->filter(new \sfEvent($this, 'test.event'), null);
+        $dispatcher = new \sfEventDispatcher();
+        self::assertCount(0, $dispatcher->getListeners('test.event'));
+        $dispatcher->connect('test.event', $listener);
+        self::assertCount(1, $dispatcher->getListeners('test.event'));
+        $dispatcher->notify(new \sfEvent($this, 'test.event'));
+        $dispatcher->filter(new \sfEvent($this, 'test.event'), null);
         self::assertSame(2, $counter);
     }
 
-    public function testNotify()
+    public function testNotify(): void
     {
         $event     = new \sfEvent($this, 'test.event', ['log' => 'foobar']);
         $semaphore = (object)['logger' => []];
@@ -46,21 +40,23 @@ final class EventDispatcherMockTest extends TestCase
 
             return 'handled';
         };
-        $this->dispatcher->connect('test.event', $listener);
-        $resultEvent = $this->dispatcher->notify($event);
+        $dispatcher = new \sfEventDispatcher();
+        $dispatcher->connect('test.event', $listener);
+        $resultEvent = $dispatcher->notify($event);
         self::assertSame($resultEvent, $event);
         self::assertSame(['foobar'], $semaphore->logger);
     }
 
-    public function testFilter()
+    public function testFilter(): void
     {
         $event        = new \sfEvent($this, 'test.event');
         $initialValue = 10;
         $listener     = static function ($event, $value) {
             return $value * 2;
         };
-        $this->dispatcher->connect('test.event', $listener);
-        $filteredEvent = $this->dispatcher->filter($event, $initialValue);
+        $dispatcher = new \sfEventDispatcher();
+        $dispatcher->connect('test.event', $listener);
+        $filteredEvent = $dispatcher->filter($event, $initialValue);
         self::assertSame(20, $filteredEvent->getReturnValue());
     }
 }

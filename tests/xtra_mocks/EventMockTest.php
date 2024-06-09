@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class EventMockTest extends TestCase
 {
-    public function testEventProperties()
+    public function testEventProperties(): void
     {
         $event = new \sfEvent($this, 'test.event', ['key' => 'value']);
         self::assertSame('test.event', $event->getName());
@@ -21,21 +21,21 @@ final class EventMockTest extends TestCase
         self::assertSame('value', $event->offsetGet('key'));
     }
 
-    public function testSetAndGetReturnValue()
+    public function testSetAndGetReturnValue(): void
     {
         $event = new \sfEvent($this, 'test.event');
         $event->setReturnValue('test');
         self::assertSame('test', $event->getReturnValue());
     }
 
-    public function testOffsetSetAndGet()
+    public function testOffsetSetAndGet(): void
     {
         $event = new \sfEvent($this, 'test.event', []);
         $event->offsetSet('newkey', 'newvalue');
         self::assertSame('newvalue', $event->offsetGet('newkey'));
     }
 
-    public function testExceptionForInvalidKey()
+    public function testExceptionForInvalidKey(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $event = new \sfEvent($this, 'test.event', []);

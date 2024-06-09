@@ -14,24 +14,19 @@ use PHPUnit\Framework\TestCase;
  */
 final class HeaderCookieTest extends TestCase
 {
-    private ?HeaderCookie $headerCookie = null;
-
-    protected function setUp(): void
+    public function testGetName(): void
     {
-        $this->headerCookie = new HeaderCookie('test', 'value', 'Set-Cookie: test=value; Path=/; HttpOnly');
+        $headerCookie = new HeaderCookie('test', 'foo', 'Set-Cookie: test=foo; Path=/; HttpOnly');
+        self::assertSame('test', $headerCookie->getName());
     }
 
-    public function testGetName()
+    public function testGetValue(): void
     {
-        self::assertSame('test', $this->headerCookie->getName());
+        $headerCookie = new HeaderCookie('test', 'bar', 'Set-Cookie: test=bar; Path=/; HttpOnly');
+        self::assertSame('bar', $headerCookie->getValue());
     }
 
-    public function testGetValue()
-    {
-        self::assertSame('value', $this->headerCookie->getValue());
-    }
-
-    public function testConstructorAssignsProperties()
+    public function testConstructorAssignsProperties(): void
     {
         $headerCookie = new HeaderCookie('name', 'value', 'Set-Cookie: name=value; Path=/; HttpOnly');
 

@@ -15,32 +15,17 @@ use PHPUnit\Framework\TestCase;
  */
 final class AbstractCookieTest extends TestCase
 {
-    private ?CookieInterface $cookie = null;
-
-    protected function setUp(): void
+    public function testGetName(): void
     {
-        $options = [
-            'expires'  => time() + 3600,
-            'path'     => '/',
-            'domain'   => 'example.com',
-            'secure'   => true,
-            'httponly' => true,
-            'samesite' => 'Strict',
-        ];
-        $this->cookie = $this->createCookie('test', 'value', $options);
+        self::assertSame('test', $this->createCookie('test', 'value', [])->getName());
     }
 
-    public function testGetName()
+    public function testGetValue(): void
     {
-        self::assertSame('test', $this->cookie->getName());
+        self::assertSame('value', $this->createCookie('test', 'value', [])->getValue());
     }
 
-    public function testGetValue()
-    {
-        self::assertSame('value', $this->cookie->getValue());
-    }
-
-    public function testConstructorAssignsOptions()
+    public function testConstructorAssignsOptions(): void
     {
         $options = [
             'expires'  => time() + 3600,
@@ -59,6 +44,7 @@ final class AbstractCookieTest extends TestCase
         self::assertSame($options, $property->getValue($cookie));
     }
 
+    /** @param array{expires?: int, path?: string, domain?: string, secure?: bool, httponly?: bool, samesite?: 'Lax'|'None'|'Strict'}  $options */
     private function createCookie(string $name, string $value, array $options): CookieInterface
     {
         return new class($name, $value, $options) extends AbstractCookie {

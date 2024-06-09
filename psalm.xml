@@ -10,6 +10,7 @@
         findUnusedVariablesAndParams="false"
         findUnusedCode="false"
         findUnusedPsalmSuppress="true"
+        findUnusedBaselineEntry="true"
         errorBaseline="psalm-baseline.xml"
 >
     <projectFiles>
