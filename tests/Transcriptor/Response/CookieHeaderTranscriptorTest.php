@@ -165,7 +165,7 @@ final class CookieHeaderTranscriptorTest extends TestCase
                     ],
                 ],
             ],
-            'Cookie with Max-Age < Expires' => [
+            'Cookie with Max-Age < Expires → shortest TTL prevails' => [
                 'set-cookie'  => ['maxage=LTexpires; Expires=Thu, 01 Jan 1970 01:00:10 GMT; Max-Age=' . (3600 - 63)],
                 'expectation' => [
                     'maxage' => [
@@ -179,7 +179,7 @@ final class CookieHeaderTranscriptorTest extends TestCase
                     ],
                 ],
             ],
-            'Cookie with Max-Age > Expires' => [
+            'Cookie with Max-Age > Expires → shortest TTL prevails' => [ // Not really up to specs: Max-Age should take precedence with both are present!
                 'set-cookie'  => ['maxage=GTexpires; Expires=Thu, 01 Jan 1970 01:00:00 GMT; Max-Age=3610'],
                 'expectation' => [
                     'maxage' => [
