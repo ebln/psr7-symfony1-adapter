@@ -10,7 +10,10 @@ use Http\Psr7Test\ServerRequestIntegrationTest;
 /**
  * @internal
  *
- * @coversNothing
+ * @covers \brnc\Symfony1\Message\Adapter\Request
+ * @covers \brnc\Symfony1\Message\Utility\Assert
+ *
+ * @uses   \sfWebRequest
  */
 final class ServerRequestTest extends ServerRequestIntegrationTest
 {

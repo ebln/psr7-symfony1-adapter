@@ -11,7 +11,9 @@ use Psr\Http\Message\StreamInterface;
 /**
  * @internal
  *
- * @coversNothing
+ * @covers \brnc\Symfony1\Message\Adapter\Request
+ *
+ * @uses   \sfWebRequest
  */
 final class ServerRequestBodyTest extends TestCase
 {

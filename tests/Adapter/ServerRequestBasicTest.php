@@ -12,7 +12,9 @@ use PHPUnit\Framework\TestCase;
  *
  * @internal
  *
- * @coversNothing
+ * @covers \brnc\Symfony1\Message\Adapter\Request
+ *
+ * @uses   \sfWebRequest
  */
 final class ServerRequestBasicTest extends TestCase
 {

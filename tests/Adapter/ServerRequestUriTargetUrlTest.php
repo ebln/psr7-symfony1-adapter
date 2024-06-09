@@ -11,7 +11,9 @@ use Psr\Http\Message\UriInterface;
 /**
  * @internal
  *
- * @coversNothing
+ * @covers \brnc\Symfony1\Message\Adapter\Request
+ *
+ * @uses   \sfWebRequest
  */
 final class ServerRequestUriTargetUrlTest extends TestCase
 {
@@ -47,6 +49,7 @@ final class ServerRequestUriTargetUrlTest extends TestCase
         self::assertSame('/foo/bar?q=baz&a=42', $requestTarget);
     }
 
+    /** @covers \brnc\Symfony1\Message\Exception\LogicException */
     public function testItFailsWithUri(): void
     {
         $request = $this->createRequest();

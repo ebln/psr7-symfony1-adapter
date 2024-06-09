@@ -17,7 +17,17 @@ use Psr\Http\Message\ResponseInterface;
 /**
  * @internal
  *
- * @coversNothing
+ * @covers \brnc\Symfony1\Message\Transcriptor\CookieDispatcher
+ * @covers \brnc\Symfony1\Message\Transcriptor\Response\AbstractCookieDispatchTranscriptor
+ * @covers \brnc\Symfony1\Message\Transcriptor\Response\CookieDispatch\DispatchSubstitutor
+ * @covers \brnc\Symfony1\Message\Transcriptor\Response\CookieDispatch\TestContainer
+ * @covers \brnc\Symfony1\Message\Transcriptor\Response\CookieDispatch\TestCookie
+ *
+ * @uses   \brnc\Symfony1\Message\Transcriptor\ResponseTranscriptor
+ * @uses   \brnc\Symfony1\Message\Transcriptor\Response\OptionsTranscriptor
+ * @uses   \sfWebResponse
+ * @uses   \sfEventDispatcher
+ * @uses   \sfEvent
  */
 final class AbstractCookieDispatchTranscriptorTest extends TestCase
 {
@@ -34,7 +44,7 @@ final class AbstractCookieDispatchTranscriptorTest extends TestCase
         $transcriptor = new class($fixture) extends AbstractCookieDispatchTranscriptor {
             public TestContainer $container;
 
-            /** @param array<TestCookie> $cookies*/
+            /** @param array<TestCookie> $cookies */
             public function __construct(array $cookies)
             {
                 parent::__construct(new DispatchSubstitutor());

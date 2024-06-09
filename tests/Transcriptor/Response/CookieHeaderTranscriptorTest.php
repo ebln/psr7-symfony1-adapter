@@ -14,6 +14,10 @@ use Psr\Clock\ClockInterface;
  * @internal
  *
  * @covers \brnc\Symfony1\Message\Transcriptor\Response\CookieHeaderTranscriptor
+ *
+ * @uses   \brnc\Symfony1\Message\Transcriptor\ResponseTranscriptor
+ * @uses   \brnc\Symfony1\Message\Transcriptor\Response\OptionsTranscriptor
+ * @uses   \sfWebResponse
  */
 final class CookieHeaderTranscriptorTest extends TestCase
 {

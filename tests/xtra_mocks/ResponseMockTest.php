@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace brnc\Tests\Symfony1\Message;
+namespace brnc\Tests\Symfony1\Message\xtra_mocks;
 
 use brnc\Symfony1\Message\Adapter\Response;
 use PHPUnit\Framework\TestCase;
@@ -14,7 +14,9 @@ use Psr\Http\Message\ResponseInterface;
  *
  * @internal
  *
- * @coversNothing
+ * @covers \sfWebResponse
+ *
+ * @uses   \brnc\Symfony1\Message\Adapter\Response
  */
 final class ResponseMockTest extends TestCase
 {

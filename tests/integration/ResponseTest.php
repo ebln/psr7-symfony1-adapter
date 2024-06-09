@@ -10,7 +10,11 @@ use Http\Psr7Test\ResponseIntegrationTest;
 /**
  * @internal
  *
- * @coversNothing
+ * @covers \brnc\Symfony1\Message\Adapter\BodyStreamHook
+ * @covers \brnc\Symfony1\Message\Adapter\Response
+ * @covers \brnc\Symfony1\Message\Utility\Assert
+ *
+ * @uses   \sfWebResponse
  */
 final class ResponseTest extends ResponseIntegrationTest
 {

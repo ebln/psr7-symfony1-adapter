@@ -10,7 +10,9 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  *
- * @coversNothing
+ * @covers \brnc\Symfony1\Message\Adapter\Response
+ *
+ * @uses   \sfWebResponse
  */
 final class ResponseBasicTest extends TestCase
 {

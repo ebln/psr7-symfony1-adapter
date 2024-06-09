@@ -35,7 +35,7 @@ style-fix:##Apply code style
 	$(DOCKER_COMPOSE) run ${DEFAULT_CONTAINER} composer style-fix
 
 coverage:##Generate coverage report
-	$(DOCKER_COMPOSE) run ${DEFAULT_CONTAINER} composer coverage && chown -R 1000:1000 ./composer
+	$(DOCKER_COMPOSE) run ${DEFAULT_CONTAINER} sh -c "composer coverage && chown -R root:root coverage"
 
 baseline:##Run unit tests
 	$(DOCKER_COMPOSE) run ${DEFAULT_CONTAINER} sh -c "vendor/bin/phpstan --generate-baseline=phpstan-baseline.php && vendor/bin/psalm --update-baseline"
