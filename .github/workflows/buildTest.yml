@@ -1,6 +1,8 @@
 name: PHPUnit Tests via Composer
 
-on: [push]
+on:
+  push:
+  pull_request:
 
 jobs:
   build:
