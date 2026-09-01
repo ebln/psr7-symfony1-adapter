@@ -13,6 +13,8 @@ $finder = \PhpCsFixer\Finder::create()
     ->exclude('mock')
     ->exclude('DNC')
     ->notPath('phpstan-baseline.php')
+    ->notPath('src/Compatibility/Assert1x.php')
+    ->notPath('src/Compatibility/Assert2x.php')
     ->in(__DIR__);
 
 $config = new \PhpCsFixer\Config();

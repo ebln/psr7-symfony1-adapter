@@ -40,7 +40,10 @@
     "autoload": {
         "psr-4": {
             "brnc\\Symfony1\\Message\\": "src/"
-        }
+        },
+        "exclude-from-classmap": [
+            "src/Compatibility/"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
