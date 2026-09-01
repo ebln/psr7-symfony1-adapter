@@ -10,3 +10,4 @@ parameters:
     excludePaths:
         analyse:
             - src/Factory/DecoyHttpFactory.php
+            - src/Compatibility/Assert2x.php
