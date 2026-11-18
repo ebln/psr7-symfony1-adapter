@@ -52,6 +52,7 @@ This release changes three things that callers can see. Check code that relies o
   - The dev image installs PHP 7.4 from packages.sury.org on Debian bookworm. The official `php:7.4-cli` image is based on Debian bullseye,
     and `apt-get` fails there, as the Release file of bullseye-security has expired.
   - The `makefile` calls `docker compose` (Compose v2) instead of `docker-compose`.
+  - CI runs on `ubuntu-24.04` instead of `ubuntu-latest`. On ubuntu-26.04, `nanasess/setup-php` finds no packages for PHP 7.4 to 8.3.
 
 ### Known issues
 - One `Set-Cookie` header per `Response`: several `Set-Cookie` values are joined into one line, and browsers keep at most the first cookie.
