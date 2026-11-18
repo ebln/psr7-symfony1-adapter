@@ -65,7 +65,7 @@ class CookieDispatcher
         $logMessage = $event->offsetGet(0);
 
         // There is always at least on header, as Content-Type is forced in sfWebResponseX::sendHttpHeaders
-        if (str_starts_with($logMessage, 'Send header "')) {
+        if (0 === strpos($logMessage, 'Send header "')) { // not str_starts_with(), as 1.x supports PHP 7.4
             // initialize countdown with the number of header lines, after the very first header was sent out…
             $this->headerCountdown ??= count($response->getHttpHeaders());
             --$this->headerCountdown; // decrease right away…
