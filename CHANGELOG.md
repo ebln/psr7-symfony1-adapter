@@ -7,20 +7,6 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 
 ## [Unreleased] (meant as staging area)
 
-### Added
-- Two new CookieTranscriptors
-  - `CookieHeaderTranscriptor`; squeezing `Set-Cookie` headers from PSR-7 into the cookie management of `sfWebRequest`
-  - `AbstractCookieDispatchTranscriptor`; more powerful, extensible, yet more dangerous approach – using black magic.
-    - Comes with new `CookieDispatcher`, `DispatchSubstitutor` and a bunch of other cookie related classes
-### Changed
-- General maintainance: annotations, spelling
-- Improving test coverage calculation
-  - using `@covers` & `@uses` annotations
-  - enforce using new phpunit settings
-- Improve test coverage
-- Improve DX (docker, Makefile, gitattributes, cs-fixer rules)
-- Extend mocks, due to new functionality
-### Deprecated
 - …
 
 
@@ -37,6 +23,69 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 - Change namespace from brnc to ebln, with version ^2
 
 ----
+
+## [1.8.0]  - unreleased
+
+This release changes three things that callers can see. Check code that relies on them:
+- `getHeader()` and `getHeaders()` return list headers such as `Accept` as one value; see "Fixed".
+- `getHeaderLine()` returns `bar, baz` instead of `bar,baz` after `withHeader()` or `withAddedHeader()` with several values; see "Changed".
+- Options set to `false` are now off; see "Fixed".
+
+### Fixed
+- Header values are no longer split on `,`.
+  Values that contain a comma came back broken: `If-Modified-Since: Wed, 21 Oct 2015 07:28:00 GMT` came back as `['Wed', '21 Oct 2015 07:28:00 GMT']`.
+  - `getHeader()` and `getHeaders()` return one value per header line that symfony holds.
+  - This also applies to list headers such as `Accept`, `Cache-Control`, `Vary` or `X-Forwarded-For`:
+    `['no-cache, private']` instead of `['no-cache', 'private']`. Code that searches these arrays for one entry has to split the line itself.
+  - Values given to `withHeader()` or `withAddedHeader()` come back as separate values, while symfony still holds their joined line.
+    After a change outside the adapter (e.g. `sfWebResponse::setHttpHeader()`), the line comes back as one value.
+  - Each value is still trimmed of spaces and tabs. `getHeaderLine()` still returns symfony's line unchanged.
+- Adapter options are read by their value. A missing key and `null` give the default.
+  - `Request::OPTION_BODY_USE_STREAM` and `Response::OPTION_SEND_BODY_ON_204` set to `false` switched the option on.
+  - `OPTION_IMMUTABLE_VIOLATION` of `Request` and `Response` was switched off only by `false`. Now `0`, `''` and `'0'` switch it off too.
+- `CookieDispatcher` called `str_starts_with()`, which does not exist on PHP 7.4 without `symfony/polyfill-php80`.
+
+### Changed
+- `withHeader()` and `withAddedHeader()` join several values with `, ` instead of `,`.
+  `getHeaderLine()` then returns `bar, baz` instead of `bar,baz`, and symfony holds and sends that line.
+- Development environment only, no change to the package:
+  - The dev image installs PHP 7.4 from packages.sury.org on Debian bookworm. The official `php:7.4-cli` image is based on Debian bullseye,
+    and `apt-get` fails there, as the Release file of bullseye-security has expired.
+  - The `makefile` calls `docker compose` (Compose v2) instead of `docker-compose`.
+
+### Known issues
+- One `Set-Cookie` header per `Response`: several `Set-Cookie` values are joined into one line, and browsers keep at most the first cookie.
+  Use `sfWebResponse::setCookie()` or the `ResponseTranscriptor` with a cookie transcriptor; see README, "Known limitations".
+- `CookieHeaderTranscriptor` reads each `Set-Cookie` value as one cookie, so it cannot split such a joined line.
+- With guzzlehttp/psr7 2.10.2 or later, a malformed `Host` header (e.g. `foo bar`) throws guzzle's `MalformedUriException`
+  in `Request::fromSfWebRequest()`, as in earlier versions. To answer with a `400`, catch it there. Older guzzle versions accept such a host.
+
+## [1.7.1]  - 2026-09-01
+
+### Fixed
+- Support `webmozart/assert` 1.x and 2.x side by side (`src/Compatibility/`), as their `reportInvalidArgument()` signatures differ.
+
+## [1.7.0]  - 2026-08-31
+
+### Added
+- Two new CookieTranscriptors
+  - `CookieHeaderTranscriptor`; squeezing `Set-Cookie` headers from PSR-7 into the cookie management of `sfWebResponse`
+  - `AbstractCookieDispatchTranscriptor`; more powerful, extensible, yet more dangerous approach – using black magic.
+    - Comes with new `CookieDispatcher`, `DispatchSubstitutor` and a bunch of other cookie related classes
+
+### Changed
+- Dependencies
+  - added `psr/clock` `^1.0`, used by `CookieHeaderTranscriptor`
+  - allow `guzzlehttp/psr7` `^3.0` next to `^2.4.5`
+  - allow `webmozart/assert` `^2.0` next to `^1.11`
+- Run CI also for pull requests
+- General maintenance: annotations, spelling
+- Improve test coverage calculation
+  - using `@covers` & `@uses` annotations
+  - enforce using new phpunit settings
+- Improve test coverage
+- Improve DX (docker, Makefile, gitattributes, cs-fixer rules)
+- Extend mocks, due to new functionality
 
 ## [1.6.1]  - 2024-06-07
 

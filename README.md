@@ -63,6 +63,9 @@ $serverRequestAdapter = Request::fromSfWebRequest(
 );
 ```
 
+Before v1.8.0, any value except `null` of `Request::OPTION_BODY_USE_STREAM` switched the option on, also `false`. The same applies to `Response::OPTION_SEND_BODY_ON_204`.
+On older versions, leave an option out to keep it off.
+
 ## Response
 
 Please mind the default to mutability!
