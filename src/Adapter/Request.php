@@ -95,7 +95,7 @@ class Request implements ServerRequestInterface
     public static function fromSfWebRequest(\sfWebRequest $sfWebRequest, array $options = []): self
     {
         $new = new static($sfWebRequest);
-        if (isset($options[self::OPTION_BODY_USE_STREAM])) {
+        if (!empty($options[self::OPTION_BODY_USE_STREAM])) {
             $new->body = new CachingStream(new LazyOpenStream('php://input', 'r+'));
         } else {
             $content = $sfWebRequest->getContent();
@@ -106,7 +106,7 @@ class Request implements ServerRequestInterface
         }
 
         // defaulting to mutating PSR-7-violating behavior when creating from \sfWebRequest
-        if (!array_key_exists(self::OPTION_IMMUTABLE_VIOLATION, $options) || false !== $options[self::OPTION_IMMUTABLE_VIOLATION]) {
+        if ($options[self::OPTION_IMMUTABLE_VIOLATION] ?? true) {
             $new->isImmutable  = false;
             $new->parsedBody   = false;
             $new->cookieParams = null;

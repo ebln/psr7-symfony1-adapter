@@ -57,12 +57,12 @@ class Response implements ResponseInterface
     {
         $new = new static($sfWebResponse);
 
-        if (isset($options[self::OPTION_SEND_BODY_ON_204])) {
+        if (!empty($options[self::OPTION_SEND_BODY_ON_204])) {
             $new->setHeaderOnly = false;
         }
 
         // defaulting to mutating PSR-7-violating behavior when creating from \sfWebResponse
-        if (!array_key_exists(self::OPTION_IMMUTABLE_VIOLATION, $options) || false !== $options[self::OPTION_IMMUTABLE_VIOLATION]) {
+        if ($options[self::OPTION_IMMUTABLE_VIOLATION] ?? true) {
             $new->isImmutable = false;
         }
 

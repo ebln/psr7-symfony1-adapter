@@ -50,6 +50,34 @@ final class RequestBasicTest extends TestCase
     }
 
     /**
+     * @dataProvider provideImmutableViolationOptionIsReadByValueCases
+     *
+     * @param array<string, mixed> $options
+     *
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
+    public function testImmutableViolationOptionIsReadByValue(array $options, bool $expectMutable): void
+    {
+        /** @var array<string, bool> $options callers without static analysis can pass other values */
+        $request = Request::fromSfWebRequest($this->createSymfonyMock(), $options);
+        self::assertSame($expectMutable, $request === $request->withHeader('X-Foo', 'bar'));
+    }
+
+    /** @return iterable<string, array{array<string, mixed>, bool}> */
+    public static function provideImmutableViolationOptionIsReadByValueCases(): iterable
+    {
+        return [
+            'not given: on'          => [[], true],
+            'null: on, as not given' => [[Request::OPTION_IMMUTABLE_VIOLATION => null], true],
+            'true: on'               => [[Request::OPTION_IMMUTABLE_VIOLATION => true], true],
+            'false: off'             => [[Request::OPTION_IMMUTABLE_VIOLATION => false], false],
+            '0: off'                 => [[Request::OPTION_IMMUTABLE_VIOLATION => 0], false],
+            'empty string: off'      => [[Request::OPTION_IMMUTABLE_VIOLATION => ''], false],
+            'string 0: off'          => [[Request::OPTION_IMMUTABLE_VIOLATION => '0'], false],
+        ];
+    }
+
+    /**
      * @dataProvider provideHeaderCases
      *
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException

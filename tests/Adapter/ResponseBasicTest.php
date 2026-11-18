@@ -88,6 +88,36 @@ final class ResponseBasicTest extends TestCase
     }
 
     /**
+     * @dataProvider provideImmutableViolationOptionIsReadByValueCases
+     *
+     * @param array<string, mixed> $options
+     *
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
+    public function testImmutableViolationOptionIsReadByValue(array $options, bool $expectMutable): void
+    {
+        /**
+         * @var Response $response
+         */
+        [$response] = $this->createResponse(200, null, [], [], false, [], $options);
+        self::assertSame($expectMutable, $response === $response->withHeader('X-Foo', 'bar'));
+    }
+
+    /** @return iterable<string, array{array<string, mixed>, bool}> */
+    public static function provideImmutableViolationOptionIsReadByValueCases(): iterable
+    {
+        return [
+            'not given: on'          => [[], true],
+            'null: on, as not given' => [[Response::OPTION_IMMUTABLE_VIOLATION => null], true],
+            'true: on'               => [[Response::OPTION_IMMUTABLE_VIOLATION => true], true],
+            'false: off'             => [[Response::OPTION_IMMUTABLE_VIOLATION => false], false],
+            '0: off'                 => [[Response::OPTION_IMMUTABLE_VIOLATION => 0], false],
+            'empty string: off'      => [[Response::OPTION_IMMUTABLE_VIOLATION => ''], false],
+            'string 0: off'          => [[Response::OPTION_IMMUTABLE_VIOLATION => '0'], false],
+        ];
+    }
+
+    /**
      * @dataProvider provideHeaderCases
      *
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
@@ -247,6 +277,13 @@ final class ResponseBasicTest extends TestCase
                 'initial headers only' => false,
                 'set to status'        => 204,
                 'expect headers only'  => false,
+            ],
+            '200 → 204 - option set to false: set headersOnly true'                => [
+                'factory options'      => [Response::OPTION_SEND_BODY_ON_204 => false],
+                'initial status'       => 200,
+                'initial headers only' => false,
+                'set to status'        => 204,
+                'expect headers only'  => true,
             ],
             '200 with setHeadersOnly(true) → 204: no change'                       => [
                 'factory options'      => [],
