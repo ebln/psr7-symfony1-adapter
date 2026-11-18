@@ -31,6 +31,12 @@ trait CommonAdapterTrait
     private ?StreamInterface $body         = null;
 
     /**
+     * Symfony 1 holds one line per header name, so all values are joined into one line with `, `.
+     *
+     * Known limitation of the Response: one Set-Cookie header per response. Several Set-Cookie values are joined
+     * into one line, and browsers keep at most the first cookie. Use sfWebResponse::setCookie(), or the
+     * ResponseTranscriptor with a cookie transcriptor, instead. See README, "Known limitations".
+     *
      * @param string          $name
      * @param string|string[] $value
      *
@@ -63,6 +69,12 @@ trait CommonAdapterTrait
 
     /**
      * N.b. in the Response this is *not* applying the extra call to fixContentType() by setHttpHeader()
+     *
+     * Symfony 1 holds one line per header name, so an array of values is joined into one line with `, `.
+     *
+     * Known limitation of the Response: one Set-Cookie header per response. Several Set-Cookie values are joined
+     * into one line, and browsers keep at most the first cookie. Use sfWebResponse::setCookie(), or the
+     * ResponseTranscriptor with a cookie transcriptor, instead. See README, "Known limitations".
      *
      * @param string          $name
      * @param string|string[] $value

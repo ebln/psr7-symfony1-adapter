@@ -265,6 +265,29 @@ final class ResponseBasicTest extends TestCase
         self::assertSame(['a, b'], $response->getHeader('X-Foo'));
     }
 
+    /**
+     * Pins a known limitation (see README, "Known limitations"): symfony 1 holds one line per header name,
+     * so several Set-Cookie headers become one line, and browsers keep at most the first cookie.
+     * If this test fails, the limitation changed: update the README, the docblocks and the CHANGELOG.
+     *
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
+    public function testSeveralSetCookieHeadersAreJoinedIntoOneLine(): void
+    {
+        /**
+         * @var Response       $response
+         * @var \sfWebResponse $symfony
+         */
+        [$response, $symfony] = $this->createResponse();
+        $response             = $response->withAddedHeader('Set-Cookie', 'a=1; Path=/')->withAddedHeader('Set-Cookie', 'b=2; Path=/');
+        self::assertSame(['Set-Cookie' => 'a=1; Path=/, b=2; Path=/'], $symfony->getHttpHeaders());
+        self::assertSame([], $symfony->getCookies());
+
+        $response = $response->withHeader('Set-Cookie', ['c=3', 'd=4']);
+        self::assertSame(['Set-Cookie' => 'c=3, d=4'], $symfony->getHttpHeaders());
+        self::assertSame([], $symfony->getCookies());
+    }
+
     /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testLastModifiedIsNotSplitOnItsComma(): void
     {
