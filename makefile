@@ -1,7 +1,7 @@
 DOCKER_COMPOSE_DIR=./.provision
 DOCKER_COMPOSE_YML=$(DOCKER_COMPOSE_DIR)/docker-compose.yml
 DEFAULT_CONTAINER=php
-DOCKER_COMPOSE=docker-compose -f $(DOCKER_COMPOSE_YML)
+DOCKER_COMPOSE=docker compose -f $(DOCKER_COMPOSE_YML)
 MAKE=make -s
 .DEFAULT_GOAL := help
 
