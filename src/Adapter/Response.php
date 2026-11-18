@@ -110,7 +110,7 @@ class Response implements ResponseInterface
         foreach ($this->sfWebResponse->getHttpHeaders() as $key => $value) {
             $tryKey                       = strtolower($key);
             $headerName                   = $this->headerNames[$tryKey] ?? $key;
-            $shadowedHeaders[$headerName] = $this->explodeHeaderLine($value);
+            $shadowedHeaders[$headerName] = $this->getHeaderValues($key, $value);
         }
 
         return $shadowedHeaders;
@@ -138,7 +138,7 @@ class Response implements ResponseInterface
         /** @noinspection ArgumentEqualsDefaultValueInspection */
         $value = $this->sfWebResponse->getHttpHeader($name, null);
 
-        return null === $value ? [] : $this->explodeHeaderLine($value);
+        return null === $value ? [] : $this->getHeaderValues($name, $value);
     }
 
     /**
@@ -152,7 +152,7 @@ class Response implements ResponseInterface
     public function withoutHeader($name): self
     {
         Assert::stringNotEmpty($name);
-        unset($this->headerNames[$this->normalizeHeaderName($name)]);
+        unset($this->headerNames[$this->normalizeHeaderName($name)], $this->headerValues[$this->normalizeHeaderName($name)]);
         /* @noinspection ArgumentEqualsDefaultValueInspection */
         $this->sfWebResponse->setHttpHeader($name, null, true);
 

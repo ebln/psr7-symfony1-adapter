@@ -110,9 +110,11 @@ class sfWebRequest
      */
     public function getHttpHeader($name, $prefix = 'HTTP')
     {
-        $key = strtoupper(str_replace('-', '_', ($prefix ? $prefix . '_' : '') . $name));
+        $key   = strtoupper(str_replace('-', '_', ($prefix ? $prefix . '_' : '') . $name));
+        $value = $this->pathInfoArray[$key] ?? null;
 
-        return $this->pathInfoArray[$key] ?? null;
+        // as symfony, which calls sfToolkit::stripslashesDeep() on the value
+        return null === $value ? null : stripslashes($value);
     }
 
     /**

@@ -21,7 +21,14 @@ trait CommonAdapterTrait
      * shadow to honour: »[…]preserve the exact case in which headers were originally specified.«
      */
     private array            $headerNames = [];
-    private ?StreamInterface $body        = null;
+
+    /**
+     * @var array<string, string[]> by normalized header name
+     *
+     * shadow of the values given to withHeader() and withAddedHeader(), as symfony keeps one joined line per header
+     */
+    private array            $headerValues = [];
+    private ?StreamInterface $body         = null;
 
     /**
      * @param string          $name
@@ -49,6 +56,7 @@ trait CommonAdapterTrait
         }
 
         $new->setHeader($name, $headers);
+        $new->rememberHeaderValues($name, $headers);
 
         return $new;
     }
@@ -70,6 +78,7 @@ trait CommonAdapterTrait
         $new                                                = $this->getThisOrClone();
         $new->headerNames[$new->normalizeHeaderName($name)] = $name;
         $new->setHeader($name, $value);
+        $new->rememberHeaderValues($name, $value);
 
         return $new;
     }
@@ -81,18 +90,37 @@ trait CommonAdapterTrait
     }
 
     /**
-     * Explodes an HTTP header's value to address PSR-7 array-field sub-value approach
+     * Returns the values of one header line held by symfony
+     *
+     * A line is not split on commas, as many values contain commas (dates, User-Agent, Set-Cookie).
+     * The values given to withHeader() or withAddedHeader() are returned while symfony still holds their joined line.
+     * Each value is trimmed of spaces and tabs (https://tools.ietf.org/html/rfc7230#section-3.2.4).
+     *
+     * @param string      $line     the line as symfony returns it
+     * @param null|string $heldLine the line as symfony holds it, if symfony changes it on return
+     *                              (sfWebRequest::getHttpHeader() strips slashes)
      *
      * @return string[]
      */
-    private function explodeHeaderLine(string $line): array
+    private function getHeaderValues(string $name, string $line, ?string $heldLine = null): array
     {
+        $values = $this->headerValues[$this->normalizeHeaderName($name)] ?? null;
+        if (null === $values || $this->joinHeaderValues($values) !== ($heldLine ?? $line)) {
+            $values = [$line];
+        }
+
         return array_map(
-            static function ($element) {
-                return trim($element, " \t"); // https://tools.ietf.org/html/rfc7230#section-3.2.4
+            static function (string $value): string {
+                return trim($value, " \t");
             },
-            explode(',', $line)
+            $values
         );
+    }
+
+    /** @param string|string[] $value */
+    private function rememberHeaderValues(string $name, $value): void
+    {
+        $this->headerValues[$this->normalizeHeaderName($name)] = is_array($value) ? array_values($value) : [$value];
     }
 
     /**
@@ -107,7 +135,13 @@ trait CommonAdapterTrait
             Assert::notEmpty($value);
         }
 
-        return is_array($value) ? implode(',', $value) : $value;
+        return is_array($value) ? $this->joinHeaderValues($value) : $value;
+    }
+
+    /** @param string[] $values */
+    private function joinHeaderValues(array $values): string
+    {
+        return implode(', ', $values);
     }
 
     private function normalizeHeaderName(string $name): string

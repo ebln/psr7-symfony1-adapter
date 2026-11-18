@@ -143,9 +143,9 @@ final class RequestBasicTest extends TestCase
         $request = $request->withAddedHeader('X-Foo', 'baz');
         self::assertTrue($request->hasHeader('X-Foo'));
         self::assertSame(['bar', 'baz'], $request->getHeader('X-Foo'));
-        self::assertSame('bar,baz', $request->getHeaderLine('X-Foo'));
+        self::assertSame('bar, baz', $request->getHeaderLine('X-Foo'));
         self::assertSame(['X-Foo' => ['bar', 'baz']], $request->getHeaders());
-        self::assertSame(['HTTP_X_FOO' => 'bar,baz'], $request->getServerParams());
+        self::assertSame(['HTTP_X_FOO' => 'bar, baz'], $request->getServerParams());
     }
 
     /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
@@ -160,9 +160,9 @@ final class RequestBasicTest extends TestCase
         $request = $request->withAddedHeader('X-Foo', ['bar', 'baz']);
         self::assertTrue($request->hasHeader('X-Foo'));
         self::assertSame(['foo', 'bar', 'baz'], $request->getHeader('X-Foo'));
-        self::assertSame('foo,bar,baz', $request->getHeaderLine('X-Foo'));
+        self::assertSame('foo, bar, baz', $request->getHeaderLine('X-Foo'));
         self::assertSame(['X-Foo' => ['foo', 'bar', 'baz']], $request->getHeaders());
-        self::assertSame(['HTTP_X_FOO' => 'foo,bar,baz'], $request->getServerParams());
+        self::assertSame(['HTTP_X_FOO' => 'foo, bar, baz'], $request->getServerParams());
     }
 
     /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
@@ -170,14 +170,72 @@ final class RequestBasicTest extends TestCase
     {
         $request = $this->createRequest('GET', ['HTTP_X_FOO' => 'bar, baz']);
         self::assertTrue($request->hasHeader('X-Foo'));
-        self::assertSame(['bar', 'baz'], $request->getHeader('X-Foo'));
+        self::assertSame(['bar, baz'], $request->getHeader('X-Foo'));
         self::assertSame('bar, baz', $request->getHeaderLine('X-Foo'));
-        self::assertSame(['x-foo' => ['bar', 'baz']], $request->getHeaders());
+        self::assertSame(['x-foo' => ['bar, baz']], $request->getHeaders());
         self::assertSame(['HTTP_X_FOO' => 'bar, baz'], $request->getServerParams());
         $request = $request->withoutHeader('x-FoO');
         self::assertFalse($request->hasHeader('X-Foo'));
         self::assertSame([], $request->getHeader('X-Foo'));
         self::assertSame([], $request->getServerParams());
+    }
+
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
+    public function testHeaderValuesWithCommasRoundTrip(): void
+    {
+        $request = $this->createRequest()->withHeader('X-Foo', ['a, b', 'c']);
+        self::assertSame(['a, b', 'c'], $request->getHeader('X-Foo'));
+        self::assertSame('a, b, c', $request->getHeaderLine('X-Foo'));
+        self::assertSame(['X-Foo' => ['a, b', 'c']], $request->getHeaders());
+        self::assertSame(['HTTP_X_FOO' => 'a, b, c'], $request->getServerParams());
+    }
+
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
+    public function testHeaderValuesAreReadFromSymfonyAfterAnotherAdapterChangedThem(): void
+    {
+        $symfony = $this->createSymfonyMock();
+        $first   = Request::fromSfWebRequest($symfony)->withHeader('X-Foo', ['bar', 'baz']);
+        Request::fromSfWebRequest($symfony)->withHeader('X-Foo', 'qux, quux');
+        self::assertSame(['qux, quux'], $first->getHeader('X-Foo'));
+        self::assertSame(['X-Foo' => ['qux, quux']], $first->getHeaders());
+    }
+
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
+    public function testWithoutHeaderForgetsHeaderValues(): void
+    {
+        $symfony = $this->createSymfonyMock();
+        $first   = Request::fromSfWebRequest($symfony)->withHeader('X-Foo', ['a', 'b'])->withoutHeader('X-Foo');
+        Request::fromSfWebRequest($symfony)->withHeader('X-Foo', 'a, b');
+        self::assertSame(['a, b'], $first->getHeader('X-Foo'));
+    }
+
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
+    public function testHeaderValuesWithBackslashesRoundTrip(): void
+    {
+        $request = $this->createRequest()->withHeader('X-Path', ['C:\\dir', 'b']);
+        self::assertSame(['C:\\dir', 'b'], $request->getHeader('X-Path'));
+        self::assertSame(['X-Path' => ['C:\\dir', 'b']], $request->getHeaders());
+    }
+
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
+    public function testHeaderLineHeldBySymfonyIsReadWithoutBackslashes(): void
+    {
+        $request = $this->createRequest('GET', ['HTTP_X_PATH' => 'C:\\dir, b']);
+        self::assertSame(['C:dir, b'], $request->getHeader('X-Path'));
+    }
+
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
+    public function testHeaderValuesAreTrimmedOfSpacesAndTabs(): void
+    {
+        $request = $this->createRequest('GET', ['HTTP_X_FOO' => " bar\t"]);
+        self::assertSame(['bar'], $request->getHeader('X-Foo'));
+        self::assertSame(['x-foo' => ['bar']], $request->getHeaders());
+        self::assertSame(" bar\t", $request->getHeaderLine('X-Foo'));
+
+        $request = $request->withHeader('X-Foo', [' a ', "b\t"]);
+        self::assertSame(['a', 'b'], $request->getHeader('X-Foo'));
+        self::assertSame(['X-Foo' => ['a', 'b']], $request->getHeaders());
+        self::assertSame(" a , b\t", $request->getHeaderLine('X-Foo'));
     }
 
     private function createRequest(

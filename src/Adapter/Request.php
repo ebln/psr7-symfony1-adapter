@@ -162,12 +162,10 @@ class Request implements ServerRequestInterface
             }
 
             if (is_string($useKey)) {
-                $headerName = $this->normalizeHeaderName($useKey);
-                if (isset($this->headerNames[$headerName])) {
-                    $headerName = $this->headerNames[$headerName]; // return shadowed header name
-                }
+                $normalizedName = $this->normalizeHeaderName($useKey);
+                $headerName     = $this->headerNames[$normalizedName] ?? $normalizedName; // return shadowed header name
 
-                $headers[$headerName] = $this->explodeHeaderLine($value);
+                $headers[$headerName] = $this->getHeaderValues($normalizedName, $value);
             }
         }
 
@@ -197,8 +195,12 @@ class Request implements ServerRequestInterface
     {
         Assert::stringNotEmpty($name);
         $value = $this->sfWebRequest->getHttpHeader($name, $this->getPathInfoPrefix($name));
+        if (null === $value) {
+            return [];
+        }
+        $heldValue = $this->sfWebRequest->getPathInfoArray()[$this->getPathInfoKey($name)] ?? null;
 
-        return null === $value ? [] : $this->explodeHeaderLine($value);
+        return $this->getHeaderValues($name, $value, $heldValue);
     }
 
     /**
@@ -233,7 +235,7 @@ class Request implements ServerRequestInterface
         $pathInfoArray = $new->sfWebRequest->getPathInfoArray();
         unset($pathInfoArray[$keyName]);
         $new->retroducePathInfoArray($pathInfoArray);
-        unset($new->headerNames[$new->normalizeHeaderName($name)]);
+        unset($new->headerNames[$new->normalizeHeaderName($name)], $new->headerValues[$new->normalizeHeaderName($name)]);
 
         return $new;
     }
