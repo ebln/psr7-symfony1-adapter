@@ -7,7 +7,18 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 
 ## [Unreleased] (meant as staging area)
 
-- …
+### Changed
+- Development environment only, no change to the package:
+  - CI runs in the official `php:*-cli-alpine` images and `composer:2`, pinned by digest in `.github/ci/compose.yml`,
+    instead of installing PHP on the runner. It tests PHP 7.4 to 8.5, and PHP 7.4 with the lowest dependencies.
+  - CI runs once per change: on pushes to `master`, on pull requests, monthly and on demand.
+    The job "CI passed" fails unless every test job succeeded.
+  - CI runs `composer audit` on both locks. Dependabot updates the actions and the CI images monthly, not the Composer packages.
+  - `config.platform.php` is `7.4.33`, so every resolve locks versions that install on PHP 7.4.
+  - Dev tools: phpunit 9.6.39, phpstan 2, psalm 5.26.1, php-cs-fixer 3.95 in its own lock under `tools/php-cs-fixer`.
+    The dev lock no longer holds versions with advisories (phpunit, symfony/config, symfony/filesystem).
+  - Removed `roave/security-advisories` and `composer/package-versions-deprecated` from the dev dependencies.
+  - PHPUnit fails on an empty test suite and on an incomplete test.
 
 
 ## TODO
