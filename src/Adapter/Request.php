@@ -362,7 +362,7 @@ class Request implements ServerRequestInterface
     /**
      * perhaps-do: check SG-header-congruency
      *
-     * @return array<array-key, mixed>|string[]
+     * @return array<array-key, mixed>
      */
     public function getCookieParams(): array
     {

@@ -58,6 +58,7 @@ final class ServerRequestBodyTest extends TestCase
         self::assertSame(spl_object_hash($streamMock), spl_object_hash($requestWithBody->getBody()));
     }
 
+    /** @param array<string, bool> $adapterOptions */
     private function createRequest(
         string $method = '',
         array $adapterOptions = [],

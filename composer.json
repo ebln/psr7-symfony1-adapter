@@ -27,8 +27,8 @@
         "ergebnis/composer-normalize": "^2.58",
         "php-http/psr7-integration-tests": "^1.5",
         "phpmd/phpmd": "^2.13",
-        "phpstan/phpstan": "^1.11",
-        "phpstan/phpstan-webmozart-assert": "^1.2",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-webmozart-assert": "^2.0",
         "phpunit/phpunit": "^9.6",
         "vimeo/psalm": "^5.13"
     },

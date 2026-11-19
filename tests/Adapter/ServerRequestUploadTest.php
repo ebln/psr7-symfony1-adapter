@@ -207,6 +207,7 @@ final class ServerRequestUploadTest extends TestCase
     }
 
     /**
+     * @param array<string, bool>            $adapterOptions
      * @param null|array<array|array<array>> $files
      *
      * @throws \InvalidArgumentException
