@@ -276,7 +276,9 @@ class Response implements ResponseInterface
         if (null === $this->reflexOptions) {
             $reflexiveWebResponse = new \ReflectionObject($this->sfWebResponse);
             $this->reflexOptions  = $reflexiveWebResponse->getProperty('options');
-            $this->reflexOptions->setAccessible(true);
+            if (\PHP_VERSION_ID < 80100) {
+                $this->reflexOptions->setAccessible(true);
+            }
         }
 
         $this->reflexOptions->setValue($this->sfWebResponse, $options);
@@ -318,7 +320,9 @@ class Response implements ResponseInterface
         if (null === $this->reflexHeaders) {
             $reflexiveWebResponse = new \ReflectionObject($this->sfWebResponse);
             $this->reflexHeaders  = $reflexiveWebResponse->getProperty('headers');
-            $this->reflexHeaders->setAccessible(true);
+            if (\PHP_VERSION_ID < 80100) {
+                $this->reflexHeaders->setAccessible(true);
+            }
         }
         $this->reflexHeaders->setValue($this->sfWebResponse, $headers);
     }

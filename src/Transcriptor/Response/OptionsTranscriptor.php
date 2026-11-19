@@ -12,8 +12,9 @@ class OptionsTranscriptor implements OptionsTranscriptorInterface
         $options              = array_merge($sfWebResponse->getOptions(), $options);
         $reflexiveWebResponse = new \ReflectionObject($sfWebResponse);
         $reflexOptions        = $reflexiveWebResponse->getProperty('options');
-        $reflexOptions->setAccessible(true);
+        if (\PHP_VERSION_ID < 80100) {
+            $reflexOptions->setAccessible(true);
+        }
         $reflexOptions->setValue($sfWebResponse, $options);
-        $reflexOptions->setAccessible(false);
     }
 }

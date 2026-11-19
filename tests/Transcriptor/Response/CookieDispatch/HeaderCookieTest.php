@@ -33,15 +33,21 @@ final class HeaderCookieTest extends TestCase
         $reflection = new \ReflectionClass($headerCookie);
 
         $nameProperty = $reflection->getProperty('name');
-        $nameProperty->setAccessible(true);
+        if (\PHP_VERSION_ID < 80100) {
+            $nameProperty->setAccessible(true);
+        }
         self::assertSame('name', $nameProperty->getValue($headerCookie));
 
         $valueProperty = $reflection->getProperty('value');
-        $valueProperty->setAccessible(true);
+        if (\PHP_VERSION_ID < 80100) {
+            $valueProperty->setAccessible(true);
+        }
         self::assertSame('value', $valueProperty->getValue($headerCookie));
 
         $headerProperty = $reflection->getProperty('completeHeader');
-        $headerProperty->setAccessible(true);
+        if (\PHP_VERSION_ID < 80100) {
+            $headerProperty->setAccessible(true);
+        }
         self::assertSame('Set-Cookie: name=value; Path=/; HttpOnly', $headerProperty->getValue($headerCookie));
     }
 }

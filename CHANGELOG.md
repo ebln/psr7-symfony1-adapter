@@ -7,6 +7,10 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 
 ## [Unreleased] (meant as staging area)
 
+### Fixed
+- On PHP 8.5, the adapter caused `E_DEPRECATED` notices: "Method ReflectionProperty::setAccessible() is deprecated since 8.5".
+  It now calls `setAccessible()` only on PHP 7.4 and 8.0. From PHP 8.1 on, the call has no effect.
+
 ### Changed
 - Development environment only, no change to the package:
   - CI runs in the official `php:*-cli-alpine` images and `composer:2`, pinned by digest in `.github/ci/compose.yml`,
