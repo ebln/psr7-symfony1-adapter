@@ -3,8 +3,8 @@
 # file expired on 2026-09-07.
 #
 # This image takes PHP 7.4 from packages.sury.org on Debian bookworm. sury's packages are the Debian
-# PHP packaging, with security fixes after the upstream EOL. GitHub CI (nanasess/setup-php) installs
-# PHP 7.4 from the same maintainer's Ubuntu PPA.
+# PHP packaging, with security fixes after the upstream EOL. GitHub CI does not use this image: it
+# runs in the official php:*-cli-alpine images, pinned by digest in .github/ci/compose.yml.
 FROM debian:bookworm-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
