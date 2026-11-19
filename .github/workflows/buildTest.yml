@@ -61,9 +61,12 @@ jobs:
         if: matrix.deps == 'locked'
         run: .github/ci/run "$PHP" composer install --prefer-dist --no-progress
 
+      # Composer skips versions with a security advisory by default. The lower bounds
+      # in composer.json (e.g. guzzlehttp/psr7 2.4.5) have advisories, and this job
+      # tests them anyway; it runs only the tests of this repository.
       - name: Install lowest dependencies
         if: matrix.deps == 'lowest'
-        run: .github/ci/run "$PHP" composer update --prefer-lowest --prefer-dist --no-progress
+        run: .github/ci/run "$PHP" composer update --prefer-lowest --prefer-dist --no-progress --no-security-blocking
 
       - name: PHPUnit
         run: .github/ci/run "$PHP" vendor/bin/phpunit --no-coverage --colors=never
