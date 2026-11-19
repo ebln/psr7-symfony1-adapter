@@ -72,9 +72,11 @@ jobs:
         if: matrix.deps == 'locked' && !matrix.skip-psalm
         run: .github/ci/run "$PHP" vendor/bin/psalm --monochrome --no-progress --stats --show-info=false
 
+      # The official images keep PHP's default memory_limit of 128M; a PHPStan
+      # worker on PHP 7.4 needs more.
       - name: PHPStan
         if: matrix.deps == 'locked'
-        run: .github/ci/run "$PHP" vendor/bin/phpstan analyse --no-interaction --no-ansi --no-progress
+        run: .github/ci/run "$PHP" vendor/bin/phpstan analyse --no-interaction --no-ansi --no-progress --memory-limit=512M
 
       - name: Audit locked dependencies
         if: matrix.static
