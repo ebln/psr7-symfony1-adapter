@@ -1,0 +1,12 @@
+{
+    "description": "php-cs-fixer for CI and local style checks, locked apart from the library's dev dependencies",
+    "require": {
+        "friendsofphp/php-cs-fixer": "^3.95"
+    },
+    "config": {
+        "platform": {
+            "php": "7.4.0"
+        },
+        "sort-packages": true
+    }
+}

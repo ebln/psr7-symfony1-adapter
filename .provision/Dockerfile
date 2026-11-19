@@ -53,9 +53,5 @@ COPY --from=composer:2.10.3 /usr/bin/composer /usr/bin/composer
 COPY 30-xdebug-config.ini /etc/php/7.4/cli/conf.d/
 
 ENV COMPOSER_HOME=/root/.composer
-ENV PATH="$PATH:/root/.composer/vendor/bin"
-
-# The same php-cs-fixer version as .github/workflows/buildTest.yml; newer versions report other files.
-RUN composer global require friendsofphp/php-cs-fixer:3.58
 
 WORKDIR /var/www/

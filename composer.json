@@ -62,7 +62,8 @@
             ".*",
             "phpunit.xml",
             "coverage/",
-            ".provision/cache"
+            ".provision/cache",
+            "tools/"
         ]
     },
     "config": {
@@ -83,8 +84,15 @@
             "@style-check",
             "@test-unit"
         ],
-        "style-check": "php-cs-fixer fix -v --config=.php-cs-fixer.dist.php --using-cache=no --dry-run",
-        "style-fix": "php-cs-fixer fix -v --config=.php-cs-fixer.dist.php --using-cache=no",
-        "test-unit": "phpunit --no-coverage --colors=auto"
+        "style-check": [
+            "@tools-install",
+            "tools/php-cs-fixer/vendor/bin/php-cs-fixer fix -v --config=.php-cs-fixer.dist.php --using-cache=no --dry-run"
+        ],
+        "style-fix": [
+            "@tools-install",
+            "tools/php-cs-fixer/vendor/bin/php-cs-fixer fix -v --config=.php-cs-fixer.dist.php --using-cache=no"
+        ],
+        "test-unit": "phpunit --no-coverage --colors=auto",
+        "tools-install": "@composer install --working-dir=tools/php-cs-fixer --no-progress"
     }
 }
