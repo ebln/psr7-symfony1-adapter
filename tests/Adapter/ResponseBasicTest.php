@@ -88,6 +88,36 @@ final class ResponseBasicTest extends TestCase
     }
 
     /**
+     * @dataProvider provideImmutableViolationOptionIsReadByValueCases
+     *
+     * @param array<string, mixed> $options
+     *
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
+    public function testImmutableViolationOptionIsReadByValue(array $options, bool $expectMutable): void
+    {
+        /**
+         * @var Response $response
+         */
+        [$response] = $this->createResponse(200, null, [], [], false, [], $options);
+        self::assertSame($expectMutable, $response === $response->withHeader('X-Foo', 'bar'));
+    }
+
+    /** @return iterable<string, array{array<string, mixed>, bool}> */
+    public static function provideImmutableViolationOptionIsReadByValueCases(): iterable
+    {
+        return [
+            'not given: on'          => [[], true],
+            'null: on, as not given' => [[Response::OPTION_IMMUTABLE_VIOLATION => null], true],
+            'true: on'               => [[Response::OPTION_IMMUTABLE_VIOLATION => true], true],
+            'false: off'             => [[Response::OPTION_IMMUTABLE_VIOLATION => false], false],
+            '0: off'                 => [[Response::OPTION_IMMUTABLE_VIOLATION => 0], false],
+            'empty string: off'      => [[Response::OPTION_IMMUTABLE_VIOLATION => ''], false],
+            'string 0: off'          => [[Response::OPTION_IMMUTABLE_VIOLATION => '0'], false],
+        ];
+    }
+
+    /**
      * @dataProvider provideHeaderCases
      *
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
@@ -147,9 +177,9 @@ final class ResponseBasicTest extends TestCase
         $response = $response->withAddedHeader('X-Foo', 'baz');
         self::assertTrue($response->hasHeader('X-Foo'));
         self::assertSame(['bar', 'baz'], $response->getHeader('X-Foo'));
-        self::assertSame('bar,baz', $response->getHeaderLine('X-Foo'));
+        self::assertSame('bar, baz', $response->getHeaderLine('X-Foo'));
         self::assertSame(['X-Foo' => ['bar', 'baz']], $response->getHeaders());
-        self::assertSame(['X-Foo' => 'bar,baz'], $symfony->getHttpHeaders());
+        self::assertSame(['X-Foo' => 'bar, baz'], $symfony->getHttpHeaders());
     }
 
     /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
@@ -168,9 +198,9 @@ final class ResponseBasicTest extends TestCase
         $response = $response->withAddedHeader('X-Foo', ['bar', 'baz']);
         self::assertTrue($response->hasHeader('X-Foo'));
         self::assertSame(['foo', 'bar', 'baz'], $response->getHeader('X-Foo'));
-        self::assertSame('foo,bar,baz', $response->getHeaderLine('X-Foo'));
+        self::assertSame('foo, bar, baz', $response->getHeaderLine('X-Foo'));
         self::assertSame(['X-Foo' => ['foo', 'bar', 'baz']], $response->getHeaders());
-        self::assertSame(['X-Foo' => 'foo,bar,baz'], $symfony->getHttpHeaders());
+        self::assertSame(['X-Foo' => 'foo, bar, baz'], $symfony->getHttpHeaders());
     }
 
     /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
@@ -183,14 +213,107 @@ final class ResponseBasicTest extends TestCase
         [$response, $symfony] = $this->createResponse(204, 'No Content', ['X-Foo' => 'bar, baz']);
 
         self::assertTrue($response->hasHeader('X-FOO'));
-        self::assertSame(['bar', 'baz'], $response->getHeader('X-Foo'));
+        self::assertSame(['bar, baz'], $response->getHeader('X-Foo'));
         self::assertSame('bar, baz', $response->getHeaderLine('X-Foo'));
-        self::assertSame(['X-Foo' => ['bar', 'baz']], $response->getHeaders());
+        self::assertSame(['X-Foo' => ['bar, baz']], $response->getHeaders());
         self::assertSame(['X-Foo' => 'bar, baz'], $symfony->getHttpHeaders());
         $response = $response->withoutHeader('x-FoO');
         self::assertFalse($response->hasHeader('X-Foo'));
         self::assertSame([], $response->getHeader('X-Foo'));
         self::assertSame([], $symfony->getHttpHeaders());
+    }
+
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
+    public function testHeaderValuesWithCommasRoundTrip(): void
+    {
+        /**
+         * @var Response       $response
+         * @var \sfWebResponse $symfony
+         */
+        [$response, $symfony] = $this->createResponse();
+        $response             = $response->withHeader('X-Foo', ['a, b', 'c']);
+        self::assertSame(['a, b', 'c'], $response->getHeader('X-Foo'));
+        self::assertSame('a, b, c', $response->getHeaderLine('X-Foo'));
+        self::assertSame(['X-Foo' => ['a, b', 'c']], $response->getHeaders());
+        self::assertSame(['X-Foo' => 'a, b, c'], $symfony->getHttpHeaders());
+    }
+
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
+    public function testHeaderValuesAreReadFromSymfonyAfterADirectChange(): void
+    {
+        /**
+         * @var Response       $response
+         * @var \sfWebResponse $symfony
+         */
+        [$response, $symfony] = $this->createResponse();
+        $response             = $response->withHeader('X-Foo', ['bar', 'baz']);
+        $symfony->setHttpHeader('X-Foo', 'qux, quux');
+        self::assertSame(['qux, quux'], $response->getHeader('X-Foo'));
+        self::assertSame(['X-Foo' => ['qux, quux']], $response->getHeaders());
+    }
+
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
+    public function testWithoutHeaderForgetsHeaderValues(): void
+    {
+        /**
+         * @var Response       $response
+         * @var \sfWebResponse $symfony
+         */
+        [$response, $symfony] = $this->createResponse();
+        $response             = $response->withHeader('X-Foo', ['a', 'b'])->withoutHeader('X-Foo');
+        $symfony->setHttpHeader('X-Foo', 'a, b');
+        self::assertSame(['a, b'], $response->getHeader('X-Foo'));
+    }
+
+    /**
+     * Pins a known limitation (see README, "Known limitations"): symfony 1 holds one line per header name,
+     * so several Set-Cookie headers become one line, and browsers keep at most the first cookie.
+     * If this test fails, the limitation changed: update the README, the docblocks and the CHANGELOG.
+     *
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     */
+    public function testSeveralSetCookieHeadersAreJoinedIntoOneLine(): void
+    {
+        /**
+         * @var Response       $response
+         * @var \sfWebResponse $symfony
+         */
+        [$response, $symfony] = $this->createResponse();
+        $response             = $response->withAddedHeader('Set-Cookie', 'a=1; Path=/')->withAddedHeader('Set-Cookie', 'b=2; Path=/');
+        self::assertSame(['Set-Cookie' => 'a=1; Path=/, b=2; Path=/'], $symfony->getHttpHeaders());
+        self::assertSame([], $symfony->getCookies());
+
+        $response = $response->withHeader('Set-Cookie', ['c=3', 'd=4']);
+        self::assertSame(['Set-Cookie' => 'c=3, d=4'], $symfony->getHttpHeaders());
+        self::assertSame([], $symfony->getCookies());
+    }
+
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
+    public function testLastModifiedIsNotSplitOnItsComma(): void
+    {
+        /**
+         * @var Response $response
+         */
+        [$response] = $this->createResponse(200, null, ['Last-Modified' => 'Wed, 21 Oct 2015 07:28:00 GMT']);
+        self::assertSame(['Wed, 21 Oct 2015 07:28:00 GMT'], $response->getHeader('Last-Modified'));
+        self::assertSame(['Last-Modified' => ['Wed, 21 Oct 2015 07:28:00 GMT']], $response->getHeaders());
+    }
+
+    /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
+    public function testHeaderValuesAreTrimmedOfSpacesAndTabs(): void
+    {
+        /**
+         * @var Response $response
+         */
+        [$response] = $this->createResponse(200, null, ['X-Foo' => " bar\t"]);
+        self::assertSame(['bar'], $response->getHeader('X-Foo'));
+        self::assertSame(['X-Foo' => ['bar']], $response->getHeaders());
+        self::assertSame(" bar\t", $response->getHeaderLine('X-Foo'));
+
+        $response = $response->withHeader('X-Foo', [' a ', "b\t"]);
+        self::assertSame(['a', 'b'], $response->getHeader('X-Foo'));
+        self::assertSame(['X-Foo' => ['a', 'b']], $response->getHeaders());
+        self::assertSame(" a , b\t", $response->getHeaderLine('X-Foo'));
     }
 
     /**
@@ -247,6 +370,13 @@ final class ResponseBasicTest extends TestCase
                 'initial headers only' => false,
                 'set to status'        => 204,
                 'expect headers only'  => false,
+            ],
+            '200 → 204 - option set to false: set headersOnly true'                => [
+                'factory options'      => [Response::OPTION_SEND_BODY_ON_204 => false],
+                'initial status'       => 200,
+                'initial headers only' => false,
+                'set to status'        => 204,
+                'expect headers only'  => true,
             ],
             '200 with setHeadersOnly(true) → 204: no change'                       => [
                 'factory options'      => [],

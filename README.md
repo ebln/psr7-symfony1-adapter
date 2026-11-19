@@ -11,6 +11,31 @@ $serverRequestAdapter = \brnc\Symfony1\Message\Adapter\Request::fromSfWebRequest
 $responseAdapter      = \brnc\Symfony1\Message\Adapter\Response::fromSfWebResponse($sfWebResponse);
 ```
 
+## Known limitations
+
+### One `Set-Cookie` header per Response
+
+Symfony 1 holds one line per header name.
+The `Response` adapter writes its headers there, so several `Set-Cookie` values from `withHeader()` or `withAddedHeader()` are joined into one line:
+
+```
+Set-Cookie: a=1; Path=/, b=2; Path=/
+```
+
+Browsers read this line as one cookie, so they keep at most the first cookie.
+Set cookies in one of these ways instead:
+
+- `sfWebResponse::setCookie()`, once for each cookie.
+- The `ResponseTranscriptor` with a cookie transcriptor, see [Manually transcribe a PSR-7 Response to Symfony1](#manually-transcribe-a-psr-7-response-to-symfony1).
+
+Version 2 of this package is planned to fix this.
+
+### `CookieHeaderTranscriptor` reads one cookie per `Set-Cookie` value
+
+`CookieHeaderTranscriptor` reads each value of `getHeader('Set-Cookie')` as one cookie, and does not split a joined line like the one above.
+From `a=1; Path=/, b=2; Path=/` it sets only the cookie `a`, and attributes of `b` can end up on `a`.
+A comma cannot separate cookies safely, as the `Expires` date contains one.
+
 ## ServerRequest
 
 Please mind the following PSR-7 violation which is enabled by default:
@@ -37,6 +62,9 @@ $serverRequestAdapter = Request::fromSfWebRequest(
     ]
 );
 ```
+
+Before v1.8.0, any value except `null` of `Request::OPTION_BODY_USE_STREAM` switched the option on, also `false`. The same applies to `Response::OPTION_SEND_BODY_ON_204`.
+On older versions, leave an option out to keep it off.
 
 ## Response
 

@@ -44,6 +44,12 @@ final class ServerRequestBodyTest extends TestCase
         self::assertTrue($body->isWritable(), 'Static constructed  getBody() is writable as a quirk.');
     }
 
+    public function testStaticConstructionWithStreamOptionFalseUsesContent(): void
+    {
+        $body = $this->createRequest('POST', [Request::OPTION_BODY_USE_STREAM => false], 'dummy content')->getBody();
+        self::assertSame('dummy content', $body->getContents(), 'Option set to false must not switch to php://input.');
+    }
+
     public function testWithBody(): void
     {
         $request         = $this->createRequest();

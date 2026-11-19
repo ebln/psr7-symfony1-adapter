@@ -110,7 +110,7 @@ final class RequestReadingTest extends TestCase
     public static function provideHeaderTestData(): iterable
     {
         return [
-            'happy case'            => [
+            'happy case'                                  => [
                 'request'              => [
                     'method' => '',
                     'server' => [
@@ -120,13 +120,43 @@ final class RequestReadingTest extends TestCase
                 ],
                 'test for header'      => 'X-Test',
                 'expect hasHeader'     => true,
-                'expect getHeader'     => ['foo', 'bar'],
+                'expect getHeader'     => ['foo, bar'],
                 'expect getHeaderLine' => 'foo, bar',
                 'expect headers'       => [
-                    'x-test' => ['foo', 'bar'],
+                    'x-test' => ['foo, bar'],
                 ],
             ],
-            'Content-Type set'      => [
+            'If-Modified-Since is not split on its comma' => [
+                'request'              => [
+                    'method' => '',
+                    'server' => [
+                        'HTTP_IF_MODIFIED_SINCE' => 'Wed, 21 Oct 2015 07:28:00 GMT',
+                    ],
+                ],
+                'test for header'      => 'If-Modified-Since',
+                'expect hasHeader'     => true,
+                'expect getHeader'     => ['Wed, 21 Oct 2015 07:28:00 GMT'],
+                'expect getHeaderLine' => 'Wed, 21 Oct 2015 07:28:00 GMT',
+                'expect headers'       => [
+                    'if-modified-since' => ['Wed, 21 Oct 2015 07:28:00 GMT'],
+                ],
+            ],
+            'User-Agent is not split on its commas'       => [
+                'request'              => [
+                    'method' => '',
+                    'server' => [
+                        'HTTP_USER_AGENT' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36',
+                    ],
+                ],
+                'test for header'      => 'User-Agent',
+                'expect hasHeader'     => true,
+                'expect getHeader'     => ['Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36'],
+                'expect getHeaderLine' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36',
+                'expect headers'       => [
+                    'user-agent' => ['Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36'],
+                ],
+            ],
+            'Content-Type set'                            => [
                 'request'              => [
                     'method' => '',
                     'server' => [
@@ -144,7 +174,7 @@ final class RequestReadingTest extends TestCase
                     'x-another-header' => ['was set'],
                 ],
             ],
-            'Content-Type not set'  => [
+            'Content-Type not set'                        => [
                 'request'              => [
                     'method' => '',
                     'server' => [
@@ -162,7 +192,7 @@ final class RequestReadingTest extends TestCase
                     'x-another-header' => ['was set'],
                 ],
             ],
-            'Content-Type Quirk I'  => [
+            'Content-Type Quirk I'                        => [
                 'request'              => [
                     'method' => '',
                     'server' => [
@@ -178,7 +208,7 @@ final class RequestReadingTest extends TestCase
                     'content-type' => ['multipart/form-data; boundary=foobar'],
                 ],
             ],
-            'Content-Type Quirk II' => [
+            'Content-Type Quirk II'                       => [
                 'request'              => [
                     'method' => '',
                     'server' => [

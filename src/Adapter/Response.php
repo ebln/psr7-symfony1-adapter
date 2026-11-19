@@ -57,12 +57,12 @@ class Response implements ResponseInterface
     {
         $new = new static($sfWebResponse);
 
-        if (isset($options[self::OPTION_SEND_BODY_ON_204])) {
+        if (!empty($options[self::OPTION_SEND_BODY_ON_204])) {
             $new->setHeaderOnly = false;
         }
 
         // defaulting to mutating PSR-7-violating behavior when creating from \sfWebResponse
-        if (!array_key_exists(self::OPTION_IMMUTABLE_VIOLATION, $options) || false !== $options[self::OPTION_IMMUTABLE_VIOLATION]) {
+        if ($options[self::OPTION_IMMUTABLE_VIOLATION] ?? true) {
             $new->isImmutable = false;
         }
 
@@ -110,7 +110,7 @@ class Response implements ResponseInterface
         foreach ($this->sfWebResponse->getHttpHeaders() as $key => $value) {
             $tryKey                       = strtolower($key);
             $headerName                   = $this->headerNames[$tryKey] ?? $key;
-            $shadowedHeaders[$headerName] = $this->explodeHeaderLine($value);
+            $shadowedHeaders[$headerName] = $this->getHeaderValues($key, $value);
         }
 
         return $shadowedHeaders;
@@ -138,7 +138,7 @@ class Response implements ResponseInterface
         /** @noinspection ArgumentEqualsDefaultValueInspection */
         $value = $this->sfWebResponse->getHttpHeader($name, null);
 
-        return null === $value ? [] : $this->explodeHeaderLine($value);
+        return null === $value ? [] : $this->getHeaderValues($name, $value);
     }
 
     /**
@@ -152,7 +152,7 @@ class Response implements ResponseInterface
     public function withoutHeader($name): self
     {
         Assert::stringNotEmpty($name);
-        unset($this->headerNames[$this->normalizeHeaderName($name)]);
+        unset($this->headerNames[$this->normalizeHeaderName($name)], $this->headerValues[$this->normalizeHeaderName($name)]);
         /* @noinspection ArgumentEqualsDefaultValueInspection */
         $this->sfWebResponse->setHttpHeader($name, null, true);
 
