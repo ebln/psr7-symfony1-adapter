@@ -1,0 +1,32 @@
+version: 2
+
+# No entry for composer: the locks are updated by hand when the audit in CI
+# fails. Dependabot alerts and security updates do not need an entry here.
+updates:
+  # Commit SHAs of the actions in .github/workflows.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    cooldown:
+      default-days: 7
+    groups:
+      actions:
+        patterns: ["*"]
+
+  # Image digests in .github/ci/compose.yml. Each PHP image stays on its
+  # minor version; only its digest moves. Composer stays on major version 2.
+  - package-ecosystem: docker-compose
+    directory: /.github/ci
+    schedule:
+      interval: monthly
+    cooldown:
+      default-days: 7
+    ignore:
+      - dependency-name: php
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+      - dependency-name: composer
+        update-types: ["version-update:semver-major"]
+    groups:
+      images:
+        patterns: ["*"]
