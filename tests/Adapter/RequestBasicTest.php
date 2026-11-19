@@ -103,7 +103,7 @@ final class RequestBasicTest extends TestCase
             [
                 'X-Foo',
                 'bar',
-                ['X-Foo'      => ['bar']],
+                ['X-Foo' => ['bar']],
                 ['HTTP_X_FOO' => 'bar'],
             ],
             [
@@ -212,15 +212,15 @@ final class RequestBasicTest extends TestCase
     /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testHeaderValuesWithBackslashesRoundTrip(): void
     {
-        $request = $this->createRequest()->withHeader('X-Path', ['C:\\dir', 'b']);
-        self::assertSame(['C:\\dir', 'b'], $request->getHeader('X-Path'));
-        self::assertSame(['X-Path' => ['C:\\dir', 'b']], $request->getHeaders());
+        $request = $this->createRequest()->withHeader('X-Path', ['C:\dir', 'b']);
+        self::assertSame(['C:\dir', 'b'], $request->getHeader('X-Path'));
+        self::assertSame(['X-Path' => ['C:\dir', 'b']], $request->getHeaders());
     }
 
     /** @throws \SebastianBergmann\RecursionContext\InvalidArgumentException */
     public function testHeaderLineHeldBySymfonyIsReadWithoutBackslashes(): void
     {
-        $request = $this->createRequest('GET', ['HTTP_X_PATH' => 'C:\\dir, b']);
+        $request = $this->createRequest('GET', ['HTTP_X_PATH' => 'C:\dir, b']);
         self::assertSame(['C:dir, b'], $request->getHeader('X-Path'));
     }
 

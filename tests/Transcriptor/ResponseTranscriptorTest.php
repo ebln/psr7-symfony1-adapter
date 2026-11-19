@@ -30,7 +30,7 @@ final class ResponseTranscriptorTest extends TestCase
             503,
             null,
             ['X-Preset-Header' => 'Set sfWebResponse'],
-            ['sf-default'      => ['name' => 'sf-default', 'value' => 'preset', 'expire' => null, 'path' => '/', 'domain' => '*', 'secure' => false, 'httpOnly' => false]]
+            ['sf-default' => ['name' => 'sf-default', 'value' => 'preset', 'expire' => null, 'path' => '/', 'domain' => '*', 'secure' => false, 'httpOnly' => false]]
         );
         $transcription = (new ResponseTranscriptor(null, null))->transcribe($psr7Response, $mockResponse);
     }
@@ -59,7 +59,7 @@ final class ResponseTranscriptorTest extends TestCase
             503,
             null,
             ['X-Preset-Header' => 'Set sfWebResponse'],
-            ['sf-default'      => ['name' => 'sf-default', 'value' => 'preset', 'expire' => null, 'path' => '/', 'domain' => '*', 'secure' => false, 'httpOnly' => false]]
+            ['sf-default' => ['name' => 'sf-default', 'value' => 'preset', 'expire' => null, 'path' => '/', 'domain' => '*', 'secure' => false, 'httpOnly' => false]]
         );
         $transcription = (new ResponseTranscriptor(null, null))->transcribe($psr7Response, $mockResponse);
         self::assertSame(
