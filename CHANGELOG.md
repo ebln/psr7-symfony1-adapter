@@ -24,7 +24,7 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 
 ----
 
-## [1.8.0]  - unreleased
+## [1.8.0]  - 2026-11-19
 
 This release changes three things that callers can see. Check code that relies on them:
 - `getHeader()` and `getHeaders()` return list headers such as `Accept` as one value; see "Fixed".
