@@ -30,7 +30,7 @@
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-webmozart-assert": "^2.0",
         "phpunit/phpunit": "^9.6",
-        "vimeo/psalm": "^5.13"
+        "vimeo/psalm": "^5.26"
     },
     "replace": {
         "brnc/psr7-symfony1-adapter": "1.6.0"
