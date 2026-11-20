@@ -7,6 +7,25 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 
 ## [Unreleased] (meant as staging area)
 
+- …
+
+
+## TODO
+- Clone the CookieDispatcher-Approach for the ResponseAdapter
+  - but instead of reading CookieContainer from options → in-situ intercept them → onStatusSent
+- Cookies: Write to response
+- Cookies: Read from request
+- Cookies: write and overwrite to request
+- Refactor `Request::withUri` to be closer to PSR-7
+- Refactor `BodyStreamHook::addBodyFromResponse` using WeakMap for a PHP >=8.0 (or with [polyfill](https://github.com/BenMorel/weakmap-polyfill))
+- Allow configurable StreamFactory instead of hardcoded used
+  - or try `php-http/discovery`
+- Change namespace from brnc to ebln, with version ^2
+
+----
+
+## [1.8.1]  - 2026-11-20
+
 ### Fixed
 - On PHP 8.5, the adapter caused `E_DEPRECATED` notices: "Method ReflectionProperty::setAccessible() is deprecated since 8.5".
   It now calls `setAccessible()` only on PHP 7.4 and 8.0. From PHP 8.1 on, the call has no effect.
@@ -30,21 +49,6 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
     The dev image no longer installs php-cs-fixer globally.
   - Removed `roave/security-advisories` and `composer/package-versions-deprecated` from the dev dependencies.
   - PHPUnit fails on an empty test suite and on an incomplete test.
-
-
-## TODO
-- Clone the CookieDispatcher-Approach for the ResponseAdapter
-  - but instead of reading CookieContainer from options → in-situ intercept them → onStatusSent
-- Cookies: Write to response
-- Cookies: Read from request
-- Cookies: write and overwrite to request
-- Refactor `Request::withUri` to be closer to PSR-7
-- Refactor `BodyStreamHook::addBodyFromResponse` using WeakMap for a PHP >=8.0 (or with [polyfill](https://github.com/BenMorel/weakmap-polyfill))
-- Allow configurable StreamFactory instead of hardcoded used
-  - or try `php-http/discovery`
-- Change namespace from brnc to ebln, with version ^2
-
-----
 
 ## [1.8.0]  - 2026-11-19
 
