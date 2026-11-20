@@ -10,6 +10,10 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 ### Fixed
 - On PHP 8.5, the adapter caused `E_DEPRECATED` notices: "Method ReflectionProperty::setAccessible() is deprecated since 8.5".
   It now calls `setAccessible()` only on PHP 7.4 and 8.0. From PHP 8.1 on, the call has no effect.
+- With `psr/http-message` 2.0, PHP stopped with a fatal error when it loaded `Request` or `Response`:
+  "Declaration of …::withHeader($name, $value) must be compatible with …". `composer.json` has allowed `^2.0` since 1.6.0.
+  `withHeader()` and `withAddedHeader()` now declare the return type `self`, as the other `with*()` methods do.
+  A subclass that overrides one of the two methods has to declare a return type as well.
 
 ### Changed
 - Development environment only, no change to the package:
