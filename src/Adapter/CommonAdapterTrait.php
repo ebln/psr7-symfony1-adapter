@@ -45,7 +45,7 @@ trait CommonAdapterTrait
      * @throws \InvalidArgumentException
      * @throws \ReflectionException
      */
-    public function withAddedHeader($name, $value)
+    public function withAddedHeader($name, $value): self
     {
         Assert::stringNotEmpty($name);
 
@@ -84,7 +84,7 @@ trait CommonAdapterTrait
      * @throws \InvalidArgumentException
      * @throws \ReflectionException
      */
-    public function withHeader($name, $value)
+    public function withHeader($name, $value): self
     {
         Assert::stringNotEmpty($name);
         $new                                                = $this->getThisOrClone();
