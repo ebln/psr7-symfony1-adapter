@@ -39,7 +39,7 @@ final class CookieHeaderTranscriptorTest extends TestCase
         $symfonyResponseMock->prepare(205, null, ['X-Preset-Header' => 'sfWebResponse'], []);
         $symfonyResponseMock->setCookie('sfWebResponseDefault', 'preset');
 
-        $clockMock = new class() implements ClockInterface {
+        $clockMock = new class implements ClockInterface {
             public function now(): \DateTimeImmutable
             {
                 return new \DateTimeImmutable('1970-01-01T00:01:03', new \DateTimeZone('UTC'));
@@ -55,40 +55,6 @@ final class CookieHeaderTranscriptorTest extends TestCase
 
         self::assertSame($expectation, $transcription->getCookies());
         self::assertNull($transcription->getHttpHeader('Set-Cookie'));
-    }
-
-    /** @return array<string, array{set-cookie: string[], expectation: array<string,array{name: string, value: string, expire: null|int, path: string, domain: string, secure: bool, httpOnly: bool}>}> */
-    public static function provideMultiCookieCases(): iterable
-    {
-        return [
-            'Correctly handly multiple cookies' => [
-                'set-cookie'  => [
-                    'token=42; Domain=cookie.test; Path=/; HttpOnly',
-                    'sessionId=abc123; Path=/; HttpOnly; SameSite=Strict',
-                    'token=1337; Domain=cookie.test; Path=/; Expires=Fri, 12 Dec 2025 13:37:42 GMT; SameSite=Lax; Secure; HttpOnly',
-                ],
-                'expectation' => [
-                    'token'     => [
-                        'name'     => 'token',
-                        'value'    => '1337',
-                        'expire'   => 1765546662,  // Epoch timestamp for 'Fri, 12 Dec 2025 13:37:42 GMT'
-                        'path'     => '/',
-                        'domain'   => 'cookie.test',
-                        'secure'   => true,
-                        'httpOnly' => true,
-                    ],
-                    'sessionId' => [
-                        'name'     => 'sessionId',
-                        'value'    => 'abc123',
-                        'expire'   => null,
-                        'path'     => '/',
-                        'domain'   => '',
-                        'secure'   => false,
-                        'httpOnly' => true,
-                    ],
-                ],
-            ],
-        ];
     }
 
     /** @return array<string, array{set-cookie: string[], expectation: array<string,array{name: string, value: string, expire: null|int, path: string, domain: string, secure: bool, httpOnly: bool}>}> */
@@ -218,6 +184,40 @@ final class CookieHeaderTranscriptorTest extends TestCase
                         'domain'   => '',
                         'secure'   => false,
                         'httpOnly' => false,
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /** @return array<string, array{set-cookie: string[], expectation: array<string,array{name: string, value: string, expire: null|int, path: string, domain: string, secure: bool, httpOnly: bool}>}> */
+    public static function provideMultiCookieCases(): iterable
+    {
+        return [
+            'Correctly handly multiple cookies' => [
+                'set-cookie'  => [
+                    'token=42; Domain=cookie.test; Path=/; HttpOnly',
+                    'sessionId=abc123; Path=/; HttpOnly; SameSite=Strict',
+                    'token=1337; Domain=cookie.test; Path=/; Expires=Fri, 12 Dec 2025 13:37:42 GMT; SameSite=Lax; Secure; HttpOnly',
+                ],
+                'expectation' => [
+                    'token'     => [
+                        'name'     => 'token',
+                        'value'    => '1337',
+                        'expire'   => 1765546662,  // Epoch timestamp for 'Fri, 12 Dec 2025 13:37:42 GMT'
+                        'path'     => '/',
+                        'domain'   => 'cookie.test',
+                        'secure'   => true,
+                        'httpOnly' => true,
+                    ],
+                    'sessionId' => [
+                        'name'     => 'sessionId',
+                        'value'    => 'abc123',
+                        'expire'   => null,
+                        'path'     => '/',
+                        'domain'   => '',
+                        'secure'   => false,
+                        'httpOnly' => true,
                     ],
                 ],
             ],

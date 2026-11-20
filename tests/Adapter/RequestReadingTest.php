@@ -25,6 +25,8 @@ final class RequestReadingTest extends TestCase
      * @param string $getHeaderLine
      * @param array  $expectedHeaders
      *
+     * @phpstan-param array{method: string, server: array<string, mixed>} $request
+     *
      * @dataProvider provideHeaderTestData
      *
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
@@ -45,6 +47,8 @@ final class RequestReadingTest extends TestCase
      * @param string $getHeaderLine
      * @param array  $expectedHeaders
      *
+     * @phpstan-param array{method: string, server: array<string, mixed>} $request
+     *
      * @dataProvider provideHeaderTestData
      *
      * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
@@ -63,6 +67,8 @@ final class RequestReadingTest extends TestCase
      * @param string $getHeader
      * @param string $getHeaderLine
      * @param array  $expectedHeaders
+     *
+     * @phpstan-param array{method: string, server: array<string, mixed>} $request
      *
      * @dataProvider provideHeaderTestData
      *
@@ -88,6 +94,8 @@ final class RequestReadingTest extends TestCase
      * @param string $getHeader
      * @param string $getHeaderLine
      * @param array  $expectedHeaders
+     *
+     * @phpstan-param array{method: string, server: array<string, mixed>} $request
      *
      * @dataProvider provideHeaderTestData
      *
@@ -228,6 +236,7 @@ final class RequestReadingTest extends TestCase
     }
 
     /**
+     * @phpstan-param array{method: string, server: array<string, mixed>} $request
      * @phpstan-param mixed $expectedVersion
      *
      * @dataProvider provideGetProtocolVersionCases

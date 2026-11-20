@@ -51,7 +51,7 @@ final class EventDispatcherMockTest extends TestCase
     {
         $event        = new \sfEvent($this, 'test.event');
         $initialValue = 10;
-        $listener     = static function ($event, $value) {
+        $listener     = static function (\sfEvent $event, int $value): int {
             return $value * 2;
         };
         $dispatcher = new \sfEventDispatcher();

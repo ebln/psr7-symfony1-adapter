@@ -10,12 +10,12 @@ use brnc\Symfony1\Message\Transcriptor\Response\CookieDispatch\DispatchSubstitut
 /**
  * Wraps sfEventDispatcher to fire PSR7 cookies in sfWebRequest
  *
- * @method void     connect(string $name, callable $listener)    Connects a listener to a given event name.
- * @method mixed    disconnect(string $name, callable $listener) Disconnects a listener for a given event name and returns false if the listener does not exist, null otherwise.
- * @method \sfEvent notifyUntil(\sfEvent $event)                 Notifies all listeners of a given event until one returns a non-null value and returns the sfEvent instance.
- * @method \sfEvent filter(\sfEvent $event, mixed $value)        Filters a value by calling all listeners of a given event and returns the sfEvent instance.
- * @method bool     hasListeners(string $name)                   Returns true if the given event name has some listeners, false otherwise.
- * @method array    getListeners(string $name)                   Returns all listeners associated with a given event name.
+ * @method void                 connect(string $name, callable $listener)    Connects a listener to a given event name.
+ * @method mixed                disconnect(string $name, callable $listener) Disconnects a listener for a given event name and returns false if the listener does not exist, null otherwise.
+ * @method \sfEvent             notifyUntil(\sfEvent $event)                 Notifies all listeners of a given event until one returns a non-null value and returns the sfEvent instance.
+ * @method \sfEvent             filter(\sfEvent $event, mixed $value)        Filters a value by calling all listeners of a given event and returns the sfEvent instance.
+ * @method bool                 hasListeners(string $name)                   Returns true if the given event name has some listeners, false otherwise.
+ * @method array<int, callable> getListeners(string $name)                   Returns all listeners associated with a given event name.
  */
 class CookieDispatcher
 {

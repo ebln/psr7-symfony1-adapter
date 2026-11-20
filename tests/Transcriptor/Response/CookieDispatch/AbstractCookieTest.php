@@ -39,7 +39,9 @@ final class AbstractCookieTest extends TestCase
 
         $reflection = new \ReflectionClass($cookie);
         $property   = $reflection->getProperty('options');
-        $property->setAccessible(true);
+        if (\PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
 
         self::assertSame($options, $property->getValue($cookie));
     }

@@ -3,8 +3,8 @@
 # file expired on 2026-09-07.
 #
 # This image takes PHP 7.4 from packages.sury.org on Debian bookworm. sury's packages are the Debian
-# PHP packaging, with security fixes after the upstream EOL. GitHub CI (nanasess/setup-php) installs
-# PHP 7.4 from the same maintainer's Ubuntu PPA.
+# PHP packaging, with security fixes after the upstream EOL. GitHub CI does not use this image: it
+# runs in the official php:*-cli-alpine images, pinned by digest in .github/ci/compose.yml.
 FROM debian:bookworm-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -53,9 +53,5 @@ COPY --from=composer:2.10.3 /usr/bin/composer /usr/bin/composer
 COPY 30-xdebug-config.ini /etc/php/7.4/cli/conf.d/
 
 ENV COMPOSER_HOME=/root/.composer
-ENV PATH="$PATH:/root/.composer/vendor/bin"
-
-# The same php-cs-fixer version as .github/workflows/buildTest.yml; newer versions report other files.
-RUN composer global require friendsofphp/php-cs-fixer:3.58
 
 WORKDIR /var/www/

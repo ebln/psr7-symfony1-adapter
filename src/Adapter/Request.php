@@ -362,7 +362,7 @@ class Request implements ServerRequestInterface
     /**
      * perhaps-do: check SG-header-congruency
      *
-     * @return array<array-key, mixed>|string[]
+     * @return array<array-key, mixed>
      */
     public function getCookieParams(): array
     {
@@ -522,7 +522,9 @@ class Request implements ServerRequestInterface
         if (null === $this->reflexPathInfoArray) {
             $reflexiveWebRequest       = new \ReflectionObject($this->sfWebRequest);
             $this->reflexPathInfoArray = $reflexiveWebRequest->getProperty('pathInfoArray');
-            $this->reflexPathInfoArray->setAccessible(true);
+            if (\PHP_VERSION_ID < 80100) {
+                $this->reflexPathInfoArray->setAccessible(true);
+            }
         }
 
         $this->reflexPathInfoArray->setValue($this->sfWebRequest, $pathInfo);

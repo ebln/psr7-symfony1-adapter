@@ -59,8 +59,8 @@ final class AbstractCookieDispatchTranscriptorTest extends TestCase
             }
         };
 
-        $testDispatcher = new class() extends \sfEventDispatcher {
-            /** @var array<array{event: string, notification: string}> */
+        $testDispatcher = new class extends \sfEventDispatcher {
+            /** @var array<array{event: string, notification: mixed}> */
             public array $notifications = [];
 
             public function notify(\sfEvent $event): \sfEvent

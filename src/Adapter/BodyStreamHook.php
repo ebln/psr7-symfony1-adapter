@@ -66,7 +66,9 @@ class BodyStreamHook
         // Use reflection
         $reflexiveWebResponse = new \ReflectionObject($sfWebResponse);
         $dispatcherRetriever  = $reflexiveWebResponse->getProperty('dispatcher');
-        $dispatcherRetriever->setAccessible(true);
+        if (\PHP_VERSION_ID < 80100) {
+            $dispatcherRetriever->setAccessible(true);
+        }
         /** @var null|\sfEventDispatcher $dispatcher */
         $dispatcher = $dispatcherRetriever->getValue($sfWebResponse);
 

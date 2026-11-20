@@ -7,7 +7,24 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 
 ## [Unreleased] (meant as staging area)
 
-- …
+### Fixed
+- On PHP 8.5, the adapter caused `E_DEPRECATED` notices: "Method ReflectionProperty::setAccessible() is deprecated since 8.5".
+  It now calls `setAccessible()` only on PHP 7.4 and 8.0. From PHP 8.1 on, the call has no effect.
+
+### Changed
+- Development environment only, no change to the package:
+  - CI runs in the official `php:*-cli-alpine` images and `composer:2`, pinned by digest in `.github/ci/compose.yml`,
+    instead of installing PHP on the runner. It tests PHP 7.4 to 8.5, and PHP 7.4 with the lowest dependencies.
+  - CI runs once per change: on pushes to `master`, on pull requests, monthly and on demand.
+    The job "CI passed" fails unless every test job succeeded.
+  - CI runs `composer audit` on both locks. Dependabot updates the actions and the CI images monthly, not the Composer packages.
+  - `config.platform.php` is `7.4.33`, so every resolve locks versions that install on PHP 7.4.
+  - Dev tools: phpunit 9.6.39, phpstan 2, psalm 5.26.1, psr7-integration-tests 1.5.2, composer-normalize 2.58.0.
+    The dev lock no longer holds versions with advisories (phpunit, symfony/config, symfony/filesystem).
+  - php-cs-fixer 3.95 has its own lock under `tools/php-cs-fixer`. `composer style-check` and `composer style-fix` install it there first.
+    The dev image no longer installs php-cs-fixer globally.
+  - Removed `roave/security-advisories` and `composer/package-versions-deprecated` from the dev dependencies.
+  - PHPUnit fails on an empty test suite and on an incomplete test.
 
 
 ## TODO
@@ -24,7 +41,7 @@ Intended to follow [«Keep a Changelog»](https://keepachangelog.com/en/)
 
 ----
 
-## [1.8.0]  - unreleased
+## [1.8.0]  - 2026-11-19
 
 This release changes three things that callers can see. Check code that relies on them:
 - `getHeader()` and `getHeaders()` return list headers such as `Accept` as one value; see "Fixed".

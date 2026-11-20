@@ -22,16 +22,18 @@ class DispatchSubstitutor
         // Attach PSR7 cookies container to sfWebResponse's `options` property.
         $optionsOverride = array_merge($responseOptions, ['logging' => true, self::PSR_7_COOKIES => $cookieContainer]);
         $reflexOptions   = $reflexiveWebResponse->getProperty('options');
-        $reflexOptions->setAccessible(true);
+        if (\PHP_VERSION_ID < 80100) {
+            $reflexOptions->setAccessible(true);
+        }
         $reflexOptions->setValue($sfWebResponse, $optionsOverride);
-        $reflexOptions->setAccessible(false);
         // Get the originally attached sfEventDispatcher
         $reflexDispatcher = $reflexiveWebResponse->getProperty('dispatcher');
-        $reflexDispatcher->setAccessible(true);
+        if (\PHP_VERSION_ID < 80100) {
+            $reflexDispatcher->setAccessible(true);
+        }
         /** @var null|\sfEventDispatcher $dispatcher */
         $dispatcher = $reflexDispatcher->getValue($sfWebResponse);
         // Replace the sfEventDispatcher, with the CookieDispatcher with wraps the original one
         $reflexDispatcher->setValue($sfWebResponse, new CookieDispatcher($dispatcher, $hasLogging));
-        $reflexDispatcher->setAccessible(false);
     }
 }

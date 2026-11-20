@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * @see https://mlocati.github.io/php-cs-fixer-configurator/#version:3.58
+ * @see https://mlocati.github.io/php-cs-fixer-configurator/#version:3.95
  * @see https://cs.symfony.com/doc/rules/index.html
  * @see https://cs.symfony.com/doc/ruleSets/index.html
  */
@@ -21,13 +21,13 @@ $config = new \PhpCsFixer\Config();
 $config->setRiskyAllowed(true)
     ->setRules(
         [
-            '@PER-CS2.0'                                       => true,
+            '@PER-CS2x0'                                       => true,
             '@Symfony'                                         => true,
             '@PhpCsFixer'                                      => true,
             '@PhpCsFixer:risky'                                => true,
-            '@PHPUnit100Migration:risky'                       => true,
+            '@PHPUnit10x0Migration:risky'                      => true,
             // '@PHP80Migration:risky'                            => true,
-            '@PHP82Migration'                                  => true,
+            '@PHP8x2Migration'                                 => true,
             'no_superfluous_phpdoc_tags'                       => true,
             'native_function_invocation'                       => false,
             'concat_space'                                     => ['spacing' => 'one'],
